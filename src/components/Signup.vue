@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     submitSignUp () {
-      axios.post("http://localhost:8080/api/user-profiles/signup", this.user)
+      axios.post("https://metal-review-spring.herokuapp.com/api/user-profiles/signup", this.user)
       .then( res => {
         console.log(res);
         this.$router.push("/login");

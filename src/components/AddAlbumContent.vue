@@ -73,7 +73,7 @@ export default {
       formData.append("band_name", this.band_name);
       formData.append("year", this.point);
       formData.append("username", this.$route.params.username);
-      axios.post("http://localhost:8080/api/albums/image/upload",
+      axios.post("https://metal-review-spring.herokuapp.com/api/albums/image/upload",
         formData,
           {
             headers:{

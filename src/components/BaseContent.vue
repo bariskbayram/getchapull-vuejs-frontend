@@ -80,7 +80,7 @@
       },
       getProfilePhoto(){
         console.log("photo istendi.")
-        axios.get("http://localhost:8080/api/user-profiles/" + this.$route.params.username +"/image/download",{
+        axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/" + this.$route.params.username +"/image/download",{
           headers: {
             "Authorization": localStorage.getItem('user-token'),
             'Content-type': 'image/jpeg'
@@ -105,7 +105,7 @@
       }
     },
     created () {
-      axios.get("http://localhost:8080/api/user-profiles/search-username?username=" + this.$route.params.username)
+      axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/search-username?username=" + this.$route.params.username)
       .then( (res) => {
         console.log(res);
         this.isUsernameAvailable = res.data;

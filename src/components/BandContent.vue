@@ -17,8 +17,10 @@
 
 <script>
   const axios = require('axios');
+/*
   const apiURL = "http://localhost:8080/api/bands";
-  
+*/
+  const apiHeroku = "https://metal-review-spring.herokuapp.com/api/bands"
   export default {
     name: "BandContent",
     data(){
@@ -28,7 +30,7 @@
     },
     methods:{
       setBandPhoto(band){
-        axios.get(apiURL + "/" + band.bandId + "/image/download?username=" + this.$route.params.username, 
+        axios.get(apiHeroku + "/" + band.bandId + "/image/download?username=" + this.$route.params.username,
         {
           headers: {
             'Authorization': localStorage.getItem('user-token'),
@@ -39,7 +41,7 @@
       }
     },
     mounted() {
-      axios.get(apiURL + "?username=" + this.$route.params.username, 
+      axios.get(apiHeroku + "?username=" + this.$route.params.username,
       {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
