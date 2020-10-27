@@ -1,53 +1,80 @@
 <template>
   <div class="row">
-    <div class="col-xs-12 col-md-3" v-for="album in albums" v-bind:key="album.id">
-      <a href="#" class="album-thumb">
+    <div class="col-xs-12 col-md-3" v-for="(album, index) in filteredAlbums" v-bind:key="index">
+      <button class="album-thumb button-img" v-on:click="getAlbum(album)">
         <div class="thumbnail">
-          <img class="crop-img" v-bind:src="setAlbumCover(album)" alt=""/>
+          <img id="album-id" class="crop-img" v-bind:src="album.src" alt=""/>
           <div class="variable">
             <h3> {{album.name}} </h3>
           </div>
         </div>
-      </a>
+      </button>
     </div> <!-- / col -->
+    <AlbumDetails v-if="showModal" @close="showModal = false" :the-album="selectedAlbum">
+
+    </AlbumDetails>
   </div> <!-- / row -->
 
 </template>
 
 <script>
+  import AlbumDetails from "@/components/AlbumDetails";
   const axios = require('axios');
-  // const apiURL = "http://localhost:8080/api/albums";
-  const apiHeroku = "https://metal-review-spring.herokuapp.com/api/albums";
-  
+  const apiURL = "https://metal-review-spring.herokuapp.com/api/albums";
+
   export default {
     name: "AlbumContent",
+    components: {AlbumDetails},
+    props: {
+      filter: {}
+    },
     data(){
       return {
         albums: [],
-        isShowing : true
+        selectedAlbum: {},
+        showModal: false
       }
     },
     methods:{
       setAlbumCover(album){
-        console.log("album photo istendi.")
-        axios.get(apiHeroku + "/" + album.id + "/image/download?username=" + this.$route.params.username,
+        axios.get(apiURL + "/" + album.id + "/image/download?username=" + this.$route.params.username,
         {
           headers: {
             'Authorization': localStorage.getItem('user-token'),
+            responseType: 'arrayBuffer'
           }
-        })
+        }).then( res => {
+          album.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
+          this.showModal = true;
+          this.showModal = false;
+        });
+      },
+      getAlbum(album){
+        this.selectedAlbum = album;
+        this.showModal = true;
       }
     },
     mounted() {
-      axios.get(apiHeroku + "?username=" + this.$route.params.username,
+      axios.get(apiURL + "?username=" + this.$route.params.username,
       {
         headers: {
           "Authorization": localStorage.getItem('user-token'),
         }
       }).then( res => {
-        console.log(res)
         this.albums = res.data;
+        this.albums.forEach(this.setAlbumCover);
       })
+    },
+    computed: {
+      filteredAlbums () {
+        return this.albums.filter(album => {
+          return album.name.toLocaleLowerCase().includes(this.filter.toLowerCase())
+        })
+      }
     }
   }
 </script>
+
+<style scoped>
+
+</style>

@@ -6,6 +6,7 @@
           <button v-if="!isMyProfile" v-on:click="goMyProfile" type="button" class="btn left top-button btn-primary">MyProfile</button>
           <div class="page-header">
             <h2>Albums I've listened to so far</h2>
+            <p>{{user.fullname}}</p>
           </div>
         </div>
 
@@ -13,12 +14,12 @@
           <div>
             <button type="button" class="btn btn-danger pull-right top-button" v-if="isLoggedIn" v-on:click="logOut">Log Out</button>
           </div>
-          <img class="thumbnail pull-right" id="profile_img" :src="profile_photo" alt="/">
+          <img class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
         </div>
       </div>
 
       <div class="navbar-form navbar-right">
-        <input id="searchbox" type="text" class="form-control search" placeholder="Search...">
+        <input id="searchbox" type="text" class="form-control search" placeholder="Search..." v-model="filter">
       </div>
 
       <ul class="nav nav-tabs">
@@ -38,12 +39,11 @@
     </div>
 
     <div id="content"  class="container"  role="main">
-      <AlbumContent v-if="isAlbumSection"/>
-      <BandContent v-else/>
+      <AlbumContent v-if="isAlbumSection" :filter="filter"/>
+      <BandContent v-else :filter="filter"/>
     </div>
 
     <AddAlbumContent v-if="showModal" @close="showModal = false">
-      <h3>Hello</h3>
     </AddAlbumContent>
 
   </div>
@@ -65,29 +65,27 @@
     },
     data(){
       return{
+        filter: "",
         isUsernameAvailable: true,
         user: {},
         isAlbumSection: true,
         showModal: false,
-        profile_photo: {},
+        profile_photo: '',
         isLoggedIn: localStorage.getItem('isLoggedIn'),
         isMyProfile: false,
       }
     },
     methods: {
-      addAlbum(){
-        console.log("selam");
-      },
       getProfilePhoto(){
-        console.log("photo istendi.")
         axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/" + this.$route.params.username +"/image/download",{
           headers: {
-            "Authorization": localStorage.getItem('user-token'),
-            'Content-type': 'image/jpeg'
+            'Authorization': localStorage.getItem('user-token'),
+            responseType: 'arrayBuffer'
           }
         }).then( (res) => {
-          console.log("photo" + res)
+          this.profile_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         });
+        return this.profile_photo;
       },
       logOut () {
         localStorage.clear();
@@ -107,12 +105,19 @@
     created () {
       axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/search-username?username=" + this.$route.params.username)
       .then( (res) => {
-        console.log(res);
         this.isUsernameAvailable = res.data;
       });
+      if(this.isUsernameAvailable){
+        axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/get-user?username=" + this.$route.params.username)
+            .then( (res) => {
+              this.user = res.data;
+            });
+      }
       this.checkMyProfile();
       this.profile_photo = this.getProfilePhoto();
-      console.log(this.profile_photo)
+      if(!this.isLoggedIn){
+        this.$router.push("/login");
+      }
     }
   }
 </script>
