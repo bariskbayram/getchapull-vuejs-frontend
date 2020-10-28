@@ -1,7 +1,7 @@
 <template>
   <div class="container" v-if="!isLoggedIn">
     <div class="center-block middle">
-      <h2 class="text-center">Login to MetalReviews</h2>
+      <h2 class="text-center">Login to GetchaPull !</h2>
       <p>
         <input type="text" v-model="user.username" class="form-control" placeholder="Username" required="" autofocus="">
       </p>

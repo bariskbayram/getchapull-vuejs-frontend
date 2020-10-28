@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="center-block middle">
-      <h2 class="text-center">Sign up to MetalReviews</h2>
+      <h2 class="text-center">Sign up to GetchaPull !</h2>
       <p>
         <input type="text" v-model="user.fullname" class="form-control" placeholder="Full name" required="">
       </p>
