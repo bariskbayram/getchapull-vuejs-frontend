@@ -39,7 +39,6 @@
     },
     methods:{
       setBandPhoto (band){
-        console.log("çalişti")
         axios.get(apiURL + "/" + band.bandId + "/image/download?username=" + this.$route.params.username,
         {
           headers: {
@@ -58,7 +57,6 @@
       }
     },
     mounted () {
-      console.log("mounted")
       axios.get(apiURL + "?username=" + this.$route.params.username,
       {
         headers: {

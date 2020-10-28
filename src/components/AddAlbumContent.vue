@@ -130,8 +130,6 @@ export default {
       ).then( (res) => {
         console.log("band uploaded successfully");
         this.band.band_id = res.data;
-        console.log("this.band.band_id" + this.band.band_id)
-        console.log(res.data)
       }).catch(err => {
         console.log(err);
       });

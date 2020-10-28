@@ -34,8 +34,7 @@ export default {
   methods: {
     submitSignUp () {
       axios.post("https://metal-review-spring.herokuapp.com/api/user-profiles/signup", this.user)
-      .then( res => {
-        console.log(res);
+      .then( () => {
         this.$router.push("/login");
       })
     }

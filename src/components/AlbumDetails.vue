@@ -82,7 +82,6 @@ export default {
               "Authorization": localStorage.getItem('user-token'),
             }
           }).then(res => {
-            console.log(res.data)
             this.theReview = res.data;
       })
     },
