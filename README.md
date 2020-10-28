@@ -1,4 +1,4 @@
-# frontend
+# GetchaPull Frontend with Vue.js
 
 http://www.getchapull.wtf/
 
