@@ -43,6 +43,8 @@ export default {
   },
   methods: {
     getSpotify () {
+      var request = require('request'); // "Request" library
+
       var client_id = '4cdcf550c1c7458485e09e5be020a556'; // Your client id
       var client_secret = '1e906cf6ef71436cb163ca98e619aead'; // Your secret
       var authOptions = {
@@ -57,7 +59,7 @@ export default {
         json: true
       };
 
-      axios.post(authOptions, function(error, response, body) {
+      request.post(authOptions, function(error, response, body) {
         console.log("burası çalışti")
         if (!error && response.statusCode === 200) {
 
@@ -70,7 +72,7 @@ export default {
             },
             json: true
           };
-          axios.get(options, function(error, response, body) {
+          request.get(options, function(error, response, body) {
             console.log(body);
           });
         }
