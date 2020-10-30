@@ -14,6 +14,8 @@
       Don't you have account? <router-link class="" to='/signup'>Create Account</router-link>
     </p>
 
+    <button v-on:click="getSpotify">Spotify</button>
+
   </div>
 </template>
 
@@ -40,6 +42,16 @@ export default {
     }
   },
   methods: {
+    getSpotify () {
+      axios.get('/login', function(req, res) {
+        var scopes = 'user-read-private user-read-email';
+        res.redirect('https://accounts.spotify.com/authorize' +
+            '?response_type=code' +
+            '&client_id=' + "4cdcf550c1c7458485e09e5be020a556" +
+            (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
+            '&redirect_uri=' + encodeURIComponent("http://getchapull.wtf/bariskbayram"));
+      });
+    },
     submitLogIn() {
       axios.post('https://metal-review-spring.herokuapp.com/login', this.user)
       .then( (res) => {
