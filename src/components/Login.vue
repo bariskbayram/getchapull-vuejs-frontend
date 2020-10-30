@@ -43,14 +43,15 @@ export default {
   },
   methods: {
     getSpotify () {
-      axios.get('/login', function(req, res) {
-        var scopes = 'user-read-private user-read-email';
-        res.redirect('https://accounts.spotify.com/authorize' +
-            '?response_type=code' +
-            '&client_id=' + "4cdcf550c1c7458485e09e5be020a556" +
-            (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-            '&redirect_uri=' + encodeURIComponent("http://getchapull.wtf/bariskbayram"));
-      });
+      const body = {"grant_type": "client_credentials"}
+      axios.post('https://accounts.spotify.com/api/token', body,{
+        header: {
+          "Authorization": "Basic <base64 encoded 4cdcf550c1c7458485e09e5be020a556:1e906cf6ef71436cb163ca98e619aead>",
+          "Content-type": "application/x-www-form-urlencoded"
+        }
+      }).then((res) => {
+        console.log(res)
+      })
     },
     submitLogIn() {
       axios.post('https://metal-review-spring.herokuapp.com/login', this.user)
