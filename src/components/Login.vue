@@ -50,9 +50,9 @@ export default {
       var authOptions = {
         url: 'https://accounts.spotify.com/api/token',
         headers: {
-          'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret, 'base64')
+          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
         },
-        data: {
+        form: {
           grant_type: 'client_credentials',
           'Content-Type' : 'application/x-www-form-urlencoded'
         },
