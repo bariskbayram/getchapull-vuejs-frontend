@@ -43,12 +43,14 @@ export default {
   },
   methods: {
     getSpotify () {
-      const body = {"grant_type": "client_credentials"}
-      axios.post('https://accounts.spotify.com/api/token', body,{
-        header: {
-          "Authorization": "Basic <base64 encoded 4cdcf550c1c7458485e09e5be020a556:1e906cf6ef71436cb163ca98e619aead>",
-          "Content-type": "application/x-www-form-urlencoded"
-        }
+      axios.post('https://accounts.spotify.com/api/token',{
+        headers: {
+          "Authorization": 'Basic ' + (new Buffer("4cdcf550c1c7458485e09e5be020a556" + ':' + "1e906cf6ef71436cb163ca98e619aead").toString('base64')),
+        },
+        form: {
+          grant_type: 'client_credentials'
+        },
+        json: true
       }).then((res) => {
         console.log(res)
       })
