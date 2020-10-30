@@ -43,18 +43,36 @@ export default {
   },
   methods: {
     getSpotify () {
-      axios.post('https://accounts.spotify.com/api/token',{
+      var client_id = '4cdcf550c1c7458485e09e5be020a556'; // Your client id
+      var client_secret = '1e906cf6ef71436cb163ca98e619aead'; // Your secret
+      var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
         headers: {
-          "Authorization": 'Basic ' + (new Buffer("4cdcf550c1c7458485e09e5be020a556" + ':' + "1e906cf6ef71436cb163ca98e619aead").toString('base64')),
+          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
         },
         form: {
           grant_type: 'client_credentials'
         },
         json: true
-      }).then((res) => {
-        console.log(res)
-      })
-    },
+      };
+
+      axios.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+
+          // use the access token to access the Spotify Web API
+          var token = body.access_token;
+          var options = {
+            url: 'https://api.spotify.com/v1/users/jmperezperez',
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+            json: true
+          };
+          axios.get(options, function(error, response, body) {
+            console.log(body);
+          });
+        }
+      })},
     submitLogIn() {
       axios.post('https://metal-review-spring.herokuapp.com/login', this.user)
       .then( (res) => {
