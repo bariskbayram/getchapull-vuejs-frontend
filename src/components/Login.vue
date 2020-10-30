@@ -50,8 +50,9 @@ export default {
         headers: {
           'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret, 'base64')
         },
-        form: {
-          grant_type: 'client_credentials'
+        data: {
+          grant_type: 'client_credentials',
+          'Content-Type' : 'application/x-www-form-urlencoded'
         },
         json: true
       };
