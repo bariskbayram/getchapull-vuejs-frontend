@@ -57,6 +57,7 @@ export default {
       };
 
       axios.post(authOptions, function(error, response, body) {
+        console.log("burası çalışti")
         if (!error && response.statusCode === 200) {
 
           // use the access token to access the Spotify Web API
