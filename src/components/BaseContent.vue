@@ -53,7 +53,7 @@
   import AlbumContent from './AlbumContent.vue';
   import BandContent from "@/components/BandContent";
   import AddAlbumContent from "@/components/AddAlbumContent";
-  
+
   const axios = require('axios').default;
 
   export default {
@@ -77,7 +77,7 @@
     },
     methods: {
       getProfilePhoto(){
-        axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/" + this.$route.params.username +"/image/download",{
+        axios.get("http://localhost:8080/api/user-profiles/" + this.$route.params.username +"/image/download",{
           headers: {
             'Authorization': localStorage.getItem('user-token'),
             responseType: 'arrayBuffer'
@@ -103,12 +103,12 @@
       }
     },
     created () {
-      axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/search-username?username=" + this.$route.params.username)
+      axios.get("http://localhost:8080/api/user-profiles/search-username?username=" + this.$route.params.username)
       .then( (res) => {
         this.isUsernameAvailable = res.data;
       });
       if(this.isUsernameAvailable){
-        axios.get("https://metal-review-spring.herokuapp.com/api/user-profiles/get-user?username=" + this.$route.params.username)
+        axios.get("http://localhost:8080/api/user-profiles/get-user?username=" + this.$route.params.username)
             .then( (res) => {
               this.user = res.data;
             });

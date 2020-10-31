@@ -39,7 +39,7 @@
 <script>
 
 const axios = require('axios');
-const apiURL = "https://metal-review-spring.herokuapp.com/api/bands";
+const apiURL = "http://localhost:8080/api/bands";
 
 export default {
   name: "BandDetails",
