@@ -20,7 +20,7 @@
 <script>
   import AlbumDetails from "@/components/AlbumDetails";
   const axios = require('axios');
-  const apiURL = "http://localhost:8080/api/albums";
+  const apiURL = "https://metal-review-spring.herokuapp.com/api/albums";
 
   export default {
     name: "AlbumContent",

@@ -41,8 +41,8 @@
 
 <script>
   const axios = require('axios');
-  const apiURL = "http://localhost:8080/api/albums";
-  const reviewURL = "http://localhost:8080/api/reviews";
+  const apiURL = "https://metal-review-spring.herokuapp.com/api/albums";
+  const reviewURL = "https://metal-review-spring.herokuapp.com/api/reviews";
 
 export default {
   name: "AlbumDetails",
@@ -76,7 +76,7 @@ export default {
       })
     },
     getReview () {
-      axios.get("http://localhost:8080/api/reviews/" + this.theAlbum.id +"?username=" + this.$route.params.username,
+      axios.get("https://metal-review-spring.herokuapp.com/api/reviews/" + this.theAlbum.id +"?username=" + this.$route.params.username,
           {
             headers: {
               "Authorization": localStorage.getItem('user-token'),

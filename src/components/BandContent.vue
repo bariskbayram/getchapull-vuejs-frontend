@@ -22,7 +22,7 @@
 <script>
   import BandDetails from "@/components/BandDetails";
   const axios = require('axios');
-  const apiURL = "http://localhost:8080/api/bands";
+  const apiURL = "https://metal-review-spring.herokuapp.com/api/bands";
 
   export default {
     name: "BandContent",

@@ -88,7 +88,7 @@ export default {
     checkBandAndPush (review) {
       this.review = review;
       console.log("çalişti")
-      axios.get("http://localhost:8080/api/bands/" + this.band.name + "?username=" + this.$route.params.username,
+      axios.get("https://metal-review-spring.herokuapp.com/api/bands/" + this.band.name + "?username=" + this.$route.params.username,
       {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
@@ -120,7 +120,7 @@ export default {
       formData.append("band_file", this.selectedBandImage);
       formData.append("band_name", this.band.name);
       formData.append("username", this.$route.params.username);
-      axios.post("http://localhost:8080/api/bands/image/upload",
+      axios.post("https://metal-review-spring.herokuapp.com/api/bands/image/upload",
           formData,
           {
             headers: {
@@ -138,7 +138,7 @@ export default {
     },
 
     checkAlbumExist () {
-      axios.get("http://localhost:8080/api/albums/isExist/" + this.album.name + "?bandId=" + this.band.band_id + "?username=" + this.$route.params.username,
+      axios.get("https://metal-review-spring.herokuapp.com/api/albums/isExist/" + this.album.name + "?bandId=" + this.band.band_id + "?username=" + this.$route.params.username,
           {
             headers: {
               'Authorization': localStorage.getItem('user-token'),
@@ -174,7 +174,7 @@ export default {
       formData.append("band_id", this.band.band_id);
       formData.append("year", this.album.release_date);
       formData.append("username", this.$route.params.username);
-      axios.post("http://localhost:8080/api/albums/image/upload",
+      axios.post("https://metal-review-spring.herokuapp.com/api/albums/image/upload",
           formData,
           {
             headers: {
@@ -200,7 +200,7 @@ export default {
       formData.append("review_point", this.review.review_point);
       formData.append("album_id", this.album.album_id);
       formData.append("username", this.$route.params.username);
-      axios.post("http://localhost:8080/api/reviews",
+      axios.post("https://metal-review-spring.herokuapp.com/api/reviews",
           formData,
           {
             headers:{
