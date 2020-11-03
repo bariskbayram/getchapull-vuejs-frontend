@@ -1,42 +1,46 @@
 <template>
-  <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-
+  <div>
+    <md-dialog :md-active.sync="showDialog"
+               @md-closed="$emit('close')" @md-clicked-outside="$emit('close')">
+      <md-app>
+        <md-app-content>
           <div class="modal-header">
-            <slot name="header">
-              <img style="width:100%" v-bind:src="theAlbum.src"/>
-              <h2>{{ theAlbum.name }}</h2>
-              <p> {{theAlbum.year}}</p>
-            </slot>
+            <h2>{{ theAlbum.name }}</h2>
           </div>
 
           <div class="modal-body">
+            <div class="col-md-6">
+              <slot name="header">
+                <img class="img-mine" style="width:60%" v-bind:src="theAlbum.src"/>
+              </slot>
+            </div>
             <slot name="body">
               <h3>{{theReview.title}}</h3>
               <p>{{theReview.content}}</p>
               <h2>{{theReview.point}}/10</h2>
             </slot>
           </div>
+        </md-app-content>
+      </md-app>
 
-          <div class="modal-footer">
-            <slot name="footer">
-              <button v-if="isMyProfile" class="btn btn-warning" v-on:click="$emit('close')">
-                Edit
-              </button>
-              <button v-if="isMyProfile" class="btn btn-danger" v-on:click="deleteAlbumAndReview">
-                Delete
-              </button>
-              <button class="btn btn-primary" v-on:click="$emit('close')">
-                Close
-              </button>
-            </slot>
-          </div>
-        </div>
+
+      <div class="modal-footer">
+        <slot name="footer">
+          <button v-if="isMyProfile" class="btn btn-warning" v-on:click="$emit('close')">
+            Edit
+          </button>
+          <button v-if="isMyProfile" class="btn btn-danger" v-on:click="deleteAlbumAndReview">
+            Delete
+          </button>
+          <button class="btn btn-primary" v-on:click="$emit('close')">
+            Close
+          </button>
+        </slot>
       </div>
-    </div>
-  </transition>
+    </md-dialog>
+
+  </div>
+
 </template>
 
 <script>
@@ -50,7 +54,8 @@ export default {
   data () {
     return {
       isMyProfile: false,
-      theReview: {}
+      theReview: {},
+      showDialog: true
     }
   },
   methods: {
@@ -103,5 +108,12 @@ export default {
 </script>
 
 <style scoped>
+.md-app {
+  max-height: 600px;
+  border: 1px solid;
+}
 
+.img-mine{
+  margin-bottom: 20px;
+}
 </style>

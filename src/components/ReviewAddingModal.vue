@@ -2,27 +2,46 @@
   <div>
     <div class="modal-header">
       <slot name="header">
-        <p>Adding a new album review !</p>
+        <h2>Adding a new album review !</h2>
       </slot>
     </div>
 
-    <div class="modal-body">
-      <slot name="body">
-        <input type="text" class="input-lg" v-model="review.review_title" placeholder="Review Title">
-        <br/><br/>
-        <input type="text" class="input-lg" v-model="review.review_content" placeholder="Review Content">
-        <br/><br/>
-        <input type="number" class="input-lg" v-model="review.review_point" placeholder="Review Point">
-      </slot>
-    </div>
+    <md-app>
+      <md-app-content>
+        <slot class="modal-body">
+          <slot name="body">
+            <md-field>
+              <label>Review Title</label>
+              <md-input v-model="review.review_title" maxlength="30"></md-input>
+            </md-field>
+            <md-field>
+              <label>Review Content</label>
+              <md-textarea v-model="review.review_content" md-autogrow md-counter="300"></md-textarea>
+            </md-field>
+            <md-field>
+              <label>Review Point</label>
+              <md-input type="number" v-model="review.review_point"></md-input>
+              <span class="md-suffix">/10</span>
+            </md-field>
+            <span v-if="pointError" class="md-error error-mine">Point cannot be more than 10.</span>
+          </slot>
+        </slot>
+      </md-app-content>
+    </md-app>
 
     <div class="modal-footer">
       <slot name="footer">
-        <button class="btn btn-danger" v-on:click="$emit('close')">
+        <button class="btn btn-danger" v-on:click="$emit('closeModal')">
           Cancel
         </button>
-        <button v-if="review.review_point != ''" class="btn btn-success" v-on:click="pushReview">
-          Create
+        <button v-if="review.review_point != null" :disabled="isProgressActive" class="btn btn-success" v-on:click="pushReview">
+          <span v-if="!isProgressActive">
+                    Create
+          </span>
+          <span v-else>
+            <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
+                                           md-mode="indeterminate"/>
+          </span>
         </button>
       </slot>
     </div>
@@ -37,18 +56,31 @@ export default {
       review: {
         review_title: '',
         review_content: '',
-        review_point: ''
-      }
+        review_point: null
+      },
+      pointError: false,
+      isProgressActive: false,
     }
   },
   methods: {
     pushReview () {
-      this.$emit('pushAllDatas', this.review);
+      this.isProgressActive = true;
+      if(this.review.review_point >10){
+        this.pointError = true;
+      }else if(this.review.review_point == null) {
+        this.pointError = true;
+      }else{
+        this.$emit('pushAllDatas', this.review);
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+
+.error-mine{
+  color: red;
+}
 
 </style>

@@ -82,4 +82,7 @@
 
 <style scoped>
 
+.col-xs-12 {
+  margin-bottom: 20px;
+}
 </style>

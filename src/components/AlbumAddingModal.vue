@@ -6,23 +6,36 @@
       </slot>
     </div>
 
-    <div class="modal-body">
-      <slot name="body">
-        <div v-for="(album ,index) in allAlbums" v-bind:key="index">
-          <input type="radio" v-bind:id="index" v-bind:value="index" v-model="picked">
-          <a class="albums" v-bind:href="album.external_urls.spotify" target="_blank">{{ album.name }} - {{ album.release_date.substring(0,4)}}</a>
-          <br>
+    <md-app>
+      <md-app-content>
+        <div class="col-md-4 every-card" v-for="(album ,index) in allAlbums" v-bind:key="index">
+          <md-checkbox v-model="picked" :value="album">
+            <md-card>
+              <md-card-header>
+                <div class="md-title">{{album.name}} - {{album.release_date.substring(0,4)}}</div>
+              </md-card-header>
+              <md-card-media md-medium>
+                <img src="https://i.scdn.co/image/9e7b87a0d576a0d4f8402964fcbd1852aa4c5da6"/>
+              </md-card-media>
+            </md-card>
+          </md-checkbox>
         </div>
-      </slot>
-    </div>
+      </md-app-content>
+    </md-app>
 
     <div class="modal-footer">
       <slot name="footer">
         <button class="btn btn-danger" @click="$emit('closeModal')">
           Cancel
         </button>
-        <button class="btn btn-success" v-if="picked != null" @click="pushSelectedAlbumToParent">
-          Next
+        <button class="btn btn-success" :disabled="isProgressActive" v-if="picked != null" @click="pushSelectedAlbumToParent">
+         <span v-if="!isProgressActive">
+                    Next
+          </span>
+          <span v-else>
+            <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
+                                 md-mode="indeterminate"/>
+          </span>
         </button>
       </slot>
     </div>
@@ -38,7 +51,8 @@ export default {
   data () {
     return {
       picked: null,
-      allAlbums: []
+      allAlbums: [],
+      isProgressActive: false,
     }
   },
   methods: {
@@ -50,7 +64,7 @@ export default {
           "Content-Type": "application/json"
         },
         params: {
-          limit: 10
+          limit: 30
         },
         json: true
       }).then( (res) => {
@@ -59,7 +73,7 @@ export default {
       })
     },
     pushSelectedAlbumToParent () {
-      this.$emit('toReviewPart', this.allAlbums[this.picked]);
+      this.$emit('toReviewPart', this.picked);
     },
   },
   created() {
@@ -72,5 +86,26 @@ export default {
 .albums{
   margin-left: 20px;
   font-size: large;
+}
+
+
+.md-card {
+  width: 320px;
+  margin: 4px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.md-app {
+  max-height: 450px;
+  border: 1px solid;
+}
+
+.every-card {
+  margin-bottom: 40px;
+}
+
+.md-checkbox {
+  margin-bottom: 400px;
 }
 </style>

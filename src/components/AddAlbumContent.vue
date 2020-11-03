@@ -1,16 +1,12 @@
 <template class="add-album-content">
-  <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+  <md-dialog :md-active.sync="showDialog"
+               @md-closed="$emit('close')" @md-clicked-outside="$emit('close')">
 
-          <BandAddingModal :token="token" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandAddingModal>
-          <AlbumAddingModal :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumAddingModal>
-          <ReviewAddingModal v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewAddingModal>
-        </div>
-      </div>
-    </div>
-  </transition>
+    <BandAddingModal :token="token" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandAddingModal>
+    <AlbumAddingModal :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumAddingModal>
+    <ReviewAddingModal v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewAddingModal>
+
+  </md-dialog>
 </template>
 
 <script>
@@ -39,6 +35,7 @@ export default {
       review: {},
       selectedBandImage: {},
       selectedAlbumImage: {},
+      showDialog: true
     }
   },
   methods:{
@@ -86,6 +83,12 @@ export default {
 
     checkBandAndPush (review) {
       this.review = review;
+      if(this.review.review_title == ''){
+        this.review.review_title = '!';
+      }
+      if(this.review.review_content == ''){
+        this.review.review_content = '!';
+      }
       console.log("çalişti")
       axios.get(this.$url + "/api/bands/" + this.band.name,
       {

@@ -1,39 +1,42 @@
 <template>
-  <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-
+  <div>
+    <md-dialog :md-active.sync="showDialog"
+               @md-closed="$emit('close')" @md-clicked-outside="$emit('close')">
+      <md-app>
+        <md-app-content>
           <div class="modal-header">
-            <slot name="header">
-              <img style="width:100%" v-bind:src="theBand.src"/>
-              <h2>{{ theBand.bandName }}</h2>
-            </slot>
+            <h2>{{ theBand.name }}</h2>
           </div>
 
           <div class="modal-body">
+            <div class="col-md-6">
+              <slot name="header">
+                <img class="img-mine" style="width:60%" v-bind:src="theBand.src"/>
+              </slot>
+            </div>
             <slot name="body">
 
             </slot>
           </div>
+        </md-app-content>
+      </md-app>
 
-          <div class="modal-footer">
-            <slot name="footer">
-              <button v-if="isMyProfile" class="btn btn-warning" v-on:click="$emit('close')">
-                Edit
-              </button>
-              <button v-if="isMyProfile" class="btn btn-danger" v-on:click="deleteBand(theBand)">
-                Delete
-              </button>
-              <button class="btn btn-primary" v-on:click="$emit('close')">
-                Close
-              </button>
-            </slot>
-          </div>
-        </div>
+
+      <div class="modal-footer">
+        <slot name="footer">
+          <button v-if="isMyProfile" class="btn btn-warning" v-on:click="$emit('close')">
+            Edit
+          </button>
+          <button v-if="isMyProfile" class="btn btn-danger" v-on:click="deleteBand">
+            Delete
+          </button>
+          <button class="btn btn-primary" v-on:click="$emit('close')">
+            Close
+          </button>
+        </slot>
       </div>
-    </div>
-  </transition>
+    </md-dialog>
+  </div>
 </template>
 
 <script>
@@ -47,7 +50,8 @@ export default {
   },
   data () {
     return {
-      isMyProfile: false
+      isMyProfile: false,
+      showDialog: true
     }
   },
   methods: {
