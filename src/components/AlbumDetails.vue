@@ -41,8 +41,6 @@
 
 <script>
   const axios = require('axios');
-  const apiURL = "https://metal-review-spring.herokuapp.com/api/albums";
-  const reviewURL = "https://metal-review-spring.herokuapp.com/api/reviews";
 
 export default {
   name: "AlbumDetails",
@@ -62,24 +60,27 @@ export default {
       this.$emit('close');
     },
     deleteAlbum (album) {
-      axios.delete(apiURL + "/" + album.id, {
+      axios.delete(this.$url + "/api/albums/" + album.id, {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
         }
       })
     },
     deleteReview (review) {
-      axios.delete( reviewURL + "/" + review.reviewId, {
+      axios.delete( this.$url + "/api/reviews/" + review.reviewId, {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
         }
       })
     },
     getReview () {
-      axios.get("https://metal-review-spring.herokuapp.com/api/reviews/" + this.theAlbum.id +"?username=" + this.$route.params.username,
+      axios.get(this.$url + "/api/reviews/" + this.theAlbum.id,
           {
             headers: {
               "Authorization": localStorage.getItem('user-token'),
+            },
+            params: {
+              username: this.$route.params.username
             }
           }).then(res => {
             this.theReview = res.data;

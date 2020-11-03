@@ -39,7 +39,6 @@
 <script>
 
 const axios = require('axios');
-const apiURL = "https://metal-review-spring.herokuapp.com/api/bands";
 
 export default {
   name: "BandDetails",
@@ -53,7 +52,7 @@ export default {
   },
   methods: {
     deleteBand (band) {
-      axios.delete(apiURL + "/" + band.bandId, {
+      axios.delete(this.$url + "/api/bands/" + band.bandId, {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
         }

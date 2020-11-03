@@ -22,7 +22,6 @@
 <script>
   import BandDetails from "@/components/BandDetails";
   const axios = require('axios');
-  const apiURL = "https://metal-review-spring.herokuapp.com/api/bands";
 
   export default {
     name: "BandContent",
@@ -39,11 +38,14 @@
     },
     methods:{
       setBandPhoto (band){
-        axios.get(apiURL + "/" + band.bandId + "/image/download?username=" + this.$route.params.username,
+        axios.get(this.$url + "/api/bands/" + band.bandId + "/image/download",
         {
           headers: {
             'Authorization': localStorage.getItem('user-token'),
             responseType: 'arrayBuffer'
+          },
+          params: {
+            username: this.$route.params.username
           }
         }).then( res => {
           band.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -57,10 +59,13 @@
       }
     },
     mounted () {
-      axios.get(apiURL + "?username=" + this.$route.params.username,
+      axios.get(this.$url + "/api/bands",
       {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
+        },
+        params: {
+          username: this.$route.params.username
         }
       }).then( res => {
         this.bands = res.data;

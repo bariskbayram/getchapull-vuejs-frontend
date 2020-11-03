@@ -7,7 +7,6 @@
           <BandAddingModal :token="token" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandAddingModal>
           <AlbumAddingModal :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumAddingModal>
           <ReviewAddingModal v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewAddingModal>
-          <input type="file" @change="eventImg"/>
         </div>
       </div>
     </div>
@@ -88,14 +87,17 @@ export default {
     checkBandAndPush (review) {
       this.review = review;
       console.log("çalişti")
-      axios.get("https://metal-review-spring.herokuapp.com/api/bands/" + this.band.name + "?username=" + this.$route.params.username,
+      axios.get(this.$url + "/api/bands/" + this.band.name,
       {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
+        },
+        params: {
+          username: this.$route.params.username
         }
       }).then(res => {
         console.log(res)
-        if(res.data == null){
+        if(res.data == ""){
           this.pushBand();
         }else{
           this.band.band_id = res.data;
@@ -120,7 +122,7 @@ export default {
       formData.append("band_file", this.selectedBandImage);
       formData.append("band_name", this.band.name);
       formData.append("username", this.$route.params.username);
-      axios.post("https://metal-review-spring.herokuapp.com/api/bands/image/upload",
+      axios.post(this.$url + "/api/bands/image/upload",
           formData,
           {
             headers: {
@@ -138,10 +140,14 @@ export default {
     },
 
     checkAlbumExist () {
-      axios.get("https://metal-review-spring.herokuapp.com/api/albums/isExist/" + this.album.name + "?bandId=" + this.band.band_id + "?username=" + this.$route.params.username,
+      axios.get(this.$url + "/api/albums/isExist/" + this.album.name,
           {
             headers: {
               'Authorization': localStorage.getItem('user-token'),
+            },
+            params: {
+              bandId: this.band.band_id,
+              username: this.$route.params.username
             }
           }).then(res => {
         console.log(res)
@@ -174,7 +180,7 @@ export default {
       formData.append("band_id", this.band.band_id);
       formData.append("year", this.album.release_date);
       formData.append("username", this.$route.params.username);
-      axios.post("https://metal-review-spring.herokuapp.com/api/albums/image/upload",
+      axios.post(this.$url + "/api/albums/image/upload",
           formData,
           {
             headers: {
@@ -200,7 +206,7 @@ export default {
       formData.append("review_point", this.review.review_point);
       formData.append("album_id", this.album.album_id);
       formData.append("username", this.$route.params.username);
-      axios.post("https://metal-review-spring.herokuapp.com/api/reviews",
+      axios.post(this.$url + "/api/reviews",
           formData,
           {
             headers:{

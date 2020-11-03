@@ -8,6 +8,8 @@ import BaseContent from './components/BaseContent.vue'
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
+Vue.prototype.$url = "http://localhost:8080";
+
 const router = new VueRouter({
   routes: [
     { path: '/', component: Login},

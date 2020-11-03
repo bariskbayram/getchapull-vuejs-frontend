@@ -20,7 +20,6 @@
 <script>
   import AlbumDetails from "@/components/AlbumDetails";
   const axios = require('axios');
-  const apiURL = "https://metal-review-spring.herokuapp.com/api/albums";
 
   export default {
     name: "AlbumContent",
@@ -37,11 +36,14 @@
     },
     methods:{
       setAlbumCover(album){
-        axios.get(apiURL + "/" + album.id + "/image/download?username=" + this.$route.params.username,
+        axios.get(this.$url + "/api/albums/" + album.id + "/image/download",
         {
           headers: {
             'Authorization': localStorage.getItem('user-token'),
             responseType: 'arrayBuffer'
+          },
+          params: {
+            username: this.$route.params.username
           }
         }).then( res => {
           album.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -55,10 +57,13 @@
       }
     },
     mounted() {
-      axios.get(apiURL + "?username=" + this.$route.params.username,
+      axios.get(this.$url + "/api/albums",
       {
         headers: {
           "Authorization": localStorage.getItem('user-token'),
+        },
+        params: {
+          username: this.$route.params.username
         }
       }).then( res => {
         this.albums = res.data;

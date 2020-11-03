@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     submitLogIn() {
-      axios.post('https://metal-review-spring.herokuapp.com/login', this.user)
+      axios.post(this.$url + "/login", this.user)
       .then( (res) => {
         this.data = res.headers;
         localStorage.setItem('isLoggedIn', true);
