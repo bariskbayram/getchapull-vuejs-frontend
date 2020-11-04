@@ -1,33 +1,30 @@
 <template>
   <div>
-    <div class="modal-header">
-        <slot name="header">
-          <h2>Adding a new album review !</h2>
-        </slot>
-    </div>
-
     <md-app>
       <md-app-content>
         <div class="modal-body">
           <slot name="body">
-            <input type="text" class="input-lg button-mine"  v-model="input_band_name" placeholder="Band name">
-            <br/><br/>
-            <button type="button" class="btn-primary button-other" @click="searchBandName">Search</button>
-            <br/>
+            <md-field>
+              <label>Band Name</label>
+              <md-input type="text" v-model="input_band_name" autofocus=""></md-input>
+            </md-field>
+            <md-button class="md-raised" type="button"  style="background: lightblue" @click="searchBandName">Search</md-button>
           </slot>
         </div>
 
-        <div class="col-md-4 every-card" v-for="(artist ,index) in allBands" v-bind:key="index">
-          <md-checkbox v-model="picked" :value="artist">
-            <md-card>
-              <md-card-header>
-                <div class="md-title">{{artist.name}}</div>
-              </md-card-header>
-              <md-card-media md-medium>
-                <img src="https://i.scdn.co/image/9e7b87a0d576a0d4f8402964fcbd1852aa4c5da6"/>
-              </md-card-media>
-            </md-card>
-          </md-checkbox>
+        <div class="container-fluid" v-for="(artist ,index) in allBands" v-bind:key="index">
+          <div class="col-md-4 every-card" v-if="artist.images.length > 0">
+            <md-checkbox v-model="picked" :value="artist">
+              <md-card>
+                <md-card-header>
+                  <div class="md-title">{{artist.name}}</div>
+                </md-card-header>
+                <md-card-media md-medium>
+                  <img :src="artist.images[0].url"/>
+                </md-card-media>
+              </md-card>
+            </md-checkbox>
+          </div>
         </div>
       </md-app-content>
     </md-app>
@@ -86,7 +83,7 @@ export default {
     },
     pushSelectedBandToParent () {
       this.$emit('toAlbumPart', this.picked);
-    },
+    }
   }
 }
 </script>
@@ -99,11 +96,11 @@ export default {
 }
 
 .button-mine {
-  margin-left: 55px;
+  margin-left: 75px;
 }
 
 .button-other {
-  margin-left:165px;
+  margin-left: 185px;
 }
 
 .md-card {
@@ -114,8 +111,7 @@ export default {
 }
 
 .md-app {
-  max-height: 450px;
-  border: 1px solid;
+  max-height: 380px;
 }
 
 .every-card {

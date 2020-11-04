@@ -1,24 +1,20 @@
 <template>
   <div>
-    <div class="modal-header">
-      <slot name="header">
-        <p>Adding a new album review !</p>
-      </slot>
-    </div>
-
     <md-app>
       <md-app-content>
-        <div class="col-md-4 every-card" v-for="(album ,index) in allAlbums" v-bind:key="index">
-          <md-checkbox v-model="picked" :value="album">
-            <md-card>
-              <md-card-header>
-                <div class="md-title">{{album.name}} - {{album.release_date.substring(0,4)}}</div>
-              </md-card-header>
-              <md-card-media md-medium>
-                <img src="https://i.scdn.co/image/9e7b87a0d576a0d4f8402964fcbd1852aa4c5da6"/>
-              </md-card-media>
-            </md-card>
-          </md-checkbox>
+        <div class="container-fluid" v-for="(album ,index) in allAlbums" v-bind:key="index">
+          <div class="col-md-4 every-card" v-if="album.images.length > 0">
+            <md-checkbox v-model="picked" :value="album">
+              <md-card>
+                <md-card-header>
+                  <div class="md-title">{{album.name}} - {{album.release_date.substring(0,4)}}</div>
+                </md-card-header>
+                <md-card-media md-medium>
+                  <img :src="album.images[0].url"/>
+                </md-card-media>
+              </md-card>
+            </md-checkbox>
+          </div>
         </div>
       </md-app-content>
     </md-app>
@@ -97,8 +93,7 @@ export default {
 }
 
 .md-app {
-  max-height: 450px;
-  border: 1px solid;
+  max-height: 430px;
 }
 
 .every-card {

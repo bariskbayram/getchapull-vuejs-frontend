@@ -2,15 +2,24 @@
   <div>
     <div class="row">
       <div class="col-xs-12 col-md-3" v-for="band in filteredBands" v-bind:key="band.band_id">
-        <button class="album-thumb" v-on:click="getBand(band)">
-          <div class="thumbnail">
-            <img class="crop-img crop-band" :src="band.src" alt=""/>
+
+        <md-card md-with-hover style="background: #cce4c1">
+          <div @click="getBand(band)">
+            <md-ripple >
+
+              <md-card-media-cover >
+                <md-card-media md-ratio="1:1">
+                  <img :src="band.src" alt=""/>
+                </md-card-media>
+              </md-card-media-cover>
+
+            </md-ripple>
             <div class="variable">
-              <h3> {{band.bandName}} </h3>
-              <p> Count: {{band.counter}}</p>
+              <h3 style="margin-left: 7px"> {{band.bandName}} </h3>
+              <p style="margin-left: 7px"> Count: {{band.counter}}</p>
             </div>
           </div>
-        </button>
+        </md-card>
       </div> <!-- / col -->
       <BandDetails v-if="showModal" @close="showModal = false" :the-band="selectedBand">
 
@@ -83,7 +92,9 @@
 </script>
 
 <style scoped>
-.col-xs-12 {
-  margin-bottom: 20px;
-}
+
+  .col-xs-12 {
+    margin-bottom: 20px;
+  }
+
 </style>

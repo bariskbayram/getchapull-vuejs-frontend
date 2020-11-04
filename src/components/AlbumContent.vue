@@ -1,15 +1,26 @@
 <template>
   <div class="row">
-    <div class="col-xs-12 col-md-3" v-for="(album, index) in filteredAlbums" v-bind:key="index">
-      <button class="album-thumb button-img" v-on:click="getAlbum(album)">
-        <div class="thumbnail">
-          <img id="album-id" class="crop-img" v-bind:src="album.src" alt=""/>
+    <div class="col-xs-12 col-md-3" v-for="(album, index) in filteredAlbums"
+         v-bind:key="index">
+
+      <md-card md-with-hover style="background: #cce4c1">
+        <div @click="getAlbum(album)">
+          <md-ripple >
+
+            <md-card-media-cover >
+              <md-card-media md-ratio="1:1">
+                <img :src="album.src" alt=""/>
+              </md-card-media>
+            </md-card-media-cover>
+
+          </md-ripple>
           <div class="variable">
-            <h3> {{album.name}} </h3>
+            <h3 style="margin-left: 7px"> {{album.name}} </h3>
           </div>
         </div>
-      </button>
+      </md-card>
     </div> <!-- / col -->
+
     <AlbumDetails v-if="showModal" @close="showModal = false" :the-album="selectedAlbum">
 
     </AlbumDetails>
@@ -82,7 +93,8 @@
 
 <style scoped>
 
-.col-xs-12 {
-  margin-bottom: 20px;
-}
+  .col-xs-12 {
+    margin-bottom: 20px;
+  }
+
 </style>

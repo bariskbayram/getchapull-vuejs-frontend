@@ -64,12 +64,12 @@ export default {
   },
   methods: {
     pushReview () {
-      this.isProgressActive = true;
       if(this.review.review_point >10){
         this.pointError = true;
       }else if(this.review.review_point == null) {
         this.pointError = true;
       }else{
+        this.isProgressActive = true;
         this.$emit('pushAllDatas', this.review);
       }
     }
