@@ -77,7 +77,7 @@
           username: this.$route.params.username
         }
       }).then( res => {
-        this.albums = res.data;
+        this.albums = res.data.reverse();
         this.albums.forEach(this.setAlbumCover);
       })
     },

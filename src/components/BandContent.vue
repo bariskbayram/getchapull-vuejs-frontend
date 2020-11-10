@@ -77,7 +77,7 @@
           username: this.$route.params.username
         }
       }).then( res => {
-        this.bands = res.data;
+        this.bands = res.data.reverse();
         this.bands.forEach(this.setBandPhoto);
       });
     },
