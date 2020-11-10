@@ -10,11 +10,11 @@
           </div>
         </div>
 
-        <div class="col-xs-6 col-md-6">
+        <div v-cloak class="col-xs-6 col-md-6">
           <div>
             <button type="button" class="btn btn-danger pull-right top-button" v-if="isLoggedIn" v-on:click="logOut">Log Out</button>
           </div>
-          <img v-cloak class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
+          <img class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
         </div>
       </div>
 
