@@ -14,7 +14,7 @@
           <div>
             <button type="button" class="btn btn-danger pull-right top-button" v-if="isLoggedIn" v-on:click="logOut">Log Out</button>
           </div>
-          <img class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
+          <img v-cloak class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
         </div>
       </div>
 
@@ -142,5 +142,7 @@
 .search {
   margin-right: 75px;
 }
+
+[v-cloak] {display: none}
 
 </style>
