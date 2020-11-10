@@ -10,7 +10,7 @@
           </div>
         </div>
 
-        <div v-cloak class="col-xs-6 col-md-6">
+        <div class="col-xs-6 col-md-6">
           <div>
             <button type="button" class="btn btn-danger pull-right top-button" v-if="isLoggedIn" v-on:click="logOut">Log Out</button>
           </div>
@@ -142,7 +142,5 @@
 .search {
   margin-right: 75px;
 }
-
-[v-cloak] {display: none}
 
 </style>
