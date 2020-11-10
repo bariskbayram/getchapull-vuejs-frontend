@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     deleteBand (band) {
+      console.log(band);
       axios.delete(this.$url + "/api/bands/" + band.bandId, {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
