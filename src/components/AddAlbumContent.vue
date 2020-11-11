@@ -219,6 +219,7 @@ export default {
           }
       ).then( () => {
         console.log("review uploaded successfully");
+        this.$router.push("/");
         this.$emit('close');
       }).catch(err => {
         console.log(err);

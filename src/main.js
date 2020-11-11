@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
 import SignUp from './components/Signup.vue'
 import BaseContent from './components/BaseContent.vue'
+import EditProfile from './components/EditProfile.vue'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
@@ -32,7 +33,8 @@ const router = new VueRouter({
     { path: '/', component: Login},
     { path: '/login', component: Login},
     { path: '/signup', component: SignUp},
-    { path: '/:username', component: BaseContent}
+    { path: '/:username', component: BaseContent},
+    { path: '/:username/edit-profile', component: EditProfile}
   ],
   mode: 'history'
 })

@@ -25,7 +25,8 @@
       <ul class="nav nav-tabs">
         <li v-bind:class="{active: isAlbumSection}" role=""  id="albumsbtn"><a href="#" v-on:click="isAlbumSection=true">Albums</a></li>
         <li v-bind:class="{active: !isAlbumSection}" role="" id="bandsbtn"><a href="#" v-on:click="isAlbumSection=false">Bands</a></li>
-        <button v-if="isLoggedIn && isMyProfile" type="button" class="btn pull-right add-album-button" v-on:click="showModal = true">Add new album</button>
+        <button v-if="isLoggedIn && isMyProfile" type="button" class="btn pull-right add-album-button" v-on:click="showModal = true">Add New Review</button>
+        <button v-if="isLoggedIn && isMyProfile" type="button" class="btn pull-right edit-profile-button" v-on:click="goEditProfile">Edit Profile</button>
       </ul>
       <br/><br/>
 
@@ -93,6 +94,9 @@
       },
       goMyProfile () {
         this.$router.push("/");
+      },
+      goEditProfile () {
+        this.$router.push("/" + localStorage.getItem('username') + "/edit-profile");
       },
       checkMyProfile () {
         if(this.$route.path == "/" + localStorage.getItem('username')){

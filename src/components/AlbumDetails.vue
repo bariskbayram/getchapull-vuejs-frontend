@@ -62,12 +62,14 @@ export default {
     deleteAlbumAndReview () {
       this.deleteAlbum(this.theAlbum);
       this.deleteReview(this.theReview);
-      this.$emit('close');
     },
     deleteAlbum (album) {
       axios.delete(this.$url + "/api/albums/" + album.id, {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
+        },
+        params: {
+          username: localStorage.getItem('username')
         }
       })
     },
@@ -76,6 +78,10 @@ export default {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
         }
+      }).then( (res) => {
+        console.log(res);
+        this.$emit('close');
+        this.$router.push("/");
       })
     },
     getReview () {

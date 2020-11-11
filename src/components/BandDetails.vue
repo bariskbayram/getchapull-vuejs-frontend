@@ -59,9 +59,15 @@ export default {
       axios.delete(this.$url + "/api/bands/" + this.theBand.bandId, {
         headers: {
           'Authorization': localStorage.getItem('user-token'),
+        },
+        params: {
+          username: localStorage.getItem('username')
         }
+      }).then( (res) => {
+        console.log(res);
+        this.$emit('close');
+        this.$router.push("/");
       })
-      this.$emit('close');
     },
     checkMyProfile () {
       if(this.$route.path == "/" + localStorage.getItem('username')){
