@@ -1,9 +1,8 @@
 <template>
-  <div class="hello" >
+  <div class="hello main" >
     <div class="container" v-if="isUsernameAvailable">
       <div class="row" >
         <div class="col-xs-6 col-md-6">
-          <button v-if="!isMyProfile" v-on:click="goMyProfile" type="button" class="btn left top-button btn-primary">MyProfile</button>
           <div class="page-header">
             <h2>Albums I've listened to so far</h2>
             <p>{{user.fullname}}</p>
@@ -11,9 +10,6 @@
         </div>
 
         <div class="col-xs-6 col-md-6">
-          <div>
-            <button type="button" class="btn btn-danger pull-right top-button" v-if="isLoggedIn" v-on:click="logOut">Log Out</button>
-          </div>
           <img class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
         </div>
       </div>
@@ -23,10 +19,9 @@
       </div>
 
       <ul class="nav nav-tabs">
-        <li v-bind:class="{active: isAlbumSection}" role=""  id="albumsbtn"><a href="#" v-on:click="isAlbumSection=true">Albums</a></li>
-        <li v-bind:class="{active: !isAlbumSection}" role="" id="bandsbtn"><a href="#" v-on:click="isAlbumSection=false">Bands</a></li>
+        <li v-bind:class="{active: isAlbumSection}" role=""  id="albumsbtn"><a href="#" @click.prevent="isAlbumSection=true">Albums</a></li>
+        <li v-bind:class="{active: !isAlbumSection}" role="" id="bandsbtn"><a href="#" @click.prevent="isAlbumSection=false">Bands</a></li>
         <button v-if="isLoggedIn && isMyProfile" type="button" class="btn pull-right add-album-button" v-on:click="showModal = true">Add New Review</button>
-        <button v-if="isLoggedIn && isMyProfile" type="button" class="btn pull-right edit-profile-button" v-on:click="goEditProfile">Edit Profile</button>
       </ul>
       <br/><br/>
 
@@ -51,9 +46,9 @@
 </template>
 
 <script>
-  import AlbumContent from './AlbumContent.vue';
-  import BandContent from "@/components/BandContent";
-  import AddAlbumContent from "@/components/AddAlbumContent";
+  import AlbumContent from './AlbumsComponent.vue';
+  import BandContent from "@/components/BandsComponent";
+  import AddAlbumContent from "@/components/AddAlbumComponent";
 
   const axios = require('axios').default;
 
@@ -87,13 +82,6 @@
           this.profile_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         });
         return this.profile_photo;
-      },
-      logOut () {
-        localStorage.clear();
-        this.$router.push("/login");
-      },
-      goMyProfile () {
-        this.$router.push("/");
       },
       goEditProfile () {
         this.$router.push("/" + localStorage.getItem('username') + "/edit-profile");

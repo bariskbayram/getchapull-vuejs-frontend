@@ -5,7 +5,7 @@
       <md-app>
         <md-app-content>
           <div class="modal-header">
-            <h2>{{ theBand.name }}</h2>
+            <h2> {{ theBand.bandName }} </h2>
           </div>
 
           <div class="modal-body">
@@ -15,7 +15,12 @@
               </slot>
             </div>
             <slot name="body">
-
+              <h4>Other albums that you listen from this band.</h4>
+              <ul v-for="(album,index) in albums" v-bind:key="index">
+                <li>
+                  <a>{{album.name}}</a>
+                </li>
+              </ul>
             </slot>
           </div>
         </md-app-content>
@@ -51,7 +56,8 @@ export default {
   data () {
     return {
       isMyProfile: false,
-      showDialog: true
+      showDialog: true,
+      albums: []
     }
   },
   methods: {
@@ -75,10 +81,25 @@ export default {
       }else{
         this.isMyProfile = false;
       }
+    },
+    getAlbumsForTheBand() {
+      axios.get(this.$url + "/api/albums/albums-of-band", {
+        headers: {
+          'Authorization': localStorage.getItem('user-token'),
+        },
+        params: {
+          username: localStorage.getItem('username'),
+          bandId: this.theBand.bandId
+        }
+      }).then( (res) => {
+        console.log(res);
+        this.albums = res.data;
+      })
     }
   },
   mounted() {
     this.checkMyProfile();
+    this.getAlbumsForTheBand();
   }
 }
 </script>

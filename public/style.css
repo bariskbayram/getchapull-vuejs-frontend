@@ -19,7 +19,9 @@
 a{
     color: #1d2124;
 }
-
+.main{
+    padding-top: 40px;
+}
 .add-album-button{
     margin-top: 8px;
     background-color: #464646;

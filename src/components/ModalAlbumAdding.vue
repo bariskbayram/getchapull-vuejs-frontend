@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     getAllAlbums () {
+      console.log(this.$attrs.token);
       axios.get("https://api.spotify.com/v1/artists/" + this.$attrs.bandId + "/albums", {
         headers: {
           'Authorization': 'Bearer ' + this.$attrs.token,
@@ -60,7 +61,8 @@ export default {
           "Content-Type": "application/json"
         },
         params: {
-          limit: 30
+          limit: 30,
+          market: 'TR'
         },
         json: true
       }).then( (res) => {

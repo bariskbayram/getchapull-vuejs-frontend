@@ -13,7 +13,7 @@
               <div class="md-layout-item md-small-size-100 div-mine">
                 <md-field>
                   <label>Full Name</label>
-                  <md-input class="input-mine" v-model="user.fullname" required autofocus=""></md-input>
+                  <md-input class="input-mine" v-model="user.fullname" required autofocus="" @keyup.enter="validateForm"></md-input>
                 </md-field>
                 <span v-if="isFullnameError" class="md-error error-mine">Fullname's length must be more than 5.</span>
               </div>
@@ -21,7 +21,7 @@
               <div class="md-layout-item md-small-size-100">
                 <md-field>
                   <label>Username</label>
-                  <md-input v-model="user.username" required></md-input>
+                  <md-input v-model="user.username" required @keyup.enter="validateForm"></md-input>
                 </md-field>
                 <span v-if="isUsernameError" class="md-error error-mine">Invalid username/Exists.</span>
               </div>
@@ -29,7 +29,7 @@
               <div class="md-layout-item md-small-size-100">
                 <md-field>
                   <label>Password</label>
-                  <md-input v-model="user.password" type="password" required></md-input>
+                  <md-input v-model="user.password" type="password" required @keyup.enter="validateForm"></md-input>
                 </md-field>
                 <span v-if="isPasswordError" class="md-error error-mine">Password's length must be more than 5.</span>
               </div>
@@ -37,7 +37,7 @@
               <div class="md-layout-item md-small-size-100">
                 <md-field>
                   <label>Password Confirm</label>
-                  <md-input v-model="passwordConfirm" type="password" required></md-input>
+                  <md-input v-model="passwordConfirm" type="password" required @keyup.enter="validateForm"></md-input>
                 </md-field>
                 <span v-if="isPasswordConfirmError" class="md-error error-mine">Password confirmation is failed.</span>
               </div>
@@ -90,6 +90,7 @@ export default {
     validateForm () {
       this.checkFullname();
     },
+
     checkFullname() {
       if(this.user.fullname.length < 4){
         this.isFullnameError = true;
@@ -98,6 +99,7 @@ export default {
         this.checkUsername();
       }
     },
+
     checkUsername() {
       const isAvailable = this.checkUsernameIsAvailable();
       if(this.user.username.length < 4){
@@ -107,17 +109,6 @@ export default {
       }else{
         this.isUsernameError = false;
         this.checkPassword();
-      }
-    },
-    checkPassword() {
-      if(this.user.password.length < 5){
-        this.isPasswordError = true;
-      }else if(this.user.password != this.passwordConfirm) {
-        this.isPasswordConfirmError = true;
-      }else{
-        this.isPasswordError = false;
-        this.isPasswordConfirmError = false;
-        this.submitSignUp();
       }
     },
 
@@ -136,6 +127,18 @@ export default {
       })
     },
 
+    checkPassword() {
+      if(this.user.password.length < 5){
+        this.isPasswordError = true;
+      }else if(this.user.password != this.passwordConfirm) {
+        this.isPasswordConfirmError = true;
+      }else{
+        this.isPasswordError = false;
+        this.isPasswordConfirmError = false;
+        this.submitSignUp();
+      }
+    },
+
     submitSignUp() {
       this.isProgressActive = true;
       axios.post(this.$url + "/api/user-profiles/signup", this.user)
@@ -143,6 +146,7 @@ export default {
             this.$router.push("/login");
           })
     }
+
   }
 }
 </script>

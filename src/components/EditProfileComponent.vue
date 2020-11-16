@@ -1,10 +1,9 @@
 <template>
 
-  <div class="hello" >
+  <div class="hello main" >
     <div class="container" v-if="isMyProfile">
       <div class="row" >
         <div class="col-xs-6 col-md-6">
-          <button v-if="isMyProfile" v-on:click="goMyProfile" type="button" class="btn left top-button btn-primary">GoBack</button>
           <div class="page-header">
             <h2>Edit Your Profile</h2>
             <p>{{user.fullname}}</p>
@@ -35,7 +34,7 @@
                 <div class="md-layout-item md-small-size-100">
                   <md-field>
                     <label>Full Name</label>
-                    <md-input class="input-mine" v-model="user.fullname" required autofocus=""></md-input>
+                    <md-input class="input-mine" v-model="user.fullname" required autofocus="" @keyup.enter="validateUser"></md-input>
                     <span v-if="isFullnameError" class="md-error error-mine">Fullname's length must be more than 5.</span>
                   </md-field>
                 </div>
@@ -43,7 +42,7 @@
                 <div class="md-layout-item md-small-size-100">
                   <md-field>
                     <label>Password</label>
-                    <md-input v-model="password" type="password" required></md-input>
+                    <md-input v-model="password" type="password" required @keyup.enter="validateUser"></md-input>
                   </md-field>
                   <span v-if="isPasswordError" class="md-error error-mine">Password's length must be more than 5.</span>
                 </div>
@@ -51,7 +50,7 @@
                 <div class="md-layout-item md-small-size-100">
                   <md-field>
                     <label>Password Confirm</label>
-                    <md-input v-model="passwordConfirm" type="password" required></md-input>
+                    <md-input v-model="passwordConfirm" type="password" required @keyup.enter="validateUser"></md-input>
                   </md-field>
                   <span v-if="isPasswordConfirmError" class="md-error error-mine">Password confirmation is failed.</span>
                 </div>
@@ -205,7 +204,7 @@ export default {
           'Authorization': localStorage.getItem('user-token'),
         }
       }).then(() => {
-        this.goMyProfile();
+        this.$router.push('/' + localStorage.getItem('username'));
       });
     },
     checkUsernameIsAvailable(){
@@ -227,9 +226,6 @@ export default {
         this.isMyProfile = true;
       }
     },
-    goMyProfile () {
-      this.$router.push("/");
-    },
     getProfilePhoto(){
       axios.get(this.$url + "/api/user-profiles/" + this.$route.params.username +"/image/download",{
         headers: {
@@ -241,15 +237,25 @@ export default {
         this.imgDataUrl = this.profile_photo;
       });
       return this.profile_photo;
+    },
+    checkUserIsLoggedIn(){
+      if(localStorage.getItem('isLoggedIn')){
+        return true;
+      }
+      return false;
     }
   },
   created() {
     this.checkMyProfile();
-    axios.get(this.$url + "/api/user-profiles/get-user?username=" + this.$route.params.username)
-        .then( (res) => {
-          this.user = res.data;
-        });
-    this.profile_photo = this.getProfilePhoto();
+    if(!this.checkUserIsLoggedIn()){
+      this.$router.push('/login');
+    }else{
+      axios.get(this.$url + "/api/user-profiles/get-user?username=" + this.$route.params.username)
+          .then( (res) => {
+            this.user = res.data;
+          });
+      this.profile_photo = this.getProfilePhoto();
+    }
   }
 }
 </script>

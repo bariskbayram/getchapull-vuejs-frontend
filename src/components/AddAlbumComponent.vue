@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import BandAddingModal from "@/components/BandAddingModal";
-import AlbumAddingModal from "@/components/AlbumAddingModal";
-import ReviewAddingModal from "@/components/ReviewAddingModal";
+import BandAddingModal from "@/components/ModalBandAdding";
+import AlbumAddingModal from "@/components/ModalAlbumAdding";
+import ReviewAddingModal from "@/components/ModalReviewAdding";
 
 import qs from 'qs';
 
@@ -39,10 +39,6 @@ export default {
     }
   },
   methods:{
-
-    eventImg(event){
-      console.log(event.target.files[0]);
-    },
 
     closeModal () {
       this.$emit('close');
@@ -219,7 +215,7 @@ export default {
           }
       ).then( () => {
         console.log("review uploaded successfully");
-        this.$router.push("/");
+        this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
         this.$emit('close');
       }).catch(err => {
         console.log(err);

@@ -13,14 +13,14 @@
               <div class="md-layout-item md-small-size-100">
                 <md-field>
                   <label>Username</label>
-                  <md-input v-model="user.username" required></md-input>
+                  <md-input v-model="user.username" required @keyup.enter="submitLogIn"></md-input>
                 </md-field>
               </div>
 
               <div class="md-layout-item md-small-size-100">
                 <md-field>
                   <label>Password</label>
-                  <md-input v-model="user.password" type="password" required></md-input>
+                  <md-input v-model="user.password" type="password" required @keyup.enter="submitLogIn"></md-input>
                 </md-field>
                 <span v-if="infoError" class="md-error error-mine">Username/Password is invalid.</span>
               </div>
@@ -71,7 +71,7 @@ export default {
   created() {
     if(localStorage.getItem('isLoggedIn')){
       this.isLoggedIn = localStorage.getItem('isLoggedIn');
-      this.$router.push("/" + localStorage.getItem('username'));
+      this.$router.push("/");
     }
   },
   methods: {
@@ -83,7 +83,8 @@ export default {
         localStorage.setItem('isLoggedIn', true);
         localStorage.setItem('user-token', this.data.authorization);
         localStorage.setItem('username', this.user.username);
-        this.$router.push("/" + this.user.username);
+        localStorage.setItem('expirationDate', new Date().addDays(14));
+        this.$router.push("/");
       }).catch( (error) => {
         console.log(error.response.status);
         this.isProgressActive = false;
@@ -95,6 +96,7 @@ export default {
 </script>
 
 <style scoped>
+
   body{
     background-color: aqua;
     color: blue;
