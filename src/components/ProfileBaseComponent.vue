@@ -1,6 +1,6 @@
 <template>
-  <div class="hello main" >
-    <div class="container main" v-if="isUsernameAvailable">
+  <div class="hello" >
+    <div class="container" v-if="isUsernameAvailable">
       <div class="row" >
         <div class="col-xs-6 col-md-6">
           <div class="page-header">
@@ -121,27 +121,6 @@
 </script>
 
 <style scoped>
-
-@media (min-width: 768px) {
-  .main {
-    top: 50px;
-  }
-}
-
-@media (min-width: 992px) {
-
-  .main {
-    top: 50px;
-  }
-}
-
-@media (max-width: 768px) {
-  .main {
-    top: 50px;
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-}
 
 .error-h1{
   font-weight: 900;

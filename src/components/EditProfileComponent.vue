@@ -1,7 +1,7 @@
 <template>
 
-  <div class="hello main" >
-    <div class="container main" v-if="isMyProfile">
+  <div class="hello" >
+    <div class="container" v-if="isMyProfile">
       <div class="row" >
         <div class="col-xs-6 col-md-6">
           <div class="page-header">

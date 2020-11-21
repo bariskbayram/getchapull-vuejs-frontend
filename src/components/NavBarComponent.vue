@@ -25,7 +25,7 @@
       </div><!--/.container-fluid -->
     </nav>
 
-    <router-view style="top: 50px"></router-view>
+    <router-view style="padding-top: 70px"></router-view>
 
   </div>
 
