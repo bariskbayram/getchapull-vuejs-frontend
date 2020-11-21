@@ -179,7 +179,10 @@ export default {
 <style scoped>
 
 @media (min-width: 768px){
-
+  .main{
+    top: 50px;
+  }
+  
   .sidebar {
     top: 50px;
     bottom: 0;
@@ -193,6 +196,10 @@ export default {
 }
 
 @media (min-width: 992px){
+
+  .main{
+    top: 50px;
+  }
 
   .sidebar {
     top: 50px;
@@ -211,6 +218,7 @@ export default {
   }
 
   .main {
+    top: 50px;
     padding-left: 40px;
     padding-right: 40px;
   }

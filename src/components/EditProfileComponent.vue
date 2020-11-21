@@ -1,7 +1,7 @@
 <template>
 
   <div class="hello main" >
-    <div class="container" v-if="isMyProfile">
+    <div class="container main" v-if="isMyProfile">
       <div class="row" >
         <div class="col-xs-6 col-md-6">
           <div class="page-header">
@@ -278,6 +278,27 @@ export default {
 
 .row{
   padding-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    top: 50px;
+  }
+}
+
+@media (min-width: 992px) {
+
+  .main {
+    top: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    top: 50px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
 
 body{
