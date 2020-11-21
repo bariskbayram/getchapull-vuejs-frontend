@@ -181,7 +181,6 @@ export default {
 @media (min-width: 768px){
 
   .sidebar {
-    top: 50px;
     bottom: 0;
     display: block;
     padding: 0px 20px 20px 20px;
@@ -195,7 +194,6 @@ export default {
 @media (min-width: 992px){
 
   .sidebar {
-    top: 50px;
     bottom: 0;
     display: block;
     padding: 0px 20px 20px 20px;

@@ -25,7 +25,7 @@
       </div><!--/.container-fluid -->
     </nav>
 
-    <router-view style="padding-top: 70px"></router-view>
+    <router-view style="padding-top: 50px"></router-view>
 
   </div>
 
@@ -40,6 +40,7 @@ export default {
 
     goProfile(){
       this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
+      document.getElementById("navbar").setAttribute("aria-expanded", true);
     },
 
     goSettings(){
