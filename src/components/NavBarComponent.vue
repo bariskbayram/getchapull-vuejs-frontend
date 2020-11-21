@@ -40,17 +40,23 @@ export default {
 
     goProfile(){
       this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
-      document.getElementById("toggle-button").click();
+      if(document.getElementById('navbar').getAttribute('aria-expanded') == true){
+        document.getElementById("toggle-button").click();
+      }
     },
 
     goSettings(){
       this.$router.push("/" + localStorage.getItem('username') + "/edit-profile").catch( () => {});
-      document.getElementById("toggle-button").click();
+      if(document.getElementById('navbar').getAttribute('aria-expanded') == true){
+        document.getElementById("toggle-button").click();
+      }
     },
 
     goHelp(){
       console.log("help sayfasına geçildi.")
-      document.getElementById("toggle-button").click();
+      if(document.getElementById('navbar').getAttribute('aria-expanded') == true){
+        document.getElementById("toggle-button").click();
+      }
     },
 
     search(){
