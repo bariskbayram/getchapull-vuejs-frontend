@@ -40,21 +40,21 @@ export default {
 
     goProfile(){
       this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
-      if(document.getElementById('navbar').getAttribute('aria-expanded') == true){
+      if(document.getElementById('navbar').getAttribute('aria-expanded') == 'true'){
         document.getElementById("toggle-button").click();
       }
     },
 
     goSettings(){
       this.$router.push("/" + localStorage.getItem('username') + "/edit-profile").catch( () => {});
-      if(document.getElementById('navbar').getAttribute('aria-expanded') == true){
+      if(document.getElementById('navbar').getAttribute('aria-expanded') == 'true'){
         document.getElementById("toggle-button").click();
       }
     },
 
     goHelp(){
       console.log("help sayfasına geçildi.")
-      if(document.getElementById('navbar').getAttribute('aria-expanded') == true){
+      if(document.getElementById('navbar').getAttribute('aria-expanded') == 'true'){
         document.getElementById("toggle-button").click();
       }
     },
