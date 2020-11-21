@@ -178,10 +178,6 @@ export default {
 
 <style scoped>
 
-[v-cloak] {
-  display:none
-}
-
 @media (min-width: 768px){
 
   .sidebar {
@@ -215,6 +211,7 @@ export default {
   }
 
   .main {
+    top: 50px;
     padding-left: 40px;
     padding-right: 40px;
   }
