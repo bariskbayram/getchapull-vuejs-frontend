@@ -179,6 +179,9 @@ export default {
 <style scoped>
 
 @media (min-width: 768px){
+  .main{
+    top: 50px;
+  }
 
   .sidebar {
     top: 50px;
@@ -193,6 +196,10 @@ export default {
 }
 
 @media (min-width: 992px){
+
+  .main{
+    top: 50px;
+  }
 
   .sidebar {
     top: 50px;
