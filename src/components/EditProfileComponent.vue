@@ -276,6 +276,10 @@ export default {
   margin-top: 15px;
 }
 
+.row{
+  padding-top: 20px;
+}
+
 body{
   background-color: aqua;
   color: blue;

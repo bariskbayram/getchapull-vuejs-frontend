@@ -75,8 +75,7 @@ export default {
       user: {
         fullname: '',
         username: '',
-        password: '',
-
+        password: ''
       },
       passwordConfirm: '',
       isProgressActive: false,

@@ -5,7 +5,7 @@
       <md-app>
         <md-app-content>
           <div class="modal-header">
-            <h2>{{ theAlbum.name }}</h2>
+            <h2>{{theReview.bandName}} - {{ theReview.albumName }}</h2>
           </div>
 
           <div class="modal-body">
@@ -49,13 +49,14 @@
 export default {
   name: "AlbumDetails",
   props: {
-    theAlbum: {}
+    theAlbum: {},
+    propsReview: {}
   },
   data () {
     return {
       isMyProfile: false,
-      theReview: {},
-      showDialog: true
+      showDialog: true,
+      theReview: {}
     }
   },
   methods: {
@@ -85,13 +86,14 @@ export default {
       })
     },
     getReview () {
+      console.log("review getirildi.")
       axios.get(this.$url + "/api/reviews/" + this.theAlbum.id,
           {
             headers: {
               "Authorization": localStorage.getItem('user-token'),
             },
             params: {
-              username: this.$route.params.username
+              username: this.theAlbum.author,
             }
           }).then(res => {
             this.theReview = res.data;
@@ -106,8 +108,11 @@ export default {
    }
   },
   mounted() {
+    this.theReview = this.propsReview;
     this.checkMyProfile();
-    this.getReview();
+    if(this.theReview.bandName == ''){
+      this.getReview();
+    }
   }
 }
 

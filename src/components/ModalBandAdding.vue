@@ -6,24 +6,27 @@
           <slot name="body">
             <md-field>
               <label>Band Name</label>
-              <md-input type="text" v-model="input_band_name" autofocus=""></md-input>
+              <md-input type="text" v-model="input_band_name" autofocus="" @keyup.enter="searchBandName"></md-input>
             </md-field>
             <md-button class="md-raised" type="button"  style="background: lightblue" @click="searchBandName">Search</md-button>
           </slot>
         </div>
 
-        <div class="container-fluid" v-for="(artist ,index) in allBands" v-bind:key="index">
-          <div class="col-md-4 every-card" v-if="artist.images.length > 0">
-            <md-checkbox v-model="picked" :value="artist">
-              <md-card>
-                <md-card-header>
-                  <div class="md-title">{{artist.name}}</div>
-                </md-card-header>
-                <md-card-media md-medium>
-                  <img :src="artist.images[0].url"/>
-                </md-card-media>
-              </md-card>
-            </md-checkbox>
+        <div class="container-fluid">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 every-card"  v-for="(artist ,index) in allBands" v-bind:key="index">
+            <div>
+              <md-checkbox v-model="picked" :value="artist">
+                <md-card>
+                  <md-card-header>
+                    <div class="md-title">{{artist.name}}</div>
+                  </md-card-header>
+                  <md-card-media md-medium>
+                    <img :src="artist.images[0].url"  v-if="artist.images.length > 0" />
+                    <img src="https://i.pinimg.com/originals/9e/df/af/9edfaf9d82b6d107b25cbe6824926572.png" v-else />
+                  </md-card-media>
+                </md-card>
+              </md-checkbox>
+            </div>
           </div>
         </div>
       </md-app-content>
@@ -74,7 +77,7 @@ export default {
         params: {
           q: query,
           type: "artist",
-          limit: 10
+          limit: 30
         },
         json: true
       }).then( (res) => {
@@ -104,7 +107,7 @@ export default {
 }
 
 .md-card {
-  width: 320px;
+  width: 250px;
   margin: 4px;
   display: inline-block;
   vertical-align: top;

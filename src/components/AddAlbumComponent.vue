@@ -204,7 +204,10 @@ export default {
       formData.append("review_content", this.review.review_content);
       formData.append("review_point", this.review.review_point);
       formData.append("album_id", this.album.album_id);
+      formData.append("album_name", this.album.name);
+      formData.append("band_name", this.band.name);
       formData.append("username", this.$route.params.username);
+      formData.append("date", new Date());
       axios.post(this.$url + "/api/reviews",
           formData,
           {

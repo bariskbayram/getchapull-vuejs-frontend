@@ -59,6 +59,9 @@
       BandContent,
       AddAlbumContent
     },
+    watch: {
+      '$route': 'createdGettingData'
+    },
     data(){
       return{
         filter: "",
@@ -92,24 +95,27 @@
         }else{
           this.isMyProfile = false;
         }
+      },
+      createdGettingData(){
+        axios.get(this.$url + "/api/user-profiles/search-username?username=" + this.$route.params.username)
+            .then( (res) => {
+              this.isUsernameAvailable = res.data;
+            });
+        if(this.isUsernameAvailable){
+          axios.get(this.$url + "/api/user-profiles/get-user?username=" + this.$route.params.username)
+              .then( (res) => {
+                this.user = res.data;
+              });
+        }
+        this.checkMyProfile();
+        this.profile_photo = this.getProfilePhoto();
+        if(!this.isLoggedIn){
+          this.$router.push("/login");
+        }
       }
     },
     created () {
-      axios.get(this.$url + "/api/user-profiles/search-username?username=" + this.$route.params.username)
-      .then( (res) => {
-        this.isUsernameAvailable = res.data;
-      });
-      if(this.isUsernameAvailable){
-        axios.get(this.$url + "/api/user-profiles/get-user?username=" + this.$route.params.username)
-            .then( (res) => {
-              this.user = res.data;
-            });
-      }
-      this.checkMyProfile();
-      this.profile_photo = this.getProfilePhoto();
-      if(!this.isLoggedIn){
-        this.$router.push("/login");
-      }
+      this.createdGettingData();
     }
   }
 </script>

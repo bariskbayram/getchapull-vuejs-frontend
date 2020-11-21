@@ -21,7 +21,7 @@
       </md-card>
     </div> <!-- / col -->
 
-    <AlbumDetails v-if="showModal" @close="showModal = false" :the-album="selectedAlbum">
+    <AlbumDetails v-if="showModal" @close="showModal = false" :the-album="selectedAlbum" :props-review="fakeReview">
 
     </AlbumDetails>
   </div> <!-- / row -->
@@ -38,11 +38,21 @@
     props: {
       filter: {}
     },
+    watch: {
+      '$route': 'getAllAlbums'
+    },
     data(){
       return {
         albums: [],
         selectedAlbum: {},
-        showModal: false
+        showModal: false,
+        fakeReview: {
+          'bandName': '',
+          'albumName': '',
+          'title': '',
+          'content': '',
+          'point': ''
+        }
       }
     },
     methods:{
@@ -65,21 +75,25 @@
       getAlbum(album){
         this.selectedAlbum = album;
         this.showModal = true;
+      },
+      getAllAlbums(){
+        console.log("çalişti")
+        axios.get(this.$url + "/api/albums",
+            {
+              headers: {
+                "Authorization": localStorage.getItem('user-token'),
+              },
+              params: {
+                username: this.$route.params.username
+              }
+            }).then( res => {
+          this.albums = res.data.reverse();
+          this.albums.forEach(this.setAlbumCover);
+        })
       }
     },
     mounted() {
-      axios.get(this.$url + "/api/albums",
-      {
-        headers: {
-          "Authorization": localStorage.getItem('user-token'),
-        },
-        params: {
-          username: this.$route.params.username
-        }
-      }).then( res => {
-        this.albums = res.data.reverse();
-        this.albums.forEach(this.setAlbumCover);
-      })
+      this.getAllAlbums();
     },
     computed: {
       filteredAlbums () {

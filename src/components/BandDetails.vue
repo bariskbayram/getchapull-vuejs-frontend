@@ -15,7 +15,7 @@
               </slot>
             </div>
             <slot name="body">
-              <h4>Other albums that you listen from this band.</h4>
+              <h4>Albums that you listen from this band.</h4>
               <ul v-for="(album,index) in albums" v-bind:key="index">
                 <li>
                   <a>{{album.name}}</a>
