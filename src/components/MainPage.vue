@@ -127,11 +127,7 @@ export default {
       profilePhoto: '',
       allUsers: [],
       notFriends: [],
-      posts: [
-          {
-            user_photo: ""
-          }
-      ],
+      posts: [],
       aCount: "",
       bCount: "",
       reRenderCount: 0,
@@ -245,7 +241,7 @@ export default {
           responseType: 'arrayBuffer'
         }
       }).then( (res) => {
-        this.post.user_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+        post.user_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         this.showAlbumModal = true;
         this.showAlbumModal = false;
       });
