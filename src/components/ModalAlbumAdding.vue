@@ -1,42 +1,33 @@
 <template>
-  <div>
-    <md-app>
-      <md-app-content>
-        <div class="container-fluid">
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 every-card" v-for="(album ,index) in allAlbums" v-bind:key="index">
-            <div >
-              <md-checkbox v-model="picked" :value="album">
-                <md-card>
-                  <md-card-header>
-                    <div class="md-title">{{album.name}} - {{album.release_date.substring(0,4)}}</div>
-                  </md-card-header>
-                  <md-card-media md-medium>
-                    <img :src="album.images[0].url" v-if="album.images.length > 0"/>
-                    <img src="https://i.pinimg.com/originals/9e/df/af/9edfaf9d82b6d107b25cbe6824926572.png" v-else />
-                  </md-card-media>
-                </md-card>
-              </md-checkbox>
+
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h1>Select the album</h1>
+      <div class="modal-confirm">
+        <button class="btn-green" v-if="picked != null"
+                @click="pushSelectedAlbumToParent">Next</button>
+      </div>
+    </div>
+    <div class="modal-close" @click="$emit('closeModal')">
+      <div class="close-rotation">
+        <div class="line1"></div>
+        <div class="line2"></div>
+      </div>
+    </div>
+    <div class="modal-guts">
+      <div class="select-section" >
+        <div class="card" v-for="(album ,index) in allAlbums" v-bind:key="index">
+          <div class="card-content" tabindex="0" @click="picked = album">
+            <div class="text-part">
+              <h3>{{  album.name }} - {{ album.release_date.substring(0,4) }}</h3>
+            </div>
+            <div class="image-part image-band">
+              <img :src="album.images[0].url" v-if="album.images.length > 0"/>
+              <img src="https://i.pinimg.com/originals/9e/df/af/9edfaf9d82b6d107b25cbe6824926572.png" v-else />
             </div>
           </div>
         </div>
-      </md-app-content>
-    </md-app>
-
-    <div class="modal-footer">
-      <slot name="footer">
-        <button class="btn btn-danger" @click="$emit('closeModal')">
-          Cancel
-        </button>
-        <button class="btn btn-success" :disabled="isProgressActive" v-if="picked != null" @click="pushSelectedAlbumToParent">
-         <span v-if="!isProgressActive">
-                    Next
-          </span>
-          <span v-else>
-            <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                 md-mode="indeterminate"/>
-          </span>
-        </button>
-      </slot>
+      </div>
     </div>
   </div>
 </template>
@@ -108,28 +99,56 @@ export default {
 </script>
 
 <style scoped>
-.albums{
-  margin-left: 20px;
-  font-size: large;
+
+.btn-green {
+  width: 140px;
+  cursor: pointer;
 }
 
-
-.md-card {
-  width: 250px;
-  margin: 4px;
-  display: inline-block;
-  vertical-align: top;
+.modal {
+  width: 80%;
+  height: 85%;
 }
 
-.md-app {
-  max-height: 430px;
+.card .card-content:focus {
+  outline: 8px solid #048315;
 }
 
-.every-card {
-  margin-bottom: 40px;
+.modal .modal-guts {
+  padding: 20px 20px 20px 20px;
 }
 
-.md-checkbox {
-  margin-bottom: 400px;
+@media screen and (max-width: 768px){
+
+  .btn-green {
+    font-size: 1rem;
+  }
+
+  .modal .modal-header {
+    justify-content: space-between;
+  }
+
+  .card .card-content .image-band {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes animateleft {
+    from {left: -300px; opacity: 0}
+    to {left: 35%; opacity: 1}
+  }
+}
+
+@media screen and (max-width: 500px){
+
+  .modal .modal-header .modal-confirm {
+    right: 10px;
+  }
+
+  .btn-green {
+    font-size: 0.8rem;
+    width: 100px;
+  }
+
 }
 </style>

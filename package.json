@@ -11,10 +11,9 @@
     "@undecaf/vue-material-vuelidate": "^0.2.2",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "moment": "^2.29.1",
     "vue": "^2.6.11",
     "vue-image-crop-upload": "^2.5.0",
-    "vue-material": "^1.0.0-beta-15",
-    "vue-material-vuelidate": "^0.1.12",
     "vue-router": "^3.4.7"
   },
   "devDependencies": {

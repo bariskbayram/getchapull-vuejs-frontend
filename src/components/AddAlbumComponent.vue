@@ -1,18 +1,20 @@
 <template class="add-album-content">
-  <md-dialog :md-active.sync="showDialog"
-               @md-closed="$emit('close')" @md-clicked-outside="$emit('close')">
-
-    <BandAddingModal :token="token" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandAddingModal>
-    <AlbumAddingModal :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumAddingModal>
-    <ReviewAddingModal v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewAddingModal>
-
-  </md-dialog>
+  <Modal>
+    <template v-slot:modal>
+      <SearchBandModal :token="token" v-if="isSearchPart" @closeModal="closeModal" @toBandPart="toBandPart"></SearchBandModal>
+      <BandAddingModal :token="token" :bandList="bandList" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandAddingModal>
+      <AlbumAddingModal :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumAddingModal>
+      <ReviewAddingModal v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewAddingModal>
+    </template>
+  </Modal>
 </template>
 
 <script>
+import SearchBandModal from "@/components/ModalSearchBand";
 import BandAddingModal from "@/components/ModalBandAdding";
 import AlbumAddingModal from "@/components/ModalAlbumAdding";
 import ReviewAddingModal from "@/components/ModalReviewAdding";
+import Modal from "@/components/Modal";
 
 import qs from 'qs';
 
@@ -23,16 +25,18 @@ var client_secret = '1e906cf6ef71436cb163ca98e619aead';
 
 export default {
   name: "AddAlbumContent",
-  components: {ReviewAddingModal, AlbumAddingModal, BandAddingModal},
+  components: {Modal, ReviewAddingModal, AlbumAddingModal, BandAddingModal, SearchBandModal},
   data(){
     return{
       token: '',
-      isBandPart: true,
+      isSearchPart: true,
+      isBandPart: false,
       isAlbumPart: false,
       isReviewPart: false,
       band: {},
       album: {},
       review: {},
+      bandList: {},
       selectedBandImage: {},
       selectedAlbumImage: {},
       showDialog: true
@@ -65,6 +69,12 @@ export default {
           });
     },
 
+    toBandPart (bandList) {
+      this.bandList = bandList;
+      this.isSearchPart = false;
+      this.isBandPart = true;
+    },
+
     toAlbumPart (band) {
       this.band = band;
       this.isBandPart = false;
@@ -92,7 +102,7 @@ export default {
           'Authorization': localStorage.getItem('user-token'),
         },
         params: {
-          username: this.$route.params.username
+          username: localStorage.getItem("username")
         }
       }).then(res => {
         console.log(res)
@@ -120,7 +130,7 @@ export default {
       const formData = new FormData();
       formData.append("band_file", this.selectedBandImage);
       formData.append("band_name", this.band.name);
-      formData.append("username", this.$route.params.username);
+      formData.append("username",  localStorage.getItem("username"));
       axios.post(this.$url + "/api/bands/image/upload",
           formData,
           {
@@ -146,7 +156,7 @@ export default {
             },
             params: {
               bandId: this.band.band_id,
-              username: this.$route.params.username
+              username: localStorage.getItem("username")
             }
           }).then(res => {
         console.log(res)
@@ -178,7 +188,7 @@ export default {
       formData.append("album_title", this.album.name);
       formData.append("band_id", this.band.band_id);
       formData.append("year", this.album.release_date);
-      formData.append("username", this.$route.params.username);
+      formData.append("username", localStorage.getItem("username"));
       axios.post(this.$url + "/api/albums/image/upload",
           formData,
           {
@@ -205,8 +215,9 @@ export default {
       formData.append("review_point", this.review.review_point);
       formData.append("album_id", this.album.album_id);
       formData.append("album_name", this.album.name);
+      formData.append("band_id", this.band.band_id);
       formData.append("band_name", this.band.name);
-      formData.append("username", this.$route.params.username);
+      formData.append("username", localStorage.getItem("username"));
       formData.append("date", new Date());
       axios.post(this.$url + "/api/reviews",
           formData,

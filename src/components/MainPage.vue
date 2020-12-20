@@ -1,70 +1,95 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-sm-9 col-sm-offset-0 col-md-9 col-md-offset-0 main">
-        <h1 class="page-header">Posts</h1>
-        <article class="post vt-post" style="border: 1px solid #eeeeee"  v-for="(post, index) in posts" v-bind:key="index">
-          <h3 style="text-align: center; color: darkgreen"><a v-bind:href="'/' + post.username">{{post.username}}</a> is added a new review !</h3>
-          <br>
-          <div class="row">
-            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-4">
-              <div class="post-type post-img">
-                <a href="#" @click.prevent="getPostForModal(post)"><img :src="post.src" :key="reRenderCount" class="img-responsive" alt="image post" ></a>
+    <div class="main-section">
+      <div class="stats-section">
+        <div class="stats-block">
+          <div class="profile-image">
+            <a v-bind:href="'/' + user.username" ><img v-bind:src="profilePhoto" /></a>
+          </div>
+          <div class="stats">
+            <div class="your-stats">
+              <div>
+                <p class="stats-point">{{ reviewCount }}</p>
+                <p class="stats-text">Total reviews </p>
               </div>
-              <div class="author-info author-info-2">
-                <br>
-                <ul class="list-inline">
-                  <li>
-                    <div class="info">
-                      <p>Posted on:</p>
-                      <strong>{{post.date.split("G")[0]}}</strong></div>
-                  </li>
-                </ul>
+              <div class="border-div"></div>
+              <div>
+                <p class="stats-point">{{ scorePoint }}</p>
+                <p class="stats-text">Popularity score </p>
               </div>
-            </div>
-            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-8">
-              <div class="caption">
-                <h3 class="md-heading"><a href="#" @click.prevent="getPostForModal(post)">{{ post.bandName }} - {{ post.albumName}}</a></h3>
-                <p> {{ post.title }} </p>
-                <h2>{{ post.point }}/10</h2>
-                <a class="btn btn-default" href="#" role="button" @click.prevent="getPostForModal(post)">Read More</a> </div>
             </div>
           </div>
-        </article>
+          <div class="add-review-div">
+            <button class="btn-follow btn-new-review" v-on:click="showNewReviewModal = true">
+              <i class="fas fa-plus plus"></i>
+              New Review</button>
+          </div>
+        </div>
       </div>
-      <div class="col-sm-3 col-md-3 sidebar">
-        <h1 class="page-header">New Friends</h1>
-        <div class="people-nearby" v-for="(perUser, index) in notFriends" v-bind:key="index">
-          <div class="nearby-user">
-            <div class="row">
-              <div class="col-md-5 col-sm-5">
-                <br>
-                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
-              </div>
-              <div class="col-md-7 col-sm-7">
-                <h5><a v-bind:href="'/' + perUser.username" class="profile-link">{{perUser.fullname}}</a></h5>
-                <p>{{perUser.username}}</p>
-                <p class="text-muted">Total friends: {{ perUser.friends.length-1 }}</p>
-                <button class="btn btn-primary" :disabled="perUser.isProgressActive" @click="addFriend(perUser.username, index)">
-                  <span v-if="spinnerIndex != index">
-                    Add Friend
-                  </span>
-                  <span v-else>
-                    <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                 md-mode="indeterminate"/>
-                  </span>
-                </button>
-              </div>
+      <div class="posts-section">
+        <div class="post" v-for="(post, index) in posts" v-bind:key="index">
+          <div class="post-action">
+            <a v-bind:href="'/' + post.username"><img v-bind:src="profilePhoto" /></a>
+            <p><a v-bind:href="'/' + post.username"><span class="user">{{ post.username }}</span></a> added a new review. <span class="time">{{ post.date | moment }}</span></p>
+          </div>
+          <div class="post-content">
+            <div class="album-cover">
+              <a href="#" @click.prevent="getPostForAlbumModal(post)"><img :src="post.src" :key="reRenderCount"/></a>
+            </div>
+            <div class="album-review">
+              <h3>
+                <a href="#" @click.prevent="getPostForBandModal(post)">{{ post.bandName }}</a>
+                -
+                <a href="#" @click.prevent="getPostForAlbumModal(post)">{{ post.albumName}}</a></h3>
+              <p>{{ post.title }}</p>
+              <h2>{{ post.point }} / 10</h2>
+              <button class="btn-read-more" @click.prevent="getPostForAlbumModal(post)">Read More</button>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 
-    <AlbumDetails v-if="showModal" @close="showModal = false" :the-album="selectedAlbum" :props-review="selectedAlbum">
+    <div class="sidebar-section">
+      <div class="add-friend">
+        <div class="friend" v-for="(perUser, index) in notFriends" v-bind:key="index">
+          <a class="img-a" v-bind:href="'/' + perUser.username"><img v-bind:src="perUser.profilePhoto" /></a>
+          <div class="friend-info">
+            <h5><a v-bind:href="'/' + perUser.username">{{ perUser.username }}</a></h5>
+            <button :disabled="perUser.isProgressActive" @click="addFriend(perUser.username, index)">
+              <div v-if="spinnerIndex != index">
+                    Follow
+                  </div>
+              <div v-else class="spinner-loader">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+                <div class="rect6"></div>
+                <div class="rect7"></div>
+                <div class="rect8"></div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    </AlbumDetails>
+    <Modal v-if="showAlbumModal">
+      <template v-slot:modal>
+        <AlbumDetails @close="showAlbumModal = false"
+                      :the-album="selectedAlbum" :props-review="selectedAlbum" />
+      </template>
+    </Modal>
+
+    <Modal v-if="showBandModal">
+      <template v-slot:modal>
+        <BandDetails @close="showBandModal = false" :the-band="selectedBand" />
+      </template>
+    </Modal>
+
+    <AddAlbumContent v-if="showNewReviewModal" @close="showNewReviewModal = false" />
 
   </div>
 </template>
@@ -72,22 +97,46 @@
 <script>
 
 import AlbumDetails from "@/components/AlbumDetails";
+import BandDetails from "@/components/BandDetails";
+import Modal from "@/components/Modal";
+import AddAlbumContent from "@/components/AddAlbumComponent";
+import moment from "moment";
 
 const axios = require('axios').default;
 
+
 export default {
   name: "MainPage",
-  components: {AlbumDetails},
+  components: {AlbumDetails, BandDetails, Modal, AddAlbumContent},
+  filters: {
+    moment: function (date) {
+      return moment(date).fromNow();
+    }
+  },
+  computed: {
+    reviewCount: function () {
+      return this.aCount;
+    },
+    scorePoint: function () {
+      return this.aCount*2 + this.bCount*3;
+    }
+  },
   data() {
     return{
       user: {},
+      profilePhoto: '',
       allUsers: [],
       notFriends: [],
       posts: [],
+      aCount: "",
+      bCount: "",
       reRenderCount: 0,
       spinnerIndex: null,
-      showModal: false,
+      showNewReviewModal: false,
+      showAlbumModal: false,
+      showBandModal: false,
       selectedAlbum: null,
+      selectedBand: {},
     }
   },
 
@@ -97,12 +146,63 @@ export default {
     'user.friends': 'getPosts',
   },*/
   methods: {
-    getPostForModal(post){
+    getAlbumCount() {
+      axios.get(this.$url + "/api/albums",
+          {
+            headers: {
+              "Authorization": localStorage.getItem('user-token'),
+            },
+            params: {
+              username: localStorage.getItem('username')
+            }
+          }).then( res => {
+            this.aCount = res.data.length;
+        })
+    },
+
+    getBandCount() {
+      axios.get(this.$url + "/api/bands",
+          {
+            headers: {
+              'Authorization': localStorage.getItem('user-token'),
+            },
+            params: {
+              username: localStorage.getItem('username')
+            }
+          }).then( res => {
+            this.bCount = res.data.length;
+        });
+    },
+
+    getProfilePhoto(){
+      axios.get(this.$url + "/api/user-profiles/" + localStorage.getItem('username') +"/image/download",{
+        headers: {
+          'Authorization': localStorage.getItem('user-token'),
+          responseType: 'arrayBuffer'
+        }
+      }).then( (res) => {
+        this.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+        this.showAlbumModal = true;
+        this.showAlbumModal = false;
+      });
+      return this.profilePhoto;
+    },
+
+    getPostForAlbumModal(post){
       this.selectedAlbum = post;
       this.selectedAlbum.id = post.albumId;
       this.selectedAlbum.author = post.username;
-      this.showModal = true;
+      this.showAlbumModal = true;
     },
+
+    getPostForBandModal(post){
+      this.selectedBand.src = null;
+      this.selectedBand.bandName = post.bandName;
+      this.selectedBand.bandId = post.bandId;
+      this.selectedBand.postOwner = post.username;
+      this.showBandModal = true;
+    },
+
     addFriend (username, index) {
       console.log("addFriend");
       this.spinnerIndex = index
@@ -118,7 +218,7 @@ export default {
         this.user.friends.push(username);
         this.notFriends.splice(index, 1);
         this.spinnerIndex = null;
-      })
+    })
     },
 
     getPhoto(post){
@@ -136,8 +236,8 @@ export default {
       })
     },
 
-    getPosts(){
-      axios.post(this.$url + "/api/reviews/get-for-posts", this.user.friends, {
+    async getPosts(){
+      await axios.post(this.$url + "/api/reviews/get-for-posts", this.user.friends, {
         headers: {
           'Authorization': localStorage.getItem('user-token')
         }
@@ -146,31 +246,53 @@ export default {
         this.posts = res.data;
         this.posts.forEach(this.getPhoto);
       });
-    }
+    },
 
-  },
-  async created() {
-    if (!localStorage.getItem('isLoggedIn')) {
-      this.$router.push('/login');
-    } else {
-
-      await axios.get(this.$url + "/api/user-profiles/get-user?username=" + localStorage.getItem('username'))
-          .then((res) => {
-            this.user = res.data;
-          });
-
+    async getOtherUsers() {
       await axios.get(this.$url + "/api/user-profiles", {
         headers: {
           'Authorization': localStorage.getItem('user-token')
         }
       }).then((res) => {
         this.allUsers = res.data;
-        this.notFriends = this.allUsers.filter( (user) => {
+        this.notFriends = this.allUsers.filter((user) => {
           return !this.user.friends.includes(user.username);
         });
+        this.notFriends.forEach(this.getNotFriendsPhoto)
       });
+    },
 
-      await this.getPosts();
+    async getNotFriendsPhoto(user) {
+      await axios.get(this.$url + "/api/user-profiles/" + user.username +"/image/download",{
+        headers: {
+          'Authorization': localStorage.getItem('user-token'),
+          responseType: 'arrayBuffer'
+        }
+      }).then( (res) => {
+        user.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+        this.showAlbumModal = true;
+        this.showAlbumModal = false;
+      });
+    }
+
+  },
+  async created() {
+
+    if (!localStorage.getItem('isLoggedIn')) {
+      this.$router.push('/login');
+    } else {
+
+      await this.getAlbumCount();
+      await this.getBandCount();
+
+      await this.getProfilePhoto();
+
+      axios.get(this.$url + "/api/user-profiles/get-user?username=" + localStorage.getItem('username'))
+          .then((res) => {
+            this.user = res.data;
+            this.getOtherUsers();
+            this.getPosts();
+          });
     }
   }
 }
@@ -178,717 +300,368 @@ export default {
 
 <style scoped>
 
-@media (min-width: 768px){
-
-  .sidebar {
-    bottom: 0;
-    display: block;
-    padding: 0px 20px 20px 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    right: 0;
-    border-left: 1px solid #eee;
-  }
+.border-div {
+  border-bottom: 1px solid #c6c6c6;
 }
 
-@media (min-width: 992px){
-
-  .sidebar {
-    bottom: 0;
-    display: block;
-    padding: 0px 20px 20px 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+a {
+  color: black;
 }
 
-
-@media (max-width: 768px) {
-  .sidebar{
-    display: none;
-  }
-
-  .main {
-    padding-left: 40px;
-    padding-right: 40px;
-  }
+a:visited {
+  color: black;
 }
 
-.people-nearby .google-maps{
-  background: #f8f8f8;
-  border-radius: 4px;
-  border: 1px solid #f1f2f2;
-  padding: 20px;
-  margin-bottom: 20px;
+a:hover{
+  color: #515151;
 }
 
-.people-nearby .google-maps .map{
-  height: 300px;
-  width: 100%;
-  border: none;
+.spinner-loader > div {
+  height: 50%;
 }
 
-.people-nearby .nearby-user{
-  padding: 20px 0;
-  border-top: 1px solid #f1f2f2;
-  border-bottom: 1px solid #f1f2f2;
-  margin-bottom: 20px;
-}
-
-img.profile-photo-lg{
-  height: 80px;
-  width: 80px;
-  border-radius: 50%;
-}
-
-body{
-  margin-top:20px;
-  background:#DCDCDC;
-}
 .content {
-  padding: 35px 0px;
+  display: flex;
+  min-height: 600px;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 45px;
 }
 
-.post-list {
-  padding: 90px 0px;
+.content .main-section{
+  min-width: 300px;
+  min-height: 600px;
+  flex-grow: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.post-detail {
-  padding: 40px 0px;
-  margin-top: 120px;
+.content .main-section .stats-section{
+  width: 90%;
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.post {
+.content .main-section .stats-section .stats-block{
+  background: rgb(255, 255, 255);
   width: 100%;
-  float: left;
-  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-  background: #fff;
-  margin-bottom: 40px;
-  border-radius: 3px;
+  min-height: 150px;
+  border-radius: 15px 15px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  box-shadow: 0 14px 18px 0 rgba(73, 62, 62, 0.241), 0 16px 50px 0 rgba(0, 0, 0, 0.446);;
 }
 
-.feature-post .thumbnail .author-info {
-  padding: 20px 5px 20px 40px;
-  text-align: left;
-  min-height: 80px;
-  background: #2c3840;
-  float: left;
-  width: 100%;
+.content .main-section .stats-section .stats-block .profile-image {
+  max-height: 100px;
+  max-width: 100px;
+  align-self: center;
+  flex-grow: 1;
+  margin-left: 40px;
 }
 
-.post .post-type {
-  float: left;
-  width: 100%;
-}
-
-.post iframe {
-  padding: 0px;
-  margin: 0px;
-}
-
-.post .mejs-container {
-  border-radius: 3px 3px 0px 0px;
-  width: 100% !important;
-}
-
-.post .post-video {
-  border-radius: 3px 3px 0px 0px;
-}
-
-.post .post-video iframe {
-  width: 100%;
-}
-
-.post .post-video video {
-  border-radius: 3px 3px 0px 0px;
-}
-
-.post .post-multiple-img a img {
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  width: 100%;
+.content .main-section .stats-section .stats-block .profile-image img{
+  max-width: 100%;
   height: auto;
-  display: block;
-  min-height: 160px;
+  border-radius: 100%;
 }
 
-.post .post-multiple-img a {
-  float: left;
-  width: 100%;
-  display: block;
-}
-
-.post .post-multiple-img a:hover img {
-  opacity: 0.7;
-}
-
-.post .post-audio {
+.content .main-section .stats-section .stats-block .stats {
+  flex-grow: 3;
+  min-width: 150px;
+  margin: 20px 20px;
   height: auto;
+  display: flex;
+  justify-content: space-between;
 }
 
-.post .post-audio ._SMB-widget {
+.content .main-section .stats-section .stats-block .add-review-div {
+  flex-grow: 1;
+  align-self: center;
+  height: 70px;
+}
+
+.btn-new-review {
+  width: 200px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 0 auto;
+}
+
+.plus {
+  font-size: 2.5rem;
+}
+
+.content .main-section .stats-section .stats-block .stats .your-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 0 auto;
+}
+
+.content .main-section .stats-section .stats-block .stats .your-stats div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.content .main-section .stats-section .stats-block .stats .your-stats div p {
+  margin-left: 10px;
+  font-size: 1.4rem;
+}
+
+.content .main-section .posts-section{
+  width: 95%;
+  min-width: 785px;
+  min-height: 600px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content .main-section .posts-section .post {
   width: 100%;
+  min-height: 250px;
+  background: rgb(255, 255, 255);
+  margin: 10px 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 0 rgba(73, 62, 62, 0.241), 0 6px 20px 0 rgba(0, 0, 0, 0.446);;
 }
 
-.post .post-quote blockquote {
-  text-align: center;
-  margin: 0px;
-  padding: 25px 15px;
-}
-
-.post .post-quote blockquote h3 {
-  color: #e74c3c;
-  font-size: 36px;
-  margin: 0px 0px 10px 0px;
-}
-
-.post .post-quote blockquote p {
-  color: #333;
-  font-size: 24px;
-  font-weight: 300;
-}
-
-.post .post-img a {
-  display: block;
-}
-
-.post .post-img:hover a img {
-  opacity: 0.7;
-}
-
-.post .post-img a img {
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
+.content .main-section .posts-section .post .post-action {
+  padding: 10px 10px;
   width: 100%;
+  max-height: 55px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.2rem;
+  border-bottom: ridge;
+}
+
+.content .main-section .posts-section .post .post-action img {
+  max-width: 35px;
   height: auto;
-  border-radius: 3px 3px 0px 0px;
-}
-
-.post-detail .post .caption {
-  padding: 55px 45px 0px 45px;
-}
-
-.post .caption {
-  float: left;
-  width: 100%;
-  text-align: left;
-  padding: 25px 25px;
-}
-
-.post .caption h3 {
-  margin: 0px 0px 20px 0px;
-  color: #36a0e7;
-  font-weight: 300;
-  font-size: 34px;
-  line-height: 42px;
-}
-
-.post .caption p {
-  line-height: 28px;
-  margin-bottom: 20px;
-  font-size: 16px;
-}
-
-.post .author-info {
-  padding: 15px 15px 15px 15px;
-  text-align: left;
-  min-height: 60px;
-  border-bottom: 1px solid #ddd;
-  background: #fcfcfc;
-  float: left;
-  width: 100%;
-}
-
-.post .author-info .list-inline {
-  margin: 0px;
-}
-
-.post .author-info ul li:first-child {
-  border-left: none;
-  padding-left: 0px;
-}
-
-.post .author-info ul li {
-  float: left;
-  border-left: 1px solid #ddd;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.post .author-info ul li p {
-  line-height: 16px;
-  color: #3b4952;
-  font-weight: 300;
-  font-size: 14px;
-  margin: 0px;
-}
-
-.post .author-info ul li strong {
-  color: #3b4952;
-}
-
-.post .author-info ul li a {
-  color: #3b4952;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 20px;
-}
-
-.post .author-info ul li a:hover {
-  color: #e74c3c;
-  text-decoration: none;
-}
-
-.post .author-info ul li .icon-box {
-  margin-right: 15px;
-  width: 36px;
-  text-align: center;
-  line-height: 36px;
-  font-size: 30px;
-  height: 36px;
-  float: left;
-  background: transparent;
-  color: #aebbc5;
-}
-
-.post .author-info ul li .icon-box img {
-  border-radius: 3px;
-  width: 100%;
-}
-
-.post .author-info ul li .info {
-  float: left;
-}
-
-.post .author-info.author-info-2 ul li:first-child {
-  border-left: none;
-  padding-left: 0px;
-}
-
-.post .author-info.author-info-2 ul li .icon-box {
-  font-size: 28px;
-}
-
-.post .post-category {
-  float: left;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-.post .post-category a {
-  margin: 0px;
-  font-size: 18px;
-  font-weight: 300;
-  color: #3b4952;
-}
-
-.post .post-category span {
-  width: 12px;
-  height: 12px;
-  display: inline-block;
-  background: #3b4952;
-  vertical-align: middle;
+  border-radius: 100%;
   margin-right: 10px;
 }
 
-.post .post-category a:hover span {
-  background: #e74c3c;
-  color: #e74c3c;
+.content .main-section .posts-section .post .post-action p .user{
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-.post .post-category a:hover {
-  color: #e74c3c;
+.content .main-section .posts-section .post .post-action p .time{
+  font-style: italic;
+  font-size: 1rem;
+  margin-left: 10px;
+  color: gray;
 }
 
-.post .tags {
-  float: left;
-  width: 100%;
-  margin-bottom: 20px;
+.content .main-section .posts-section .post .post-content {
+  display: flex;
+  width: 95%;
+  min-height: 300px;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.post .tags li {
-  margin-bottom: 8px;
-  padding: 0px 2px;
-}
-
-.post .tags li a {
-  background: #ebf1f4;
-  font-size: 14px;
-  font-weight: 300;
-  border-radius: 3px;
-  padding: 4px 8px;
-  color: #3b4952;
-}
-
-.post .tags li a:hover {
-  background: #3b4952;
-  color: #fff;
-}
-
-.img-grid {
-  float: left;
-  margin-bottom: 40px;
-}
-
-.img-grid li {
-  margin: 0px;
-  float: left;
-}
-
-.post .caption h5 {
-  text-decoration: underline;
-  margin: 0px 0px 20px 0px;
-  color: #3b4952;
-  font-weight: 300;
-  font-size: 24px;
-  line-height: 30px;
-}
-
-.post .list-unstyled {
-  margin-bottom: 40px;
-}
-
-.post .list-unstyled li {
-  font-size: 16px;
-  line-height: 28px;
-  font-weight: 500;
-  color: #49545b;
-}
-
-.post .list-unstyled li i {
-  color: #a0b9ca;
-  margin-right: 15px;
-}
-
-blockquote {
-  background: #f2f6f8;
-  border: 1px solid #e5e5e5;
-  line-height: 28px;
-  margin-bottom: 40px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #49545b;
-}
-
-.line-block {
-  padding: 20px 45px;
-  border-top: 1px solid #eef3f6;
-  border-bottom: 1px solid #eef3f6;
-  float: left;
-  width: 100%;
-}
-
-.post .line-block .tags {
-  margin-bottom: 0px;
-}
-
-.share-this {
-  padding: 20px 45px;
-  border-bottom: 1px solid #eef3f6;
-  float: left;
-  width: 100%;
-}
-
-.share-this p,
-.share-this ul {
-  margin-bottom: 0px;
-}
-
-.share-this li a {
-  background: #2c3840;
-  line-height: 34px;
-  text-align: center;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  display: block;
-  border-radius: 50%;
-}
-
-.share-this li a.pinterest {
-  background: #d91c1c;
-}
-
-.share-this li a.google-plus {
-  background: #f25353;
-}
-
-.share-this li a.facebook {
-  background: #2b77be;
-}
-
-.share-this li a.twitter {
-  background: #62bfef;
-}
-
-.related-post {
-  padding: 40px 45px;
-  border-bottom: 1px solid #eef3f6;
-  float: left;
-  width: 100%;
-}
-
-.related-post .thumbnail {
-  padding: 0px;
-  border: none;
-}
-
-.related-post .thumbnail .caption {
-  padding: 30px 0px 0px 0px;
-}
-
-.related-post .thumbnail .caption a {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 300;
-  color: #49545b;
-}
-
-.related-post .thumbnail .caption a:hover {
-  color: #36a0e7;
-}
-
-.related-post .thumbnail:hover a img {
-  opacity: 0.7;
-}
-
-.related-post h4 {
-  color: #49545b;
-  font-weight: 700;
-  font-size: 18px;
-  margin: 0px 0px 20px 0px;
-}
-
-.comment-count {
-  padding: 45px 45px;
-  border-bottom: 1px solid #eef3f6;
-  float: left;
-  width: 100%;
-}
-
-.comment-count h4 {
-  font-weight: 500;
-  font-size: 24px;
-  color: #3b4952;
-}
-
-.comment-count p {
-  margin-bottom: 0px;
-}
-
-.comment-list {
-  float: left;
-  width: 100%;
-}
-
-.comment-list .media:first-child {
-  margin-top: 0px;
-  border-bottom: 1px solid #eef3f6;
-}
-
-.comment-list .media {
-  padding: 30px 45px;
-  margin-top: 0px;
-}
-
-.comment-list .media .media-body .media {
-  padding-top: 30px;
-  padding-bottom: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  margin-left: -80px;
-  border-left: 1px solid #eef3f6;
-  border-bottom: 1px solid #eef3f6;
-}
-
-.comment-list .media .media-body {
+.content .main-section .posts-section .post .post-content .album-cover{
+  width: 260px;
+  height: 260px;
   position: relative;
 }
 
-.comment-list .media .media-left {
-  padding-right: 20px;
-}
-
-.comment-list .media .nested-first {
-  margin-top: 30px;
-  border-top: 1px solid #eef3f6;
-}
-
-.comment-list .media .nested-first:before {
+.content .main-section .posts-section .post .post-content .album-cover img {
   position: absolute;
-  left: -80px;
-  top: 90px;
-  content: '';
-  width: 1px;
-  background: #eef3f6;
-  height: 170px;
-}
-
-.comment-list .media,
-.comment-list .media-body {
-  overflow: visible;
-  zoom: 1;
-}
-
-.comment-list .media .media-body ul {
-  margin-bottom: 0px;
-}
-
-.comment-list .media .media-body ul li a {
-  color: #919ea8;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.comment-list .media .media-body ul li a:hover {
-  color: #36a0e7;
-}
-
-.comment-list .media .media-body ul li a.reply-btn {
-  color: #49545b;
-  text-decoration: underline;
-}
-
-.comment-list .media .media-body ul li a.reply-btn:hover {
-  color: #36a0e7;
-}
-
-.comment-list .media .media-body ul li {
-  font-size: 18px;
-  padding-right: 15px;
-  color: #919ea8;
-  font-weight: 500;
-}
-
-.comment-form {
-  float: left;
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
   width: 100%;
-  padding: 30px 45px;
 }
 
-.comment-form h4 {
-  font-weight: 300;
-  font-size: 28px;
-  color: #3b4952;
-  margin-bottom: 40px;
+.content .main-section .posts-section .post .post-content .album-review {
+  width: 400px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 1.5rem;
 }
 
-.comment-form .form-control {
-  border-radius: 0px;
-  background: #f1f4f6;
-  border: none;
-  height: 50px;
-  color: #4a555c;
-  font-size: 16px;
+.btn-read-more{
+  width: 80px;
+  height: 40px;
+  border: 1px solid rgba(6, 51, 92, 0.72);
+  border-radius: 4px;
+  outline: 0;
+  cursor: pointer;
+  background: white;
+  color: rgba(6, 51, 92, 0.72);
+  font-weight: 400;
 }
 
-.comment-form .form-control::-webkit-input-placeholder {
-  color: #4a555c;
+.btn-read-more:hover{
+  border: 1px solid white;
+  background: rgba(6, 51, 92, 0.72);
+  color: white;
 }
 
-.comment-form .form-control:-moz-placeholder {
-  color: #4a555c;
-}
-
-.comment-form .form-control::-moz-placeholder {
-  color: #4a555c;
-}
-
-.comment-form .form-control:-ms-input-placeholder {
-  color: #4a555c;
-}
-
-.comment-form textarea.form-control {
-  height: auto;
+.content .sidebar-section {
+  min-width: 300px;
   min-height: 200px;
-  resize: none;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
-.comment-form form {
-  margin-bottom: 40px;
+.content .sidebar-section .add-friend {
+  width: 90%;
+  margin: 0 auto;
+  min-height: 200px;
+  margin-top: 20px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-radius: 30px;
+  align-items: center;
 }
 
-.vt-post.post .author-info ul li {
-  padding-left: 15px;
-  padding-right: 15px;
-  float: none;
+.content .sidebar-section .add-friend .friend {
+  width: 90%;
+  min-height: 100px;
+  background: rgb(255, 255, 255);
+  margin: 10px 0;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  box-shadow: 0 4px 8px 0 rgba(73, 62, 62, 0.241), 0 6px 20px 0 rgba(0, 0, 0, 0.446);;
 }
 
-.vt-post.post .author-info {
-  border-radius: 0px 0px 0px 3px;
-  border-bottom: none;
-  border-right: 1px solid #ddd;
-  padding: 15px 12px 15px 12px;
+.content .sidebar-section .add-friend .friend .img-a {
+  flex-grow: 1;
+  margin-left: 10px;
 }
 
-.vt-post.post .post-img a img {
-  border-radius: 3px 0px 0px 0px;
+
+.content .sidebar-section .add-friend .friend img {
+  max-width: 65px;
+  height: auto;
+  border-radius: 100%;
 }
 
-.vt-post.post .caption {
-  padding: 25px 0px;
+.content .sidebar-section .add-friend .friend .friend-info {
+  /*display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: baseline;*/
+  max-width: 70%;
+  flex-grow: 4;
+  text-align: center;
 }
 
-.post .caption h3 {
-  margin: 0px 0px 20px 0px;
-  color: #36a0e7;
-  font-weight: 300;
-  font-size: 34px;
-  line-height: 42px;
-}
-.md-heading {
-  font-size: 24px !important;
-  line-height: 36px !important;
-  margin-bottom: 15px !important;
+.content .sidebar-section .add-friend .friend .friend-info a{
+  font-size: 1.2rem;
 }
 
-.pagination>.active>a,
-.pagination>.active>a:focus,
-.pagination>.active>a:hover,
-.pagination>.active>span,
-.pagination>.active>span:focus,
-.pagination>.active>span:hover {
-  background-color: #3b4952;
-  border-color: #3b4952;
+.content .sidebar-section .add-friend .friend .friend-info button{
+  align-self: center;
+  margin: 10px auto;
+  width: 60px;
+  height: 30px;
+  border: 1px solid rgb(108, 110, 150);
+  color: rgb(108, 110, 150);
+  background: white;
+  cursor: pointer;
+  outline: 0;
 }
 
-.pagination>li>a,
-.pagination>li>span {
-  color: #2c3840;
-  margin: 0px 5px;
-  border-radius: 3px;
-  -webkit-box-shadow: 0px 1px 3px 0px rgba(44, 56, 64, 0.2);
-  -moz-box-shadow: 0px 1px 3px 0px rgba(44, 56, 64, 0.2);
-  box-shadow: 0px 1px 3px 0px rgba(44, 56, 64, 0.2);
-  border: none;
-  font-size: 16px;
+.content .sidebar-section .add-friend .friend .friend-info button:hover {
+  border-color: white;
+  color: white;
+  background: rgb(108, 110, 150);
 }
 
-.pagination>li>a:focus,
-.pagination>li>a:hover,
-.pagination>li>span:focus,
-.pagination>li>span:hover {
-  background-color: #e74c3c;
-  border-color: #e74c3c;
-  color: #fff;
+@media screen and (max-width: 1100px){
+  .content .sidebar-section .add-friend {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .content .sidebar-section .add-friend .friend {
+    max-width: 250px;
+  }
 }
 
-.pagination-wrap {
-  width: 100%;
-  float: left;
-  margin-bottom: 35px;
+@media screen and (max-width: 768px) {
+
+  .content .main-section .posts-section {
+    min-width: 80%;
+  }
+
+  .content .main-section .posts-section .post .post-content {
+    padding-top: 10px;
+    width: 100%;
+  }
+
+  .content .main-section .stats-section .stats-block .add-review-div{
+    margin-bottom: 20px;
+  }
 }
 
-.pagination {
-  margin: 0px;
+@media screen and (max-width: 650px) {
+  .content .main-section .stats-section .stats-block .profile-image {
+    margin-left: 0;
+  }
+
 }
 
+@media screen and (max-width:500px){
+  .content .main-section .posts-section .post .post-content .album-review {
+    font-size: 1.3rem;
+  }
+
+  .content .main-section .posts-section .post .post-action p {
+    font-size: 0.8rem;
+  }
+
+  .content .main-section .posts-section .post .post-action p .user {
+    font-size: 0.8rem;
+  }
+
+  .content .main-section .posts-section .post .post-action p .time {
+    font-size: 0.8rem;
+  }
+
+  .content .main-section .stats-section .stats-block .stats {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .content .main-section .stats-section {
+    margin-top: 10px;
+    min-height: 200px;
+  }
+
+  .content .main-section .stats-section .stats-block {
+    min-height: 200px;
+  }
+}
 
 </style>

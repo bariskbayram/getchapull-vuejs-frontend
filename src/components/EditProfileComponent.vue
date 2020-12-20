@@ -1,82 +1,51 @@
 <template>
-
-  <div class="hello" >
-    <div class="container" v-if="isMyProfile">
-      <div class="row" >
-        <div class="col-xs-6 col-md-6">
-          <div class="page-header">
-            <h2>Edit Your Profile</h2>
-            <p>{{user.fullname}}</p>
+  <div>
+    <div class="container-form" v-if="isMyProfile">
+      <div class="header">
+        <h2>Edit Profile</h2>
+        <p>{{ user.fullname }}</p>
+      </div>
+      <div class="edit-part">
+        <div class="form-inputs">
+            <div class="input-section">
+              <label class="with-input-border">Fullname</label>
+              <input type="text" v-model="user.fullname" autofocus=""/>
+            </div>
+            <span v-if="isFullnameError" class="error">Fullname's length must be more than 5.</span>
+            <div class="input-section">
+              <label class="with-input-border">Password</label>
+              <input type="password" v-model="password"/>
+            </div>
+            <span v-if="isPasswordError" class="error">Password's length must be more than 5.</span>
+            <div class="input-section">
+              <label class="with-input-border">Password Confirm</label>
+              <input type="password" v-model="passwordConfirm"/>
+            </div>
+            <span v-if="isPasswordConfirmError" class="error">Password confirmation is failed.</span>
+            <div class="submit-section">
+              <button
+                  class="btn-blue btn-big-grow"
+                  @click.prevent="validateUser"
+                  :disabled="isProgressActive">
+                <div v-if="!isProgressActive">Verify</div>
+                <div v-else class="spinner-loader">
+                  <div class="rect1"></div>
+                  <div class="rect2"></div>
+                  <div class="rect3"></div>
+                  <div class="rect4"></div>
+                  <div class="rect5"></div>
+                  <div class="rect6"></div>
+                  <div class="rect7"></div>
+                  <div class="rect8"></div>
+                </div>
+              </button>
+            </div>
+          </div>
+        <div class="card-image" @click="showModal = true">
+          <div class="user-image" >
+            <img id="profile_img" style="margin-right: 10%" v-bind:src="profile_photo" alt="/">
           </div>
         </div>
-
-        <div class="col-xs-6 col-md-6">
-          <img class="thumbnail pull-right" id="profile_img" v-bind:src="profile_photo" alt="/">
-        </div>
-      </div>
-
-      <ul class="nav nav-tabs">
-        <li v-bind:class="{active: isInfoSection}" role=""  id="albumsbtn"><a href="#" v-on:click="isInfoSection=true">Info</a></li>
-        <li style="display: none" v-bind:class="{active: !isInfoSection}" role="" id="bandsbtn"><a href="#" v-on:click="isInfoSection=false">Security</a></li>
-      </ul>
-      <br/><br/>
-
-      <div class="col-xs-12 col-md-6">
-        <form novalidate class="md-layout" @submit.prevent="validateUser">
-          <md-card class="md-layout-item md-size-100 md-small-size-100">
-            <md-card-header>
-              <div class="md-title">User Information</div>
-            </md-card-header>
-
-            <md-card-content>
-              <div class="md-gutter">
-
-                <div class="md-layout-item md-small-size-100">
-                  <md-field>
-                    <label>Full Name</label>
-                    <md-input class="input-mine" v-model="user.fullname" required autofocus="" @keyup.enter="validateUser"></md-input>
-                    <span v-if="isFullnameError" class="md-error error-mine">Fullname's length must be more than 5.</span>
-                  </md-field>
-                </div>
-
-                <div class="md-layout-item md-small-size-100">
-                  <md-field>
-                    <label>Password</label>
-                    <md-input v-model="password" type="password" required @keyup.enter="validateUser"></md-input>
-                  </md-field>
-                  <span v-if="isPasswordError" class="md-error error-mine">Password's length must be more than 5.</span>
-                </div>
-
-                <div class="md-layout-item md-small-size-100">
-                  <md-field>
-                    <label>Password Confirm</label>
-                    <md-input v-model="passwordConfirm" type="password" required @keyup.enter="validateUser"></md-input>
-                  </md-field>
-                  <span v-if="isPasswordConfirmError" class="md-error error-mine">Password confirmation is failed.</span>
-                </div>
-
-                <div class="md-layout-item md-small-size-100">
-                  <md-button @click.prevent="validateUser"
-                             class="md-raised md-primary btn-lg btn-block"
-                             :disabled="isProgressActive">
-                   <span v-if="!isProgressActive">
-                    UPDATE
-                    </span>
-                    <span v-else>
-                    <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                         md-mode="indeterminate"/>
-                   </span>
-                  </md-button>
-                </div>
-
-              </div>
-
-            </md-card-content>
-          </md-card>
-        </form>
-      </div>
-
-      <div class="col-xs-12 col-md-6">
         <my-upload field="img"
                    @crop-success="cropSuccess"
                    v-model="showModal"
@@ -84,24 +53,7 @@
                    :width="300"
                    :height="300"
                    img-format="jpg"></my-upload>
-        <md-card md-with-hover style="background: #cce4c1">
-          <div @click="showModal = true" style="height: 441px">
-            <md-ripple>
-
-              <md-card-media-cover >
-                <div>
-                  <h3 style="margin-left: 120px; color: black">CHANGE PROFILE PHOTO</h3>
-                </div>
-                <md-card-media md-ratio="4:3">
-                  <img :src="imgDataUrl">
-                </md-card-media>
-              </md-card-media-cover>
-
-            </md-ripple>
-          </div>
-        </md-card>
       </div>
-
     </div>
     <div class="container" v-else>
       <div class="center">
@@ -261,85 +213,91 @@ export default {
 </script>
 
 <style scoped>
-.error-h1{
-  font-weight: 900;
-  font-size: 7.5rem;
-  padding: 10px;
+
+.container-form {
+  margin-top: 80px;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: white;
 }
 
-.error-p{
-  font-size: 4.5rem;
-  padding: 10px;
+.spinner-loader {
+  bottom: 10px;
+  position: relative;
 }
 
-.top-button{
-  margin-top: 15px;
+.header {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.row{
-  padding-top: 20px;
+.edit-part {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 90%;
+  height: 400px;
+  flex-wrap: wrap;
 }
 
-@media (min-width: 768px) {
-  .main {
-    top: 50px;
-  }
+.form-inputs {
+  width: 40%;
 }
 
-@media (min-width: 992px) {
-
-  .main {
-    top: 50px;
-  }
+.input-section {
+  margin-top: 30px;
 }
 
-@media (max-width: 768px) {
-  .main {
-    top: 50px;
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-}
-
-body{
-  background-color: aqua;
-  color: blue;
-}
-.middle{
-  width: fit-content;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
-}
-
-input{
+.submit-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
 }
 
-button{
-  margin-top: 25px;
+.card-image {
+  max-height: 260px;
+  max-width: 260px;
+  cursor: pointer;
 }
 
-p, h2 {
-  padding-left: 15px;
+.user-image {
+  max-height: 260px;
+  max-width: 260px;
+  align-self: center;
 }
 
-.error-mine {
-  color: red;
+.user-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 100%;
+  border: 1px solid #c1c0c0;
 }
 
-.div-mine {
-  margin-bottom: 15px;
+.btn-big-grow {
+  max-height: 60px;
 }
 
-.input-mine {
-  margin-bottom: 0px;
+.user-image :hover {
+  box-shadow: 0 14px 18px 0 rgba(73, 62, 62, 0.241), 0 16px 50px 0 rgba(0, 0, 0, 0.446);;
 }
 
-.col-xs-12 {
-  margin-bottom: 50px;
+@media screen and (max-width: 500px) {
+
+  .container-form {
+    min-height: 800px;
+  }
+
+  .edit-part {
+    justify-content: center;
+  }
+
+  .form-inputs {
+    margin-top: 40px;
+    order: 2;
+    width: 80%;
+  }
 }
+
 </style>

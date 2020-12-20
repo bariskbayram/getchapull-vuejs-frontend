@@ -7,16 +7,12 @@ import NavComponent from './components/NavBarComponent.vue'
 import BaseContent from './components/ProfileBaseComponent.vue'
 import EditProfile from './components/EditProfileComponent.vue'
 import MainPage from './components/MainPage.vue'
-import VueMaterial from 'vue-material'
-import 'vue-material/dist/vue-material.min.css'
-import 'vue-material/dist/theme/default.css'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
-Vue.use(VueMaterial)
 
-Vue.prototype.$url = "https://metal-review-spring.herokuapp.com";
-// Vue.prototype.$url = "http://localhost:8080";
+// Vue.prototype.$url = "https://metal-review-spring.herokuapp.com";
+Vue.prototype.$url = "http://localhost:8080";
 
 const router = new VueRouter({
   routes: [

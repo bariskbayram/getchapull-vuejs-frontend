@@ -1,46 +1,31 @@
 <template>
-  <div>
-    <md-dialog :md-active.sync="showDialog"
-               @md-closed="$emit('close')" @md-clicked-outside="$emit('close')">
-      <md-app>
-        <md-app-content>
-          <div class="modal-header">
-            <h2> {{ theBand.bandName }} </h2>
-          </div>
 
-          <div class="modal-body">
-            <div class="col-md-6">
-              <slot name="header">
-                <img class="img-mine" style="width:60%" v-bind:src="theBand.src"/>
-              </slot>
-            </div>
-            <slot name="body">
-              <h4>Albums that you listen from this band.</h4>
-              <ul v-for="(album,index) in albums" v-bind:key="index">
-                <li>
-                  <a>{{album.name}}</a>
-                </li>
-              </ul>
-            </slot>
-          </div>
-        </md-app-content>
-      </md-app>
-
-
-      <div class="modal-footer">
-        <slot name="footer">
-          <button v-if="isMyProfile" class="btn btn-warning" v-on:click="$emit('close')">
-            Edit
-          </button>
-          <button v-if="isMyProfile" class="btn btn-danger" v-on:click="deleteBand">
-            Delete
-          </button>
-          <button class="btn btn-primary" v-on:click="$emit('close')">
-            Close
-          </button>
-        </slot>
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h1>{{ theBand.bandName }}</h1>
+      <a href="#" @click.prevent="deleteBand" v-if="isMyProfile" >
+        <i class="fas fa-trash-alt delete-icon"></i>
+      </a>
+    </div>
+    <div class="modal-close" @click="$emit('close')">
+      <div class="close-rotation">
+        <div class="line1"></div>
+        <div class="line2"></div>
       </div>
-    </md-dialog>
+    </div>
+    <div class="modal-guts">
+      <div class="modal-image">
+        <img :src="theBand.src" :key="reRenderCount"/>
+      </div>
+      <div class="modal-info">
+        <h4>Albums that you listen from this band.</h4>
+        <ul v-for="(album,index) in albums" v-bind:key="index">
+          <li>
+            <a>{{album.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -57,7 +42,8 @@ export default {
     return {
       isMyProfile: false,
       showDialog: true,
-      albums: []
+      albums: [],
+      reRenderCount: 0
     }
   },
   methods: {
@@ -75,6 +61,7 @@ export default {
         this.$router.push("/");
       })
     },
+
     checkMyProfile () {
       if(this.$route.path == "/" + localStorage.getItem('username')){
         this.isMyProfile = true;
@@ -82,6 +69,7 @@ export default {
         this.isMyProfile = false;
       }
     },
+
     getAlbumsForTheBand() {
       axios.get(this.$url + "/api/albums/albums-of-band", {
         headers: {
@@ -95,9 +83,30 @@ export default {
         console.log(res);
         this.albums = res.data;
       })
+    },
+
+    getBandPhoto (){
+      axios.get(this.$url + "/api/bands/" + this.theBand.bandId + "/image/download",
+          {
+            headers: {
+              'Authorization': localStorage.getItem('user-token'),
+              responseType: 'arrayBuffer'
+            },
+            params: {
+              username: this.theBand.postOwner
+            }
+          }).then( res => {
+        this.theBand.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
+        this.reRenderCount++;
+      });
     }
   },
+
   mounted() {
+    if(this.theBand.src == null){
+      console.log("fotogetirici")
+      this.getBandPhoto();
+    }
     this.checkMyProfile();
     this.getAlbumsForTheBand();
   }
@@ -105,5 +114,20 @@ export default {
 </script>
 
 <style scoped>
+
+.modal .modal-guts .modal-image {
+  margin-right: 35px;
+}
+
+.modal .modal-guts .modal-info ul{
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .modal .modal-guts .modal-image {
+    margin-right: 5px;
+  }
+}
+
 
 </style>

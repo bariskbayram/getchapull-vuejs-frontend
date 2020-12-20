@@ -1,40 +1,36 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-xs-12 col-md-3" v-for="band in filteredBands" v-bind:key="band.band_id">
 
-        <md-card md-with-hover style="background: #cce4c1">
-          <div @click="getBand(band)">
-            <md-ripple >
-
-              <md-card-media-cover >
-                <md-card-media md-ratio="1:1">
-                  <img :src="band.src" alt=""/>
-                </md-card-media>
-              </md-card-media-cover>
-
-            </md-ripple>
-            <div class="variable">
-              <h3 style="margin-left: 7px"> {{band.bandName}} </h3>
-              <p style="margin-left: 7px"> Count: {{band.counter}}</p>
-            </div>
+  <div class="profile-content">
+    <div class="item" v-for="band in filteredBands" v-bind:key="band.band_id">
+      <div class="card">
+        <div class="card-content" @click="getBand(band)">
+          <div class="image-part">
+            <img :src="band.src" />
           </div>
-        </md-card>
-      </div> <!-- / col -->
-      <BandDetails v-if="showModal" @close="showModal = false" :the-band="selectedBand">
+          <div class="text-part">
+            <h3>{{ band.bandName }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      </BandDetails>
-    </div> <!-- / row -->
+    <Modal v-if="showModal">
+      <template v-slot:modal>
+        <BandDetails @close="showModal = false" :the-band="selectedBand"/>
+      </template>
+    </Modal>
+
   </div>
 </template>
 
 <script>
   import BandDetails from "@/components/BandDetails";
+  import Modal from "@/components/Modal";
   const axios = require('axios');
 
   export default {
     name: "BandContent",
-    components: {BandDetails},
+    components: {BandDetails, Modal},
     props: {
       filter: {},
     },
@@ -42,10 +38,11 @@
       return {
         bands: [],
         selectedBand: {},
-        showModal: false
+        showModal: false,
       }
     },
     methods:{
+
       setBandPhoto (band){
         axios.get(this.$url + "/api/bands/" + band.bandId + "/image/download",
         {
@@ -62,6 +59,7 @@
           this.showModal = false;
         });
       },
+
       getBand (band) {
         this.selectedBand = band;
         this.showModal = true;
@@ -93,8 +91,10 @@
 
 <style scoped>
 
-  .col-xs-12 {
-    margin-bottom: 20px;
+@media screen and (max-width: 500px){
+  .item {
+    margin: 0 auto;
   }
+}
 
 </style>

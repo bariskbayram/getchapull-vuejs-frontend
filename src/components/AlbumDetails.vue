@@ -1,46 +1,29 @@
 <template>
-  <div>
-    <md-dialog :md-active.sync="showDialog"
-               @md-closed="$emit('close')" @md-clicked-outside="$emit('close')">
-      <md-app>
-        <md-app-content>
-          <div class="modal-header">
-            <h2>{{theReview.bandName}} - {{ theReview.albumName }}</h2>
-          </div>
 
-          <div class="modal-body">
-            <div class="col-md-6">
-              <slot name="header">
-                <img class="img-mine" style="width:60%" v-bind:src="theAlbum.src"/>
-              </slot>
-            </div>
-            <slot name="body">
-              <h3>{{theReview.title}}</h3>
-              <p>{{theReview.content}}</p>
-              <h2>{{theReview.point}}/10</h2>
-            </slot>
-          </div>
-        </md-app-content>
-      </md-app>
-
-
-      <div class="modal-footer">
-        <slot name="footer">
-          <button v-if="isMyProfile" class="btn btn-warning" v-on:click="$emit('close')">
-            Edit
-          </button>
-          <button v-if="isMyProfile" class="btn btn-danger" v-on:click="deleteAlbumAndReview">
-            Delete
-          </button>
-          <button class="btn btn-primary" v-on:click="$emit('close')">
-            Close
-          </button>
-        </slot>
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h1>{{ theReview.bandName }} - {{ theReview.albumName }}</h1>
+      <a href="#" @click.prevent="deleteAlbumAndReview" v-if="isMyProfile" >
+        <i class="fas fa-trash-alt delete-icon"></i>
+      </a>
+    </div>
+    <div class="modal-close" @click="$emit('close')">
+      <div class="close-rotation">
+        <div class="line1"></div>
+        <div class="line2"></div>
       </div>
-    </md-dialog>
-
+    </div>
+    <div class="modal-guts">
+      <div class="modal-image">
+        <img :src="theAlbum.src" />
+      </div>
+      <div class="modal-info">
+        <h2>{{ theReview.title }}</h2>
+        <p>{{ theReview.content }}</p>
+        <h1 style="text-align: center;">{{ theReview.point }} / 10</h1>
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script>
@@ -64,6 +47,7 @@ export default {
       this.deleteAlbum(this.theAlbum);
       this.deleteReview(this.theReview);
     },
+
     deleteAlbum (album) {
       axios.delete(this.$url + "/api/albums/" + album.id, {
         headers: {
@@ -74,6 +58,7 @@ export default {
         }
       })
     },
+
     deleteReview (review) {
       axios.delete( this.$url + "/api/reviews/" + review.reviewId, {
         headers: {
@@ -85,6 +70,7 @@ export default {
         this.$router.push("/");
       })
     },
+
     getReview () {
       console.log("review getirildi.")
       axios.get(this.$url + "/api/reviews/" + this.theAlbum.id,
@@ -99,6 +85,7 @@ export default {
             this.theReview = res.data;
       })
     },
+
     checkMyProfile () {
       if(this.$route.path == "/" + localStorage.getItem('username')){
         this.isMyProfile = true;
@@ -118,13 +105,4 @@ export default {
 
 </script>
 
-<style scoped>
-.md-app {
-  max-height: 600px;
-  border: 1px solid;
-}
-
-.img-mine{
-  margin-bottom: 20px;
-}
-</style>
+<style scoped></style>

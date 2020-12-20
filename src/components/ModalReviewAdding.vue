@@ -1,49 +1,51 @@
 <template>
-  <div>
+
+  <div class="modal" id="modal">
     <div class="modal-header">
-      <slot name="header">
-        <h2>Adding a new album review !</h2>
-      </slot>
+      <h1>Adding review!</h1>
+      <div class="modal-confirm">
+        <button class="btn-green" v-if="review.review_point != null"
+                @click="pushReview"
+                :disabled="isProgressActive">
+          <div v-if="!isProgressActive">Create</div>
+            <div v-else class="spinner-loader">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+              <div class="rect4"></div>
+              <div class="rect5"></div>
+              <div class="rect6"></div>
+              <div class="rect7"></div>
+              <div class="rect8"></div>
+            </div>
+        </button>
+      </div>
     </div>
-
-    <md-app>
-      <md-app-content>
-        <slot class="modal-body">
-          <slot name="body">
-            <md-field>
-              <label>Review Title</label>
-              <md-input v-model="review.review_title" maxlength="30"></md-input>
-            </md-field>
-            <md-field>
-              <label>Review Content</label>
-              <md-textarea v-model="review.review_content" md-autogrow md-counter="300"></md-textarea>
-            </md-field>
-            <md-field>
-              <label>Review Point</label>
-              <md-input type="number" v-model="review.review_point"></md-input>
-              <span class="md-suffix">/10</span>
-            </md-field>
-            <span v-if="pointError" class="md-error error-mine">Point cannot be more than 10.</span>
-          </slot>
-        </slot>
-      </md-app-content>
-    </md-app>
-
-    <div class="modal-footer">
-      <slot name="footer">
-        <button class="btn btn-danger" v-on:click="$emit('closeModal')">
-          Cancel
-        </button>
-        <button v-if="review.review_point != null" :disabled="isProgressActive" class="btn btn-success" v-on:click="pushReview">
-          <span v-if="!isProgressActive">
-                    Create
-          </span>
-          <span v-else>
-            <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                           md-mode="indeterminate"/>
-          </span>
-        </button>
-      </slot>
+    <div class="modal-close" @click="$emit('closeModal')">
+      <div class="close-rotation">
+        <div class="line1"></div>
+        <div class="line2"></div>
+      </div>
+    </div>
+    <div class="modal-guts">
+      <div class="input-section">
+        <label class="with-input-border">Title</label>
+        <input type="text" v-model="review.review_title" required autofocus="" maxlength="30"/>
+      </div>
+      <div class="input-section">
+        <label class="with-input-border">Content</label>
+        <textarea v-model="review.review_content" required maxlength="350" rows="5" cols="50" />
+      </div>
+      <div class="input-section">
+        <label class="with-input-border">Point</label>
+        <div class="radios">
+          <div class="radio" v-for="(value) in 10" v-bind:key="value">
+            <input type="radio" id="one" :value="value" v-model="review.review_point">
+            <label for="one">{{ value }}</label>
+          </div>
+        </div>
+      </div>
+      <span v-if="pointError" class="error">Point cannot be more than 10.</span>
     </div>
   </div>
 </template>
@@ -79,8 +81,96 @@ export default {
 
 <style scoped>
 
-.error-mine{
-  color: red;
+.spinner-loader > div {
+  height: 50%;
+  position: relative;
+  top: -4px;
+}
+
+.modal {
+  height: 400px;
+}
+
+.modal .modal-guts {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.input-section {
+  margin-bottom: 30px;
+  width: 80%;
+}
+
+.input-section textarea {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  resize: none;
+}
+
+.input-section .radios {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input-section .radios .radio{
+  width: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-section .radios .radio label {
+  text-align: center;
+}
+
+.btn-green {
+  width: 100px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  max-height: 50px;
+}
+
+.btn-green:disabled {
+  width: 100px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  max-height: 50px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .modal {
+    height: 70%;
+  }
+
+  .input-section {
+    width: 100%;
+  }
+
+  .modal .modal-header {
+    justify-content: space-between;
+  }
+
+}
+
+@media screen and (max-width: 500px){
+
+  .modal .modal-header {
+    font-size: 0.4rem;
+  }
+
+  .modal .modal-header .modal-confirm {
+    right: 10px;
+  }
+
+  .btn-green {
+    font-size: 0.6rem;
+    width: 100px;
+  }
+
 }
 
 </style>

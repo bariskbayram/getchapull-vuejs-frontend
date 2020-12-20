@@ -1,52 +1,66 @@
 <template>
-  <div class="container" v-if="!isLoggedIn">
-    <div class="center-block middle">
-      <form novalidate class="md-layout" @submit.prevent="validateUser">
-        <md-card class="md-layout-item md-size-100 md-small-size-100">
-          <md-card-header>
-            <h2 class="md-title">Login to GetchaPull !</h2>
-          </md-card-header>
-
-          <md-card-content>
-            <div class="md-gutter">
-
-              <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>Username</label>
-                  <md-input v-model="user.username" required @keyup.enter="submitLogIn"></md-input>
-                </md-field>
-              </div>
-
-              <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>Password</label>
-                  <md-input v-model="user.password" type="password" required @keyup.enter="submitLogIn"></md-input>
-                </md-field>
-                <span v-if="infoError" class="md-error error-mine">Username/Password is invalid.</span>
-              </div>
-
-              <div class="md-layout-item md-small-size-100">
-                <md-button @click.prevent="submitLogIn"
-                           class="md-raised md-primary btn-lg btn-block"
-                           :disabled="isProgressActive">
-                  <span v-if="!isProgressActive">
-                    Sign in
-                  </span>
-                  <span v-else>
-                      <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                 md-mode="indeterminate"/>
-                  </span>
-                </md-button>
-              </div>
-
-              <p class="create-acc text-center">
-                Don't you have account? <router-link class="" to='/signup'>Create Account</router-link>
-              </p>
-            </div>
-          </md-card-content>
-        </md-card>
-      </form>
+  <div class="container-form">
+    <div class="media-box">
+      <div>
+        <h1>Welcome Back</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam, molestiae?</p>
+      </div>
     </div>
+    <form novalidate class="form-box">
+      <div class="form-inputs">
+        <div class="form-header">
+          <h1>Login</h1>
+          <p>Please Login to Continue</p>
+        </div>
+        <div class="input-section">
+          <label class="with-input-border">Username</label>
+          <input type="text" v-model="user.username" autofocus=""/>
+        </div>
+        <div class="input-section">
+          <label class="with-input-border">Password</label>
+          <input type="password" v-model="user.password" />
+        </div>
+        <span v-if="infoError" class="error">Username/Password is invalid.</span>
+        <a href="#">Forget Password?</a>
+        <div class="submit-section">
+          <button
+              class="btn-blue btn-big-grow"
+              @click.prevent="submitLogIn"
+              :disabled="isProgressActive">
+            <div v-if="!isProgressActive">Login</div>
+            <div v-else class="spinner-loader">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+              <div class="rect4"></div>
+              <div class="rect5"></div>
+              <div class="rect6"></div>
+              <div class="rect7"></div>
+              <div class="rect8"></div>
+            </div>
+          </button>
+          <router-link to='/signup'>
+            <button class="btn-gray btn-small-grow">Create Account</button>
+          </router-link>
+        </div>
+      </div>
+      <div class="login-with">
+        <div class="border-with-label">
+          <label>Or</label>
+          <hr>
+        </div>
+        <div class="social-media">
+          <p>Continue with social media.</p>
+          <div class="logos">
+            <ul>
+              <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+              <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+              <li><a href="#"><i class="fab fa-google"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -68,12 +82,7 @@ export default {
       infoError: false,
     }
   },
-  created() {
-    if(localStorage.getItem('isLoggedIn')){
-      this.isLoggedIn = localStorage.getItem('isLoggedIn');
-      this.$router.push("/");
-    }
-  },
+
   methods: {
     submitLogIn() {
       this.isProgressActive = true;
@@ -91,43 +100,51 @@ export default {
         this.infoError = true;
       })
     }
+  },
+  created() {
+    if(localStorage.getItem('isLoggedIn')){
+      this.isLoggedIn = localStorage.getItem('isLoggedIn');
+      this.$router.push("/");
+    }else {
+      document.querySelector('body').classList.remove('white-background');
+      document.querySelector('body').classList.add('red-background');
+    }
   }
 }
 </script>
 
 <style scoped>
 
-  body{
-    background-color: aqua;
-    color: blue;
-  }
-  .middle{
-    width: fit-content;
-    mso-vertical-page-align: middle;
-    margin-top: 100px;
+.btn-blue{
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.container-form .media-box::before {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.container-form .form-box {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.container-form .form-box .form-inputs {
+  flex-grow: 5;
+}
+
+@media(max-width: 500px){
+  .container-form .form-box {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 15px;
   }
 
-  .create-acc{
-    font-size: 20px;
-    margin-top: 30px;
+  .container-form .media-box::before {
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 0;
   }
-
-  input{
-    margin-top: 20px;
-  }
-
-  button{
-    margin-top: 20px;
-  }
-
-  p, h2{
-    padding-left: 15px;
-  }
-
-  .error-mine {
-    color: red;
-  }
-
+}
 
 
 </style>

@@ -1,52 +1,54 @@
 <template>
-  <div>
-    <md-app>
-      <md-app-content>
-        <div class="modal-body">
-          <slot name="body">
-            <md-field>
-              <label>Band Name</label>
-              <md-input type="text" v-model="input_band_name" autofocus="" @keyup.enter="searchBandName"></md-input>
-            </md-field>
-            <md-button class="md-raised" type="button"  style="background: lightblue" @click="searchBandName">Search</md-button>
-          </slot>
-        </div>
 
-        <div class="container-fluid">
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 every-card"  v-for="(artist ,index) in allBands" v-bind:key="index">
-            <div>
-              <md-checkbox v-model="picked" :value="artist">
-                <md-card>
-                  <md-card-header>
-                    <div class="md-title">{{artist.name}}</div>
-                  </md-card-header>
-                  <md-card-media md-medium>
-                    <img :src="artist.images[0].url"  v-if="artist.images.length > 0" />
-                    <img src="https://i.pinimg.com/originals/9e/df/af/9edfaf9d82b6d107b25cbe6824926572.png" v-else />
-                  </md-card-media>
-                </md-card>
-              </md-checkbox>
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h1>Select the band</h1>
+      <div class="modal-confirm">
+        <button class="btn-green" v-if="picked != null"
+                @click="pushSelectedBandToParent"
+                :disabled="isProgressActive">Next
+<!--          <div v-if="isProgressActive">Next</div>
+          <div v-else class="spinner-loader">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+            <div class="rect6"></div>
+            <div class="rect7"></div>
+            <div class="rect8"></div>
+          </div>-->
+        </button>
+      </div>
+    </div>
+    <div class="modal-close" @click="$emit('closeModal')">
+      <div class="close-rotation">
+        <div class="line1"></div>
+        <div class="line2"></div>
+      </div>
+    </div>
+    <div class="modal-guts">
+      <div class="search-block modal-search-block">
+        <input class="search-bar search-modal" type="text" placeholder="| Search"
+               v-model="input_band_name" autofocus="" @keyup.enter="searchBandName">
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="search-button-section">
+        <button class="search-button" @click="searchBandName">Search</button>
+      </div>
+      <div class="select-section">
+        <div class="card" v-for="(artist ,index) in bandList" v-bind:key="index">
+          <div class="card-content" :tabindex="index" @click="picked = artist">
+            <div class="text-part">
+              <h3>{{ artist.name }}</h3>
+            </div>
+            <div class="image-part image-band">
+              <img :src="artist.images[0].url"  v-if="artist.images.length > 0" />
+              <img src="https://i.pinimg.com/originals/9e/df/af/9edfaf9d82b6d107b25cbe6824926572.png" v-else />
             </div>
           </div>
         </div>
-      </md-app-content>
-    </md-app>
-
-    <div class="modal-footer">
-      <slot name="footer">
-        <button class="btn btn-danger" @click="$emit('closeModal')">
-          Cancel
-        </button>
-        <button class="btn btn-success" :disabled="isProgressActive" v-if="picked != null" @click="pushSelectedBandToParent">
-          <span v-if="!isProgressActive">
-                    Next
-          </span>
-          <span v-else>
-            <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                 md-mode="indeterminate"/>
-          </span>
-        </button>
-      </slot>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +59,11 @@ const axios = require('axios');
 
 export default {
   name: "BandAddingModal",
+  props: {
+    bandList: {
+      required : true,
+    }
+  },
   data () {
     return {
       picked: null,
@@ -81,7 +88,7 @@ export default {
         },
         json: true
       }).then( (res) => {
-        this.allBands = res.data.artists.items;
+        this.bandList = res.data.artists.items;
       })
     },
     pushSelectedBandToParent () {
@@ -93,36 +100,65 @@ export default {
 
 <style scoped>
 
-.bands{
-  margin-left: 20px;
-  font-size: large;
+.btn-green {
+  width: 140px;
+  cursor: pointer;
 }
 
-.button-mine {
-  margin-left: 75px;
+.modal {
+  width: 80%;
+  height: 85%;
 }
 
-.button-other {
-  margin-left: 185px;
+.card .card-content:focus {
+  outline: 8px solid #048315;
 }
 
-.md-card {
-  width: 250px;
-  margin: 4px;
-  display: inline-block;
-  vertical-align: top;
+.modal .modal-guts {
+  padding: 20px 20px 20px 20px;
 }
 
-.md-app {
-  max-height: 380px;
+.modal .modal-guts .modal-search-block {
+  width: 30%;
+  margin: 20px auto;
 }
 
-.every-card {
-  margin-bottom: 40px;
+@media screen and (max-width: 768px){
+
+  .btn-green {
+    font-size: 1rem;
+  }
+
+  .modal .modal-header {
+    justify-content: space-between;
+  }
+
+  .modal .modal-guts .modal-search-block {
+    width: 80%;
+  }
+
+  .card .card-content .image-band {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes animateleft {
+    from {left: -300px; opacity: 0}
+    to {left: 35%; opacity: 1}
+  }
 }
 
-.md-checkbox {
-  margin-bottom: 400px;
+@media screen and (max-width: 500px){
+
+  .modal .modal-header .modal-confirm {
+    right: 10px;
+  }
+
+  .btn-green {
+    font-size: 0.8rem;
+    width: 100px;
+  }
+
 }
 
 </style>

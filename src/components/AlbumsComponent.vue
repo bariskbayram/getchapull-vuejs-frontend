@@ -1,40 +1,37 @@
 <template>
-  <div class="row">
-    <div class="col-xs-12 col-md-3" v-for="(album, index) in filteredAlbums"
-         v-bind:key="index">
 
-      <md-card md-with-hover style="background: #cce4c1">
-        <div @click="getAlbum(album)">
-          <md-ripple >
-
-            <md-card-media-cover >
-              <md-card-media md-ratio="1:1">
-                <img :src="album.src" alt=""/>
-              </md-card-media>
-            </md-card-media-cover>
-
-          </md-ripple>
-          <div class="variable">
-            <h3 style="margin-left: 7px"> {{album.name}} </h3>
+  <div class="profile-content">
+    <div class="item" v-for="(album, index) in filteredAlbums" v-bind:key="index">
+      <div class="card">
+        <div class="card-content" @click="getAlbum(album)">
+          <div class="image-part">
+            <img :src="album.src" />
+          </div>
+          <div class="text-part">
+            <h3>{{ album.name }}</h3>
           </div>
         </div>
-      </md-card>
-    </div> <!-- / col -->
+      </div>
+    </div>
 
-    <AlbumDetails v-if="showModal" @close="showModal = false" :the-album="selectedAlbum" :props-review="fakeReview">
+    <Modal v-if="showModal">
+      <template v-slot:modal>
+        <AlbumDetails @close="showModal = false"
+                      :the-album="selectedAlbum" :props-review="fakeReview" />
+      </template>
+    </Modal>
 
-    </AlbumDetails>
-  </div> <!-- / row -->
-
+  </div>
 </template>
 
 <script>
   import AlbumDetails from "@/components/AlbumDetails";
+  import Modal from "@/components/Modal";
   const axios = require('axios');
 
   export default {
     name: "AlbumContent",
-    components: {AlbumDetails},
+    components: {AlbumDetails, Modal},
     props: {
       filter: {}
     },
@@ -72,12 +69,13 @@
           this.showModal = false;
         });
       },
+
       getAlbum(album){
         this.selectedAlbum = album;
         this.showModal = true;
       },
+
       getAllAlbums(){
-        console.log("çalişti")
         axios.get(this.$url + "/api/albums",
             {
               headers: {
@@ -107,8 +105,10 @@
 
 <style scoped>
 
-  .col-xs-12 {
-    margin-bottom: 20px;
+@media screen and (max-width: 500px){
+  .item {
+    margin: 0 auto;
   }
+}
 
 </style>

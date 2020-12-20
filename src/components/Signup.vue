@@ -1,66 +1,75 @@
 <template>
-  <div class="container">
-    <div id="form" class="center-block middle">
-      <form novalidate class="md-layout" @submit.prevent="validateUser">
-        <md-card class="md-layout-item md-size-100 md-small-size-100">
-          <md-card-header>
-            <h2 class="md-title">Sign up to GetchaPull !</h2>
-          </md-card-header>
-
-          <md-card-content>
-            <div class="md-gutter">
-
-              <div class="md-layout-item md-small-size-100 div-mine">
-                <md-field>
-                  <label>Full Name</label>
-                  <md-input class="input-mine" v-model="user.fullname" required autofocus="" @keyup.enter="validateForm"></md-input>
-                </md-field>
-                <span v-if="isFullnameError" class="md-error error-mine">Fullname's length must be more than 5.</span>
-              </div>
-
-              <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>Username</label>
-                  <md-input v-model="user.username" required @keyup.enter="validateForm"></md-input>
-                </md-field>
-                <span v-if="isUsernameError" class="md-error error-mine">Invalid username/Exists.</span>
-              </div>
-
-              <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>Password</label>
-                  <md-input v-model="user.password" type="password" required @keyup.enter="validateForm"></md-input>
-                </md-field>
-                <span v-if="isPasswordError" class="md-error error-mine">Password's length must be more than 5.</span>
-              </div>
-
-              <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>Password Confirm</label>
-                  <md-input v-model="passwordConfirm" type="password" required @keyup.enter="validateForm"></md-input>
-                </md-field>
-                <span v-if="isPasswordConfirmError" class="md-error error-mine">Password confirmation is failed.</span>
-              </div>
-
-              <div class="md-layout-item md-small-size-100">
-                <md-button @click.prevent="validateForm"
-                           class="md-raised md-primary btn-lg btn-block"
-                           :disabled="isProgressActive">
-                   <span v-if="!isProgressActive">
-                    Sign up
-                    </span>
-                   <span v-else>
-                    <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                 md-mode="indeterminate"/>
-                   </span>
-                </md-button>
-              </div>
-
-            </div>
-          </md-card-content>
-        </md-card>
-      </form>
+  <div class="container-form">
+    <div class="media-box">
+      <div>
+        <h1>Join Us</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam, molestiae?</p>
+      </div>
     </div>
+    <form novalidate class="form-box">
+      <div class="form-inputs">
+        <div class="form-header">
+          <h1>Singup</h1>
+        </div>
+        <div class="input-section">
+          <label class="with-input-border">Fullname</label>
+          <input type="text" v-model="user.fullname" autofocus=""/>
+        </div>
+        <span v-if="isFullnameError" class="error">Fullname's length must be more than 5.</span>
+        <div class="input-section">
+          <label class="with-input-border">Username</label>
+          <input type="text" v-model="user.username"/>
+        </div>
+        <span v-if="isUsernameError" class="error">Invalid username/Exists.</span>
+        <div class="input-section">
+          <label class="with-input-border">Password</label>
+          <input type="password" v-model="user.password"/>
+        </div>
+        <span v-if="isPasswordError" class="error">Password's length must be more than 5.</span>
+        <div class="input-section">
+          <label class="with-input-border">Password Confirm</label>
+          <input type="password" v-model="passwordConfirm"/>
+        </div>
+        <span v-if="isPasswordConfirmError" class="error">Password confirmation is failed.</span>
+        <div class="submit-section">
+          <button
+              class="btn-blue btn-big-grow"
+              @click.prevent="validateForm"
+              :disabled="isProgressActive">
+            <div v-if="!isProgressActive">Create Account</div>
+            <div v-else class="spinner-loader">
+              <div class="rect1"></div>
+              <div class="rect2"></div>
+              <div class="rect3"></div>
+              <div class="rect4"></div>
+              <div class="rect5"></div>
+              <div class="rect6"></div>
+              <div class="rect7"></div>
+              <div class="rect8"></div>
+            </div>
+          </button>
+          <router-link to='/login'>
+            <button class="btn-gray btn-small-grow">Login</button>
+          </router-link>
+        </div>
+      </div>
+      <div class="login-with">
+        <div class="border-with-label">
+          <label>Or</label>
+          <hr>
+        </div>
+        <div class="social-media">
+          <p>Continue with social media.</p>
+          <div class="logos">
+            <ul>
+              <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+              <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+              <li><a href="#"><i class="fab fa-google"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -87,6 +96,7 @@ export default {
   },
   methods: {
     validateForm () {
+      console.log("validate çalişti")
       this.checkFullname();
     },
 
@@ -95,35 +105,31 @@ export default {
         this.isFullnameError = true;
       }else{
         this.isFullnameError = false;
-        this.checkUsername();
+        this.checkUsernameIsExist();
       }
     },
 
+    checkUsernameIsExist(){
+      axios.get(this.$url + "/api/user-profiles/check-username-exist", {
+        params: {
+          username: this.user.username
+        }
+      }).then( (res) => {
+        if(res.data == true){
+          this.isUsernameError = true;
+        }else{
+          this.checkUsername();
+        }
+      })
+    },
+
     checkUsername() {
-      const isAvailable = this.checkUsernameIsAvailable();
       if(this.user.username.length < 4){
-        this.isUsernameError = true;
-      }else if(isAvailable) {
         this.isUsernameError = true;
       }else{
         this.isUsernameError = false;
         this.checkPassword();
       }
-    },
-
-    checkUsernameIsAvailable(){
-      axios.get(this.$url + "/api/user-profiles/search-username", {
-        params: {
-          username: this.user.username
-        }
-      }).then( (res) => {
-        console.log(res)
-        if(res.data == true){
-          return false;
-        }else{
-          return true;
-        }
-      })
     },
 
     checkPassword() {
@@ -145,49 +151,58 @@ export default {
             this.$router.push("/login");
           })
     }
-
+  },
+  created() {
+    document.querySelector('body').classList.remove('white-background');
+    document.querySelector('body').classList.add('red-background');
   }
 }
 </script>
 
 <style scoped>
 
-body{
-  background-color: aqua;
-  color: blue;
-}
-.middle{
-  width: fit-content;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
+body {
+  background: rgb(119, 42, 42);
 }
 
-input{
-  margin-top: 20px;
+.container-form .media-box {
+  order: 2;
 }
 
-button{
-  margin-top: 25px;
+.btn-blue{
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
-p, h2 {
-  padding-left: 15px;
+.container-form .media-box::before {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
-.error-mine {
-  color: red;
+.container-form .form-box {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
 }
 
-.div-mine {
-  margin-bottom: 15px;
+.container-form .form-box .form-inputs {
+  flex-grow: 4;
 }
 
-.input-mine {
-  margin-bottom: 0px;
+.container-form .form-box .form-inputs .input-section {
+  margin-top: 10px;
+}
+
+@media(max-width: 500px){
+  .container-form .form-box {
+    order: 2;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 15px;
+  }
+
+  .container-form .media-box::before {
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 0;
+  }
 }
 
 </style>
