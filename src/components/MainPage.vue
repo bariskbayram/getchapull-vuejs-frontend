@@ -29,7 +29,7 @@
       <div class="posts-section">
         <div class="post" v-for="(post, index) in posts" v-bind:key="index">
           <div class="post-action">
-            <a v-bind:href="'/' + post.username"><img v-bind:src="profilePhoto" /></a>
+            <a v-bind:href="'/' + post.username"><img v-bind:src="post.user_photo" /></a>
             <p><a v-bind:href="'/' + post.username"><span class="user">{{ post.username }}</span></a> added a new review. <span class="time">{{ post.date | moment }}</span></p>
           </div>
           <div class="post-content">
@@ -234,6 +234,18 @@ export default {
         post.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
         this.reRenderCount++;
       })
+
+      axios.get(this.$url + "/api/user-profiles/" + post.username +"/image/download",{
+        headers: {
+          'Authorization': localStorage.getItem('user-token'),
+          responseType: 'arrayBuffer'
+        }
+      }).then( (res) => {
+        this.post.user_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+        this.showAlbumModal = true;
+        this.showAlbumModal = false;
+      });
+
     },
 
     async getPosts(){
