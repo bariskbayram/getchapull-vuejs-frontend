@@ -127,7 +127,11 @@ export default {
       profilePhoto: '',
       allUsers: [],
       notFriends: [],
-      posts: [],
+      posts: [
+          {
+            user_photo: ""
+          }
+      ],
       aCount: "",
       bCount: "",
       reRenderCount: 0,

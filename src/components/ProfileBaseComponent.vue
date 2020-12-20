@@ -81,7 +81,7 @@
         filter: "",
         isUsernameAvailable: true,
         user: {
-          friends: [],
+          friends: [""],
           followers: ''
         },
         isYourFriend: false,
