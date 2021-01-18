@@ -8,7 +8,7 @@
             <img :src="album.src" />
           </div>
           <div class="text-part">
-            <h3>{{ album.name }}</h3>
+            <h3>{{ album.albumName }}</h3>
           </div>
         </div>
       </div>
@@ -17,7 +17,7 @@
     <Modal v-if="showModal">
       <template v-slot:modal>
         <AlbumDetails @close="showModal = false"
-                      :the-album="selectedAlbum" :props-review="fakeReview" />
+                      :the-album="selectedAlbum" :props-post="fakeReview" />
       </template>
     </Modal>
 
@@ -46,22 +46,21 @@
         fakeReview: {
           'bandName': '',
           'albumName': '',
-          'title': '',
-          'content': '',
-          'point': ''
+          'reviewTitle': '',
+          'reviewContent': '',
+          'reviewPoint': ''
         }
       }
     },
     methods:{
       setAlbumCover(album){
-        axios.get(this.$url + "/api/albums/" + album.id + "/image/download",
-        {
+        axios.get(this.$url + "/api/v1/albums/download_album_image", {
           headers: {
-            'Authorization': localStorage.getItem('user-token'),
+            'Authorization': localStorage.getItem('userToken'),
             responseType: 'arrayBuffer'
           },
           params: {
-            username: this.$route.params.username
+            album_id : album.albumId
           }
         }).then( res => {
           album.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -76,10 +75,9 @@
       },
 
       getAllAlbums(){
-        axios.get(this.$url + "/api/albums",
-            {
+        axios.get(this.$url + "/api/v1/albums/get_albums_by_username", {
               headers: {
-                "Authorization": localStorage.getItem('user-token'),
+                "Authorization": localStorage.getItem('userToken'),
               },
               params: {
                 username: this.$route.params.username
@@ -96,7 +94,7 @@
     computed: {
       filteredAlbums () {
         return this.albums.filter(album => {
-          return album.name.toLocaleLowerCase().includes(this.filter.toLowerCase())
+          return album.albumName.toLocaleLowerCase().includes(this.filter.toLowerCase())
         })
       }
     }

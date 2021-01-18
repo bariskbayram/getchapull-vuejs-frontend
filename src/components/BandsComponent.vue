@@ -1,7 +1,7 @@
 <template>
 
   <div class="profile-content">
-    <div class="item" v-for="band in filteredBands" v-bind:key="band.band_id">
+    <div class="item" v-for="band in filteredBands" v-bind:key="band.bandId">
       <div class="card">
         <div class="card-content" @click="getBand(band)">
           <div class="image-part">
@@ -44,14 +44,13 @@
     methods:{
 
       setBandPhoto (band){
-        axios.get(this.$url + "/api/bands/" + band.bandId + "/image/download",
-        {
+        axios.get(this.$url + "/api/v1/bands/download_band_image", {
           headers: {
-            'Authorization': localStorage.getItem('user-token'),
+            'Authorization': localStorage.getItem('userToken'),
             responseType: 'arrayBuffer'
           },
           params: {
-            username: this.$route.params.username
+            band_id : band.bandId
           }
         }).then( res => {
           band.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -66,10 +65,9 @@
       }
     },
     mounted () {
-      axios.get(this.$url + "/api/bands",
-      {
+      axios.get(this.$url + "/api/v1/bands/get_bands_by_username", {
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
         },
         params: {
           username: this.$route.params.username

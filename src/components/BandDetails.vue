@@ -3,9 +3,6 @@
   <div class="modal" id="modal">
     <div class="modal-header">
       <h1>{{ theBand.bandName }}</h1>
-      <a href="#" @click.prevent="deleteBand" v-if="isMyProfile" >
-        <i class="fas fa-trash-alt delete-icon"></i>
-      </a>
     </div>
     <div class="modal-close" @click="$emit('close')">
       <div class="close-rotation">
@@ -21,7 +18,7 @@
         <h4>Albums that you listen from this band.</h4>
         <ul v-for="(album,index) in albums" v-bind:key="index">
           <li>
-            <a>{{album.name}}</a>
+            <a>{{album.albumName}}</a>
           </li>
         </ul>
       </div>
@@ -47,20 +44,6 @@ export default {
     }
   },
   methods: {
-    deleteBand () {
-      axios.delete(this.$url + "/api/bands/" + this.theBand.bandId, {
-        headers: {
-          'Authorization': localStorage.getItem('user-token'),
-        },
-        params: {
-          username: localStorage.getItem('username')
-        }
-      }).then( (res) => {
-        console.log(res);
-        this.$emit('close');
-        this.$router.push("/");
-      })
-    },
 
     checkMyProfile () {
       if(this.$route.path == "/" + localStorage.getItem('username')){
@@ -71,13 +54,13 @@ export default {
     },
 
     getAlbumsForTheBand() {
-      axios.get(this.$url + "/api/albums/albums-of-band", {
+      axios.get(this.$url + "/api/v1/albums/get_albums_by_band_id_and_username", {
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
         },
         params: {
           username: localStorage.getItem('username'),
-          bandId: this.theBand.bandId
+          band_id: this.theBand.bandId
         }
       }).then( (res) => {
         console.log(res);
@@ -86,14 +69,13 @@ export default {
     },
 
     getBandPhoto (){
-      axios.get(this.$url + "/api/bands/" + this.theBand.bandId + "/image/download",
-          {
+      axios.get(this.$url + "/api/v1/bands/download_band_image", {
             headers: {
-              'Authorization': localStorage.getItem('user-token'),
+              'Authorization': localStorage.getItem('userToken'),
               responseType: 'arrayBuffer'
             },
             params: {
-              username: this.theBand.postOwner
+              band_id: this.theBand.bandId
             }
           }).then( res => {
         this.theBand.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');

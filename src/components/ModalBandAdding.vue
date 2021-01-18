@@ -30,7 +30,7 @@
     <div class="modal-guts">
       <div class="search-block modal-search-block">
         <input class="search-bar search-modal" type="text" placeholder="| Search"
-               v-model="input_band_name" autofocus="" @keyup.enter="searchBandName">
+               v-model="inputBandName" autofocus="" @keyup.enter="searchBandName">
         <i class="fas fa-search"></i>
       </div>
       <div class="search-button-section">
@@ -67,7 +67,7 @@ export default {
   data () {
     return {
       picked: null,
-      input_band_name: '',
+      inputBandName: '',
       allBands: [],
       showDialog : true,
       isProgressActive: false,
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     searchBandName () {
-      var query = this.input_band_name;
+      var query = this.inputBandName;
 
       axios.get('https://api.spotify.com/v1/search', {
         headers: {

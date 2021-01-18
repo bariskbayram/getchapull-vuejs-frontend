@@ -2,7 +2,7 @@
 
   <div class="modal" id="modal">
     <div class="modal-header">
-      <h1>{{ theReview.bandName }} - {{ theReview.albumName }}</h1>
+      <h1>{{ thePost.bandName }} - {{ thePost.albumName }}</h1>
       <a href="#" @click.prevent="deleteAlbumAndReview" v-if="isMyProfile" >
         <i class="fas fa-trash-alt delete-icon"></i>
       </a>
@@ -18,9 +18,9 @@
         <img :src="theAlbum.src" />
       </div>
       <div class="modal-info">
-        <h2>{{ theReview.title }}</h2>
-        <p>{{ theReview.content }}</p>
-        <h1 style="text-align: center;">{{ theReview.point }} / 10</h1>
+        <h2>{{ thePost.reviewTitle }}</h2>
+        <p>{{ thePost.reviewContent }}</p>
+        <h1 style="text-align: center;">{{ thePost.reviewPoint }} / 10</h1>
       </div>
     </div>
   </div>
@@ -33,36 +33,40 @@ export default {
   name: "AlbumDetails",
   props: {
     theAlbum: {},
-    propsReview: {}
+    propsPost: {}
   },
   data () {
     return {
       isMyProfile: false,
       showDialog: true,
-      theReview: {}
+      thePost: {}
     }
   },
   methods: {
     deleteAlbumAndReview () {
       this.deleteAlbum(this.theAlbum);
-      this.deleteReview(this.theReview);
+      this.deleteReview(this.thePost);
     },
 
     deleteAlbum (album) {
-      axios.delete(this.$url + "/api/albums/" + album.id, {
+      axios.delete(this.$url + "/api/v1/albums/delete_album_by_album_id_for_user", {
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
         },
         params: {
-          username: localStorage.getItem('username')
+          album_id: album.albumId,
+          user_id: localStorage.getItem('userId')
         }
       })
     },
 
-    deleteReview (review) {
-      axios.delete( this.$url + "/api/reviews/" + review.reviewId, {
+    deleteReview (thePost) {
+      axios.delete( this.$url + "/api/v1/reviews/delete_review_by_review_id", {
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
+        },
+        params: {
+          review_id : thePost.reviewId
         }
       }).then( (res) => {
         console.log(res);
@@ -71,18 +75,18 @@ export default {
       })
     },
 
-    getReview () {
-      console.log("review getirildi.")
-      axios.get(this.$url + "/api/reviews/" + this.theAlbum.id,
-          {
+    getPost () {
+      console.log("post getirildi.")
+      axios.get(this.$url + "/api/v1/reviews/get_post_by_album_id_and_username", {
             headers: {
-              "Authorization": localStorage.getItem('user-token'),
+              "Authorization": localStorage.getItem('userToken'),
             },
             params: {
-              username: this.theAlbum.author,
+              album_id: this.theAlbum.albumId,
+              username: this.$route.params.username,
             }
           }).then(res => {
-            this.theReview = res.data;
+            this.thePost = res.data;
       })
     },
 
@@ -95,10 +99,10 @@ export default {
    }
   },
   mounted() {
-    this.theReview = this.propsReview;
+    this.thePost = this.propsPost;
     this.checkMyProfile();
-    if(this.theReview.bandName == ''){
-      this.getReview();
+    if(this.thePost.bandName == ''){
+      this.getPost();
     }
   }
 }

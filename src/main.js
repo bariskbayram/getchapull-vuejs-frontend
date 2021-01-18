@@ -11,8 +11,8 @@ import MainPage from './components/MainPage.vue'
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
-Vue.prototype.$url = "https://metal-review-spring.herokuapp.com";
-// Vue.prototype.$url = "http://localhost:8080";
+// Vue.prototype.$url = "https://metal-review-spring.herokuapp.com";
+Vue.prototype.$url = "http://localhost:8080";
 
 const router = new VueRouter({
   routes: [

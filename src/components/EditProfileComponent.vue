@@ -5,11 +5,16 @@
         <h2>Edit Profile</h2>
         <p>{{ user.fullname }}</p>
       </div>
-      <div class="edit-part">
+      <form novalidate class="edit-part">
         <div class="form-inputs">
             <div class="input-section">
               <label class="with-input-border">Fullname</label>
               <input type="text" v-model="user.fullname" autofocus=""/>
+            </div>
+            <span v-if="isFullnameError" class="error">Fullname's length must be more than 5.</span>
+            <div class="input-section">
+              <label class="with-input-border">Bio Information</label>
+              <input type="text" v-model="user.bioInfo"/>
             </div>
             <span v-if="isFullnameError" class="error">Fullname's length must be more than 5.</span>
             <div class="input-section">
@@ -43,7 +48,7 @@
           </div>
         <div class="card-image" @click="showModal = true">
           <div class="user-image" >
-            <img id="profile_img" style="margin-right: 10%" v-bind:src="profile_photo" alt="/">
+            <img id="profile_img" style="margin-right: 10%" v-bind:src="profilePhoto" alt="/">
           </div>
         </div>
         <my-upload field="img"
@@ -53,7 +58,7 @@
                    :width="300"
                    :height="300"
                    img-format="jpg"></my-upload>
-      </div>
+      </form>
     </div>
     <div class="container" v-else>
       <div class="center">
@@ -80,7 +85,7 @@ export default {
     return {
       isMyProfile: false,
       user: {},
-      profile_photo: '',
+      profilePhoto: '',
       password: '',
       passwordConfirm: '',
       isInfoSection: true,
@@ -110,12 +115,12 @@ export default {
       const formData = new FormData();
       formData.append("profile_photo", this.fileImg);
       formData.append("username", localStorage.getItem('username'));
-      axios.post(this.$url + "/api/user-profiles/image/upload",
+      axios.post(this.$url + "/api/v1/users/upload_profile_photo",
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              "Authorization": localStorage.getItem('user-token')
+              "Authorization": localStorage.getItem('userToken')
             }
           }).then( (res) => {
             console.log(res + " profile-photo is uploaded.");
@@ -148,19 +153,20 @@ export default {
       this.isProgressActive = true;
       var userPush = {
         username: this.user.username,
+        bio_info: this.user.bioInfo,
         fullname: this.user.fullname,
         password: this.password
       }
-      axios.put(this.$url + "/api/user-profiles/" + this.user.username, userPush, {
+      axios.put(this.$url + "/api/v1/users/update_user_by_username", userPush, {
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
         }
       }).then(() => {
         this.$router.push('/' + localStorage.getItem('username'));
       });
     },
     checkUsernameIsAvailable(){
-      axios.get(this.$url + "/api/user-profiles/search-username", {
+      axios.get(this.$url + "/api/v1/users/check_username_exist", {
         params: {
           username: this.user.username
         }
@@ -179,14 +185,17 @@ export default {
       }
     },
     getProfilePhoto(){
-      axios.get(this.$url + "/api/user-profiles/" + this.$route.params.username +"/image/download",{
+      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
+        },
+        params: {
+          username: this.$route.params.username
         }
       }).then( (res) => {
-        this.profile_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
-        this.imgDataUrl = this.profile_photo;
+        this.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+        this.imgDataUrl = this.profilePhoto;
       });
       return this.profile_photo;
     },
@@ -202,11 +211,14 @@ export default {
     if(!this.checkUserIsLoggedIn()){
       this.$router.push('/login');
     }else{
-      axios.get(this.$url + "/api/user-profiles/get-user?username=" + this.$route.params.username)
-          .then( (res) => {
+      axios.get(this.$url + "/api/v1/users/get_user_by_username", {
+        params: {
+          username : this.$route.params.username
+        }
+      }).then( (res) => {
             this.user = res.data;
           });
-      this.profile_photo = this.getProfilePhoto();
+      this.profilePhoto = this.getProfilePhoto();
     }
   }
 }

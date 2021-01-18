@@ -84,13 +84,16 @@ export default {
   },
 
   methods: {
+    //Burası düzenlenecek userId de localstorage tutulcak fakat localstorage tutmak mantıklı mı bilmiyorum
+    // aynı zamanda expirationDate muhabbeti çalışmıyor
     submitLogIn() {
       this.isProgressActive = true;
       axios.post(this.$url + "/login", this.user)
       .then( (res) => {
         this.data = res.headers;
+        console.log(res)
         localStorage.setItem('isLoggedIn', true);
-        localStorage.setItem('user-token', this.data.authorization);
+        localStorage.setItem('userToken', this.data.authorization);
         localStorage.setItem('username', this.user.username);
         localStorage.setItem('expirationDate', new Date().addDays(14));
         this.$router.push("/");

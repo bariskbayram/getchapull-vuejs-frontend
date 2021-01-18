@@ -5,18 +5,18 @@
         <div class="follow-section">
           <div class="about-user">
             <h2>{{ user.fullname }}</h2>
-            <p>My portfolio is here !</p>
+            <p>{{ user.bioInfo }}</p>
           </div>
           <button class="btn-follow btn-new-review" v-if="isLoggedIn && isMyProfile" v-on:click="showModal = true">New Review</button>
-          <button class="btn-follow" v-else-if="!isYourFriend" @click="addFriend(user.username)">Follow</button>
-          <button class="btn-follow" v-else @click="deleteFriend(user.username)">Unfollow</button>
+          <button class="btn-follow" v-else-if="!isYourFriend" @click="followSomeone(user.userId)">Follow</button>
+          <button class="btn-follow" v-else @click="unfollowSomeone(user.userId)">Unfollow</button>
           <div class="follow-statistics">
-            <p>{{ following }} Following</p>
-            <p>{{ followers }} Followers</p>
+            <p @click="userListShowModal = true; isFollowersModal = false">{{ followingsCount }} Followings</p>
+            <p @click="userListShowModal = true; isFollowersModal = true">{{ followersCount }} Followers</p>
           </div>
         </div>
         <div class="user-image">
-          <img v-bind:src="profile_photo" />
+          <img v-bind:src="profilePhoto" />
         </div>
       </div>
       <div class="profile-sections">
@@ -46,6 +46,13 @@
       <BandContent v-else :filter="filter"/>
     </div>
 
+    <Modal v-if="userListShowModal" @closeModal="closeModal">
+      <template v-slot:modal>
+        <ModalUserList v-if="userListShowModal && isFollowersModal" :is-followers=isFollowersModal :user-list="followers" @closeModal="closeModal" />
+        <ModalUserList v-if="userListShowModal && !isFollowersModal" :is-followers=isFollowersModal :user-list="followings" @closeModal="closeModal" />
+      </template>
+    </Modal>
+
     <AddAlbumContent v-if="showModal" @close="showModal = false" />
 
   </div>
@@ -55,22 +62,26 @@
   import AlbumContent from './AlbumsComponent.vue';
   import BandContent from "@/components/BandsComponent";
   import AddAlbumContent from "@/components/AddAlbumComponent";
+  import ModalUserList from "@/components/ModalUserList";
+  import Modal from "@/components/Modal";
 
   const axios = require('axios').default;
 
   export default {
     name: 'BaseContent',
     components:{
+      Modal,
+      ModalUserList,
       AlbumContent,
       BandContent,
       AddAlbumContent
     },
     computed: {
-      followers: function () {
-        return this.user.followers;
+      followersCount: function () {
+        return this.followers.length;
       },
-      following: function () {
-        return this.user.friends.length-1;
+      followingsCount: function () {
+        return this.followings.length;
       }
     },
     watch: {
@@ -80,30 +91,40 @@
       return{
         filter: "",
         isUsernameAvailable: true,
-        user: {
-          friends: [""],
-          followers: ''
-        },
+        user: {},
+        followers : '',
+        followings: '',
         isYourFriend: false,
         isAlbumSection: true,
         showModal: false,
-        profile_photo: '',
+        userListShowModal: false,
+        isFollowersModal: false,
+        profilePhoto: '',
         isLoggedIn: localStorage.getItem('isLoggedIn'),
         isMyProfile: false,
         reRenderCount: 0
       }
     },
     methods: {
+
+      closeModal () {
+        this.userListShowModal = false;
+        this.$emit('close');
+      },
+
       getProfilePhoto(){
-        axios.get(this.$url + "/api/user-profiles/" + this.$route.params.username +"/image/download",{
+        axios.get(this.$url + "/api/v1/users/download_profile_photo",{
           headers: {
-            'Authorization': localStorage.getItem('user-token'),
+            'Authorization': localStorage.getItem('userToken'),
             responseType: 'arrayBuffer'
+          },
+          params: {
+            username: this.$route.params.username
           }
         }).then( (res) => {
-          this.profile_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+          this.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         });
-        return this.profile_photo;
+        return this.profilePhoto;
       },
 
       checkMyProfile () {
@@ -114,14 +135,16 @@
         }
       },
 
+      //username ile kontrol ediyoruz aslonda other_user_id daha mantıklı ama profil girince birinin
+      //user_id falan çekiyor muyuz emin değilim en azından tutuyor muyuz ondan emin değilim şimdilik böyle(
       checkIsYourFriend() {
-        axios.get(this.$url + "/api/user-profiles/is-your-friend", {
+        axios.get(this.$url + "/api/v1/users/is_your_friend", {
           headers: {
-            'Authorization': localStorage.getItem('user-token')
+            'Authorization': localStorage.getItem('userToken')
           },
           params: {
-            username: localStorage.getItem('username'),
-            friend_username:  this.$route.params.username
+            user_id: localStorage.getItem('userId'),
+            other_username:  this.$route.params.username
           }
         }).then((res) => {
           this.isYourFriend = res.data;
@@ -129,59 +152,102 @@
         });
       },
 
-      addFriend (username) {
-        axios.put(this.$url + "/api/user-profiles/add-friend", "",{
+      followSomeone (followingId) {
+        axios.put(this.$url + "/api/v1/users/follow_someone", "",{
           headers: {
-            'Authorization': localStorage.getItem('user-token')
+            'Authorization': localStorage.getItem('userToken')
           },
           params: {
-            username: localStorage.getItem('username'),
-            friend_username:  username
+            user_id: localStorage.getItem('userId'),
+            following_id: followingId
           }
         }).then( () =>{
           this.isYourFriend = true;
-          this.user.followers++;
+          this.followers.push(
+              {
+                'userId': localStorage.getItem('userId'),
+                'username': localStorage.getItem('username')
+              });
           this.reRenderCount++;
         })
       },
 
-      deleteFriend (username) {
-        axios.put(this.$url + "/api/user-profiles/delete-friend", "",{
+      unfollowSomeone (unfollowingId) {
+        axios.put(this.$url + "/api/v1/users/unfollow_someone", "",{
           headers: {
-            'Authorization': localStorage.getItem('user-token')
+            'Authorization': localStorage.getItem('userToken')
           },
           params: {
-            username: localStorage.getItem('username'),
-            friend_username:  username
+            user_id: localStorage.getItem('userId'),
+            unfollowing_id:  unfollowingId
           }
         }).then( () =>{
           this.isYourFriend = false;
-          this.user.followers--;
+          this.followers.forEach((user,index) => {
+            if(user.userId == localStorage.getItem('userId')){
+              this.followers.splice(index, 1);
+            }
+          });
           this.reRenderCount++;
         })
       },
 
       getUserProfile() {
-        axios.get(this.$url + "/api/user-profiles/get-user?username=" + this.$route.params.username)
-            .then( (res) => {
-              this.user = res.data;
-              this.user.followers = res.data.followers;
-              console.log(this.user.followers)
-            });
+        axios.get(this.$url + "/api/v1/users/get_user_by_username", {
+          params: {
+            username: this.$route.params.username
+          }
+        }).then( (res) => {
+            this.user = res.data;
+            this.getFollowersAndFollowing()
+        });
+      },
+
+      getFollowersAndFollowing() {
+        axios.get(this.$url + "/api/v1/users/get_followers", {
+          headers: {
+            'Authorization': localStorage.getItem('userToken')
+          },
+          params: {
+            user_id: this.user.userId
+          }
+        }).then( (res) => {
+          this.followers = res.data;
+          this.followers.splice(0,1);
+          console.log("followers")
+          console.log(this.followers)
+        });
+
+        axios.get(this.$url + "/api/v1/users/get_followings", {
+          headers: {
+            'Authorization': localStorage.getItem('userToken')
+          },
+          params: {
+            user_id: this.user.userId
+          }
+        }).then( (res) => {
+          this.followings = res.data;
+          this.followings.splice(0,1);
+          console.log("followings")
+          console.log(this.followings)
+        });
       },
 
       createdGettingData(){
         this.checkIsYourFriend();
         this.checkMyProfile();
-        axios.get(this.$url + "/api/user-profiles/check-username-exist?username=" + this.$route.params.username)
-            .then( (res) => {
+        axios.get(this.$url + "/api/v1/users/check_username_exist",{
+          params: {
+            username: this.$route.params.username
+          }
+        }).then( (res) => {
               this.isUsernameAvailable = res.data;
               if(this.isUsernameAvailable){
                 this.getUserProfile();
               }
             });
 
-        this.profile_photo = this.getProfilePhoto();
+        this.profilePhoto = this.getProfilePhoto();
         if(!this.isLoggedIn){
           this.$router.push("/login");
         }

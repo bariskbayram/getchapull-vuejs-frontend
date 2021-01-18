@@ -89,30 +89,13 @@ export default {
 
     checkBandAndPush (review) {
       this.review = review;
-      if(this.review.review_title == ''){
-        this.review.review_title = '!';
+      if(this.review.reviewTitle == ''){
+        this.review.reviewTitle = 'GetchaPull ! - No Title';
       }
-      if(this.review.review_content == ''){
-        this.review.review_content = '!';
+      if(this.review.reviewContent == ''){
+        this.review.reviewContent = 'GetchaPull ! - No Content';
       }
-      console.log("çalişti")
-      axios.get(this.$url + "/api/bands/" + this.band.name,
-      {
-        headers: {
-          'Authorization': localStorage.getItem('user-token'),
-        },
-        params: {
-          username: localStorage.getItem("username")
-        }
-      }).then(res => {
-        console.log(res)
-        if(res.data == ""){
-          this.pushBand();
-        }else{
-          this.band.band_id = res.data;
-          this.checkAlbumExist();
-        }
-      })
+      this.pushBand();
     },
 
     async pushBand() {
@@ -128,45 +111,29 @@ export default {
       }
 
       const formData = new FormData();
-      formData.append("band_file", this.selectedBandImage);
-      formData.append("band_name", this.band.name);
-      formData.append("username",  localStorage.getItem("username"));
-      axios.post(this.$url + "/api/bands/image/upload",
+      formData.append("multipart_file", this.selectedBandImage);
+      formData.append('band_dto', new Blob([JSON.stringify({
+        "band_name": this.band.name,
+        "band_spotify_id": this.band.id
+      })], {
+        type: "application/json"
+      }));
+      axios.post(this.$url + "/api/v1/bands/upload_band_with_image",
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              "Authorization": localStorage.getItem('user-token')
+              "Authorization": localStorage.getItem('userToken')
             }
           }
       ).then((res) => {
         console.log("band uploaded successfully");
-        this.band.band_id = res.data;
-        this.checkAlbumExist();
+        this.band.bandId = res.data;
+        console.log(this.band.bandId);
+        this.pushAlbum();
       }).catch(err => {
         console.log(err);
       });
-    },
-
-    checkAlbumExist () {
-      axios.get(this.$url + "/api/albums/isExist/" + this.album.name,
-          {
-            headers: {
-              'Authorization': localStorage.getItem('user-token'),
-            },
-            params: {
-              bandId: this.band.band_id,
-              username: localStorage.getItem("username")
-            }
-          }).then(res => {
-        console.log(res)
-        if(res.data == false){
-          this.pushAlbum();
-        }else{
-          this.$emit('close');
-          return;
-        }
-      })
     },
 
     async pushAlbum() {
@@ -182,24 +149,29 @@ export default {
       }
 
       const formData = new FormData();
-      console.log("this.band.band_id" + this.band.band_id)
+      formData.append("multipart_file", this.selectedAlbumImage);
+      formData.append('album_dto', new Blob([JSON.stringify({
+        "album_name": this.album.name,
+        "album_spotify_id": this.album.id,
+        "album_year": this.album.release_date.substring(0,4),
+        "band_id": this.band.bandId,
+        "user_id": localStorage.getItem('userId')
+      })], {
+        type: "application/json"
+      }));
 
-      formData.append("album_file", this.selectedAlbumImage);
-      formData.append("album_title", this.album.name);
-      formData.append("band_id", this.band.band_id);
-      formData.append("year", this.album.release_date);
-      formData.append("username", localStorage.getItem("username"));
-      axios.post(this.$url + "/api/albums/image/upload",
+      axios.post(this.$url + "/api/v1/albums/upload_album_with_image",
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              "Authorization": localStorage.getItem('user-token')
+              "Authorization": localStorage.getItem('userToken')
             }
           }
       ).then((res) => {
         console.log("album uploaded successfully");
-        this.album.album_id = res.data;
+        this.album.albumId = res.data;
+        console.log(this.album.albumId);
         this.pushReview();
       }).catch(err => {
         console.log(err);
@@ -210,21 +182,22 @@ export default {
       console.log("pushReview")
 
       const formData = new FormData();
-      formData.append("review_title", this.review.review_title);
-      formData.append("review_content", this.review.review_content);
-      formData.append("review_point", this.review.review_point);
-      formData.append("album_id", this.album.album_id);
-      formData.append("album_name", this.album.name);
-      formData.append("band_id", this.band.band_id);
-      formData.append("band_name", this.band.name);
-      formData.append("username", localStorage.getItem("username"));
-      formData.append("date", new Date());
-      axios.post(this.$url + "/api/reviews",
+      formData.append('review_dto', new Blob([JSON.stringify({
+        "review_title": this.review.reviewTitle,
+        "review_content": this.review.reviewContent,
+        "review_point": parseInt(this.review.reviewPoint),
+        "album_id": this.album.albumId,
+        "user_id": localStorage.getItem('userId')
+      })], {
+        type: "application/json"
+      }));
+
+      axios.post(this.$url + "/api/v1/reviews/upload_review",
           formData,
           {
             headers:{
               "Content-Type":"multipart/form-data",
-              "Authorization": localStorage.getItem('user-token')
+              "Authorization": localStorage.getItem('userToken')
             }
           }
       ).then( () => {

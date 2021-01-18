@@ -29,8 +29,8 @@
       <div class="posts-section">
         <div class="post" v-for="(post, index) in posts" v-bind:key="index">
           <div class="post-action">
-            <a v-bind:href="'/' + post.username"><img v-bind:src="post.user_photo" /></a>
-            <p><a v-bind:href="'/' + post.username"><span class="user">{{ post.username }}</span></a> added a new review. <span class="time">{{ post.date | moment }}</span></p>
+            <a v-bind:href="'/' + post.postUsername"><img v-bind:src="post.userPhoto" /></a>
+            <p><a v-bind:href="'/' + post.postUsername"><span class="user">{{ post.postUsername }}</span></a> added a new review. <span class="time">{{ post.postingDate | moment }}</span></p>
           </div>
           <div class="post-content">
             <div class="album-cover">
@@ -41,8 +41,8 @@
                 <a href="#" @click.prevent="getPostForBandModal(post)">{{ post.bandName }}</a>
                 -
                 <a href="#" @click.prevent="getPostForAlbumModal(post)">{{ post.albumName}}</a></h3>
-              <p>{{ post.title }}</p>
-              <h2>{{ post.point }} / 10</h2>
+              <p>{{ post.reviewTitle }}</p>
+              <h2>{{ post.reviewPoint }} / 10</h2>
               <button class="btn-read-more" @click.prevent="getPostForAlbumModal(post)">Read More</button>
             </div>
           </div>
@@ -56,7 +56,7 @@
           <a class="img-a" v-bind:href="'/' + perUser.username"><img v-bind:src="perUser.profilePhoto" /></a>
           <div class="friend-info">
             <h5><a v-bind:href="'/' + perUser.username">{{ perUser.username }}</a></h5>
-            <button :disabled="perUser.isProgressActive" @click="addFriend(perUser.username, index)">
+            <button :disabled="perUser.isProgressActive" @click="followSomeone(perUser.userId, index)">
               <div v-if="spinnerIndex != index">
                     Follow
                   </div>
@@ -79,7 +79,7 @@
     <Modal v-if="showAlbumModal">
       <template v-slot:modal>
         <AlbumDetails @close="showAlbumModal = false"
-                      :the-album="selectedAlbum" :props-review="selectedAlbum" />
+                      :the-album="selectedAlbum" :props-post="selectedAlbum" />
       </template>
     </Modal>
 
@@ -128,8 +128,8 @@ export default {
       allUsers: [],
       notFriends: [],
       posts: [],
-      aCount: "",
-      bCount: "",
+      aCount: 0,
+      bCount: 0,
       reRenderCount: 0,
       spinnerIndex: null,
       showNewReviewModal: false,
@@ -147,38 +147,39 @@ export default {
   },*/
   methods: {
     getAlbumCount() {
-      axios.get(this.$url + "/api/albums",
-          {
+      axios.get(this.$url + "/api/v1/albums/get_album_count_by_username", {
             headers: {
-              "Authorization": localStorage.getItem('user-token'),
+              "Authorization": localStorage.getItem('userToken'),
             },
             params: {
               username: localStorage.getItem('username')
             }
           }).then( res => {
-            this.aCount = res.data.length;
+            this.aCount = res.data;
         })
     },
 
     getBandCount() {
-      axios.get(this.$url + "/api/bands",
-          {
+      axios.get(this.$url + "/api/v1/bands/get_band_count_by_username", {
             headers: {
-              'Authorization': localStorage.getItem('user-token'),
+              'Authorization': localStorage.getItem('userToken'),
             },
             params: {
               username: localStorage.getItem('username')
             }
           }).then( res => {
-            this.bCount = res.data.length;
+            this.bCount = res.data;
         });
     },
 
     getProfilePhoto(){
-      axios.get(this.$url + "/api/user-profiles/" + localStorage.getItem('username') +"/image/download",{
+      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
+        },
+        params: {
+          username: localStorage.getItem('username')
         }
       }).then( (res) => {
         this.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
@@ -190,7 +191,7 @@ export default {
 
     getPostForAlbumModal(post){
       this.selectedAlbum = post;
-      this.selectedAlbum.id = post.albumId;
+      this.selectedAlbum.albumId = post.albumId;
       this.selectedAlbum.author = post.username;
       this.showAlbumModal = true;
     },
@@ -203,45 +204,49 @@ export default {
       this.showBandModal = true;
     },
 
-    addFriend (username, index) {
+    //burada tam bilmiyorum bak username veriliyor push ediliyor fakat following_id ile yapılacak db işlemi
+    //following_id gönderilmiyor şu an sonra düzenle
+    followSomeone (followingId, index) {
       console.log("addFriend");
       this.spinnerIndex = index
-      axios.put(this.$url + "/api/user-profiles/add-friend", "",{
+      axios.put(this.$url + "/api/v1/users/follow_someone", "",{
         headers: {
-          'Authorization': localStorage.getItem('user-token')
+          'Authorization': localStorage.getItem('userToken')
         },
         params: {
-          username: localStorage.getItem('username'),
-          friend_username:  username
+          user_id: localStorage.getItem('userId'),
+          following_id:  followingId
         }
       }).then( () =>{
-        this.user.friends.push(username);
         this.notFriends.splice(index, 1);
         this.spinnerIndex = null;
     })
     },
 
     getPhoto(post){
-      axios.get(this.$url + "/api/albums/" + post.albumId + "/image/download", {
+      axios.get(this.$url + "/api/v1/albums/download_album_image", {
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
         },
         params: {
-          username: post.username,
+          album_id: post.albumId
         }
       }).then( (res) => {
         post.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
         this.reRenderCount++;
       })
 
-      axios.get(this.$url + "/api/user-profiles/" + post.username +"/image/download",{
+      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
+        },
+        params: {
+          username: post.postUsername
         }
       }).then( (res) => {
-        post.user_photo = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
+        post.userPhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         this.showAlbumModal = true;
         this.showAlbumModal = false;
       });
@@ -249,9 +254,12 @@ export default {
     },
 
     async getPosts(){
-      await axios.post(this.$url + "/api/reviews/get-for-posts", this.user.friends, {
+      await axios.post(this.$url + "/api/v1/reviews/get_all_post_by_user_id", "", {
         headers: {
-          'Authorization': localStorage.getItem('user-token')
+          'Authorization': localStorage.getItem('userToken')
+        },
+        params: {
+          user_id : localStorage.getItem('userId')
         }
       }).then( (res) => {
         console.log(res);
@@ -261,24 +269,27 @@ export default {
     },
 
     async getOtherUsers() {
-      await axios.get(this.$url + "/api/user-profiles", {
+      await axios.get(this.$url + "/api/v1/users/get_five_user_suggestion", {
         headers: {
-          'Authorization': localStorage.getItem('user-token')
+          'Authorization': localStorage.getItem('userToken')
+        },
+        params: {
+          user_id: this.user.userId
         }
       }).then((res) => {
-        this.allUsers = res.data;
-        this.notFriends = this.allUsers.filter((user) => {
-          return !this.user.friends.includes(user.username);
-        });
+        this.notFriends = res.data;
         this.notFriends.forEach(this.getNotFriendsPhoto)
       });
     },
 
     async getNotFriendsPhoto(user) {
-      await axios.get(this.$url + "/api/user-profiles/" + user.username +"/image/download",{
+      await axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
-          'Authorization': localStorage.getItem('user-token'),
+          'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
+        },
+        params: {
+          username: user.username
         }
       }).then( (res) => {
         user.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
@@ -299,9 +310,13 @@ export default {
 
       await this.getProfilePhoto();
 
-      axios.get(this.$url + "/api/user-profiles/get-user?username=" + localStorage.getItem('username'))
-          .then((res) => {
+      axios.get(this.$url + "/api/v1/users/get_user_by_username", {
+        params: {
+          username: localStorage.getItem('username')
+        }
+      }).then((res) => {
             this.user = res.data;
+            localStorage.setItem('userId', this.user.userId);
             this.getOtherUsers();
             this.getPosts();
           });

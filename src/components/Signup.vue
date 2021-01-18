@@ -22,6 +22,11 @@
         </div>
         <span v-if="isUsernameError" class="error">Invalid username/Exists.</span>
         <div class="input-section">
+          <label class="with-input-border">Email</label>
+          <input type="email" v-model="user.email"/>
+        </div>
+        <span v-if="isEmailError" class="error">Invalid email/Exists.</span>
+        <div class="input-section">
           <label class="with-input-border">Password</label>
           <input type="password" v-model="user.password"/>
         </div>
@@ -84,12 +89,14 @@ export default {
       user: {
         fullname: '',
         username: '',
+        email: '',
         password: ''
       },
       passwordConfirm: '',
       isProgressActive: false,
       isFullnameError: false,
       isUsernameError: false,
+      isEmailError: false,
       isPasswordError: false,
       isPasswordConfirmError: false
     }
@@ -105,22 +112,8 @@ export default {
         this.isFullnameError = true;
       }else{
         this.isFullnameError = false;
-        this.checkUsernameIsExist();
+        this.checkUsername();
       }
-    },
-
-    checkUsernameIsExist(){
-      axios.get(this.$url + "/api/user-profiles/check-username-exist", {
-        params: {
-          username: this.user.username
-        }
-      }).then( (res) => {
-        if(res.data == true){
-          this.isUsernameError = true;
-        }else{
-          this.checkUsername();
-        }
-      })
     },
 
     checkUsername() {
@@ -128,8 +121,45 @@ export default {
         this.isUsernameError = true;
       }else{
         this.isUsernameError = false;
-        this.checkPassword();
+        this.checkUsernameIsExist();
       }
+    },
+
+    checkUsernameIsExist(){
+      axios.get(this.$url + "/api/v1/users/check_username_exist", {
+        params: {
+          username: this.user.username
+        }
+      }).then( (res) => {
+        if(res.data == true){
+          this.isUsernameError = true;
+        }else{
+          this.checkEmail();
+        }
+      })
+    },
+
+    checkEmail() {
+      if(this.user.email.length < 4 || !this.user.email.includes("@")){
+        this.isEmailError = true;
+      }else{
+        this.isEmailError = false;
+        this.checkEmailIsExist();
+      }
+    },
+
+    checkEmailIsExist(){
+      axios.get(this.$url + "/api/v1/users/check_email_exist", {
+        params: {
+          email: this.user.email
+        }
+      }).then( (res) => {
+        if(res.data == true){
+          this.isEmailError = true;
+        }else{
+          this.checkPassword();
+        }
+      })
     },
 
     checkPassword() {
@@ -146,7 +176,7 @@ export default {
 
     submitSignUp() {
       this.isProgressActive = true;
-      axios.post(this.$url + "/api/user-profiles/signup", this.user)
+      axios.post(this.$url + "/api/v1/users/signup", this.user)
           .then(() => {
             this.$router.push("/login");
           })
