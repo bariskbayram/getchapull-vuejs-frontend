@@ -654,9 +654,9 @@ a:hover{
 
 @media screen and (max-width: 650px) {
   .content .main-section .stats-section .stats-block .profile-image {
-    margin-left: 0;
+    margin-left: 10px;
+    margin-top: 5px;
   }
-
 }
 
 @media screen and (max-width:500px){
