@@ -91,7 +91,6 @@ export default {
       axios.post(this.$url + "/login", this.user)
       .then( (res) => {
         this.data = res.headers;
-        console.log(res)
         localStorage.setItem('isLoggedIn', true);
         localStorage.setItem('userToken', this.data.authorization);
         localStorage.setItem('username', this.user.username);

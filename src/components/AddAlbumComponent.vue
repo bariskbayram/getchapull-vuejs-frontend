@@ -99,8 +99,6 @@ export default {
     },
 
     async pushBand() {
-      console.log("pushband")
-
       const images = this.band.images;
 
       if (images.length != 0) {
@@ -127,9 +125,7 @@ export default {
             }
           }
       ).then((res) => {
-        console.log("band uploaded successfully");
         this.band.bandId = res.data;
-        console.log(this.band.bandId);
         this.pushAlbum();
       }).catch(err => {
         console.log(err);
@@ -137,8 +133,6 @@ export default {
     },
 
     async pushAlbum() {
-      console.log("pushAlbum")
-
       const images = this.album.images;
 
       if (images.length != 0) {
@@ -169,9 +163,7 @@ export default {
             }
           }
       ).then((res) => {
-        console.log("album uploaded successfully");
         this.album.albumId = res.data;
-        console.log(this.album.albumId);
         this.pushReview();
       }).catch(err => {
         console.log(err);
@@ -179,8 +171,6 @@ export default {
     },
 
     pushReview () {
-      console.log("pushReview")
-
       const formData = new FormData();
       formData.append('review_dto', new Blob([JSON.stringify({
         "review_title": this.review.reviewTitle,
@@ -201,7 +191,6 @@ export default {
             }
           }
       ).then( () => {
-        console.log("review uploaded successfully");
         this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
         this.$emit('close');
       }).catch(err => {

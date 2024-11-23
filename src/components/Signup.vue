@@ -103,7 +103,6 @@ export default {
   },
   methods: {
     validateForm () {
-      console.log("validate çalişti")
       this.checkFullname();
     },
 

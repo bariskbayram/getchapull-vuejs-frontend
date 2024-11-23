@@ -47,7 +47,6 @@ export default {
   },
   methods: {
     getAllAlbums () {
-      console.log(this.$attrs.token);
       axios.get("https://api.spotify.com/v1/artists/" + this.$attrs.bandId + "/albums", {
         headers: {
           'Authorization': 'Bearer ' + this.$attrs.token,
@@ -60,7 +59,6 @@ export default {
         },
         json: true
       }).then( (res) => {
-        console.log(res)
         this.allAlbums = res.data.items;
         this.trimAlbums();
       })

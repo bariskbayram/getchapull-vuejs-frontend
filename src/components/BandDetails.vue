@@ -63,7 +63,6 @@ export default {
           band_id: this.theBand.bandId
         }
       }).then( (res) => {
-        console.log(res);
         this.albums = res.data;
       })
     },
@@ -86,7 +85,6 @@ export default {
 
   mounted() {
     if(this.theBand.src == null){
-      console.log("fotogetirici")
       this.getBandPhoto();
     }
     this.checkMyProfile();

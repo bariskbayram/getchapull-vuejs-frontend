@@ -100,14 +100,12 @@ export default {
   },
   methods: {
     cropSuccess(imgDataUrl){
-      console.log('-------- crop success --------');
       this.fileImg = imgDataUrl;
       fetch(this.fileImg)
           .then(res => res.blob())
           .then(blob => {
             const file = new File([blob], 'dot.png', blob)
             this.fileImg = file;
-            console.log(file);
             this.uploadProfilePhoto();
           });
     },
@@ -171,7 +169,6 @@ export default {
           username: this.user.username
         }
       }).then( (res) => {
-        console.log(res)
         if(res.data == true){
           return false;
         }else{

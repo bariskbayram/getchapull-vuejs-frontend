@@ -207,7 +207,6 @@ export default {
     //burada tam bilmiyorum bak username veriliyor push ediliyor fakat following_id ile yapılacak db işlemi
     //following_id gönderilmiyor şu an sonra düzenle
     followSomeone (followingId, index) {
-      console.log("addFriend");
       this.spinnerIndex = index
       axios.put(this.$url + "/api/v1/users/follow_someone", "",{
         headers: {
@@ -262,7 +261,6 @@ export default {
           user_id : localStorage.getItem('userId')
         }
       }).then( (res) => {
-        console.log(res);
         this.posts = res.data;
         this.posts.forEach(this.getPhoto);
       });
@@ -278,6 +276,8 @@ export default {
         }
       }).then((res) => {
         this.notFriends = res.data;
+        if(this.notFriends == '')
+            this.notFriends=[];
         this.notFriends.forEach(this.getNotFriendsPhoto)
       });
     },

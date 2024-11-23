@@ -59,7 +59,6 @@ export default {
     },
 
     goHelp(){
-      console.log("help sayfasına geçildi.")
       this.isNavOpen = !this.isNavOpen;
     },
 

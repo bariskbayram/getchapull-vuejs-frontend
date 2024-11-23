@@ -138,7 +138,7 @@
       //username ile kontrol ediyoruz aslonda other_user_id daha mantıklı ama profil girince birinin
       //user_id falan çekiyor muyuz emin değilim en azından tutuyor muyuz ondan emin değilim şimdilik böyle(
       checkIsYourFriend() {
-        axios.get(this.$url + "/api/v1/users/is_your_friend", {
+        axios.get(this.$url + "/api/v1/users/is_followed_by_user", {
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
@@ -213,9 +213,6 @@
           }
         }).then( (res) => {
           this.followers = res.data;
-          this.followers.splice(0,1);
-          console.log("followers")
-          console.log(this.followers)
         });
 
         axios.get(this.$url + "/api/v1/users/get_followings", {
@@ -227,9 +224,6 @@
           }
         }).then( (res) => {
           this.followings = res.data;
-          this.followings.splice(0,1);
-          console.log("followings")
-          console.log(this.followings)
         });
       },
 

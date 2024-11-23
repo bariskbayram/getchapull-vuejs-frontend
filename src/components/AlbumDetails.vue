@@ -76,7 +76,6 @@ export default {
     },
 
     getPost () {
-      console.log("post getirildi.")
       axios.get(this.$url + "/api/v1/reviews/get_post_by_album_id_and_username", {
             headers: {
               "Authorization": localStorage.getItem('userToken'),
