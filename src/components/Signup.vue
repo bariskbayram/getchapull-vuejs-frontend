@@ -102,71 +102,71 @@ export default {
     }
   },
   methods: {
-    validateForm () {
+    validateForm() {
       this.checkFullname();
     },
 
     checkFullname() {
-      if(this.user.fullname.length < 4){
+      if (this.user.fullname.length < 4) {
         this.isFullnameError = true;
-      }else{
+      } else {
         this.isFullnameError = false;
         this.checkUsername();
       }
     },
 
     checkUsername() {
-      if(this.user.username.length < 4){
+      if (this.user.username.length < 4) {
         this.isUsernameError = true;
-      }else{
+      } else {
         this.isUsernameError = false;
         this.checkUsernameIsExist();
       }
     },
 
-    checkUsernameIsExist(){
+    checkUsernameIsExist() {
       axios.get(this.$url + "/api/v1/users/check_username_exist", {
         params: {
           username: this.user.username
         }
       }).then( (res) => {
-        if(res.data == true){
+        if (res.data === true) {
           this.isUsernameError = true;
-        }else{
+        } else {
           this.checkEmail();
         }
       })
     },
 
     checkEmail() {
-      if(this.user.email.length < 4 || !this.user.email.includes("@")){
+      if (this.user.email.length < 4 || !this.user.email.includes("@")) {
         this.isEmailError = true;
-      }else{
+      } else {
         this.isEmailError = false;
         this.checkEmailIsExist();
       }
     },
 
-    checkEmailIsExist(){
+    checkEmailIsExist() {
       axios.get(this.$url + "/api/v1/users/check_email_exist", {
         params: {
           email: this.user.email
         }
       }).then( (res) => {
-        if(res.data == true){
+        if (res.data === true) {
           this.isEmailError = true;
-        }else{
+        } else {
           this.checkPassword();
         }
       })
     },
 
     checkPassword() {
-      if(this.user.password.length < 5){
+      if (this.user.password.length < 5) {
         this.isPasswordError = true;
-      }else if(this.user.password != this.passwordConfirm) {
+      } else if (this.user.password !== this.passwordConfirm) {
         this.isPasswordConfirmError = true;
-      }else{
+      } else {
         this.isPasswordError = false;
         this.isPasswordConfirmError = false;
         this.submitSignUp();
@@ -176,9 +176,9 @@ export default {
     submitSignUp() {
       this.isProgressActive = true;
       axios.post(this.$url + "/api/v1/users/signup", this.user)
-          .then(() => {
-            this.$router.push("/login");
-          })
+      .then(() => {
+        this.$router.push("/login");
+      })
     }
   },
   created() {

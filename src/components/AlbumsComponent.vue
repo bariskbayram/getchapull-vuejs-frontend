@@ -38,7 +38,7 @@
     watch: {
       '$route': 'getAllAlbums'
     },
-    data(){
+    data() {
       return {
         albums: [],
         selectedAlbum: {},
@@ -52,8 +52,8 @@
         }
       }
     },
-    methods:{
-      setAlbumCover(album){
+    methods: {
+      setAlbumCover(album) {
         axios.get(this.$url + "/api/v1/albums/download_album_image", {
           headers: {
             'Authorization': localStorage.getItem('userToken'),
@@ -69,12 +69,12 @@
         });
       },
 
-      getAlbum(album){
+      getAlbum(album) {
         this.selectedAlbum = album;
         this.showModal = true;
       },
 
-      getAllAlbums(){
+      getAllAlbums() {
         axios.get(this.$url + "/api/v1/albums/find_albums_reviewed_by_user", {
           headers: {
             "Authorization": localStorage.getItem('userToken'),
@@ -92,7 +92,7 @@
       this.getAllAlbums();
     },
     computed: {
-      filteredAlbums () {
+      filteredAlbums() {
         return this.albums.filter(album => {
           return album.name.toLocaleLowerCase().includes(this.filter.toLowerCase())
         })

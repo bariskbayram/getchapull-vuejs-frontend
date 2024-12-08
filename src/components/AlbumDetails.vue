@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  const axios = require('axios');
+const axios = require('axios');
 
 export default {
   name: "AlbumDetails",
@@ -35,7 +35,7 @@ export default {
     theAlbum: {},
     propsPost: {}
   },
-  data () {
+  data() {
     return {
       isMyProfile: false,
       showDialog: true,
@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    deleteReview () {
+    deleteReview() {
       axios.delete( this.$url + "/api/v1/reviews/delete_review_by_review_id", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
@@ -51,13 +51,13 @@ export default {
         params: {
           review_id : this.thePost.id
         }
-      }).then( () => {
+      }).then(() => {
         this.$emit('close');
         this.$router.push("/");
       })
     },
 
-    getPost () {
+    getPost() {
       axios.get(this.$url + "/api/v1/reviews/get_post_by_album_id_and_username", {
         headers: {
           "Authorization": localStorage.getItem('userToken'),
@@ -71,7 +71,7 @@ export default {
       })
     },
 
-    checkMyProfile () {
+    checkMyProfile() {
       this.isMyProfile = this.$route.path === "/" + localStorage.getItem('username');
    }
   },

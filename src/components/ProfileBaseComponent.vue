@@ -77,18 +77,18 @@
       AddAlbumContent
     },
     computed: {
-      followersCount: function () {
+      followersCount: function() {
         return this.followers.length;
       },
-      followingsCount: function () {
+      followingsCount: function() {
         return this.followings.length;
       }
     },
     watch: {
       '$route': 'createdGettingData',
     },
-    data(){
-      return{
+    data() {
+      return {
         filter: "",
         isUsernameAvailable: true,
         user: {},
@@ -107,12 +107,12 @@
     },
     methods: {
 
-      closeModal () {
+      closeModal() {
         this.userListShowModal = false;
         this.$emit('close');
       },
 
-      getProfilePhoto(){
+      getProfilePhoto() {
         axios.get(this.$url + "/api/v1/users/download_profile_photo",{
           headers: {
             'Authorization': localStorage.getItem('userToken'),
@@ -127,16 +127,14 @@
         return this.profilePhoto;
       },
 
-      checkMyProfile () {
-        if(this.$route.path == "/" + localStorage.getItem('username')){
+      checkMyProfile() {
+        if (this.$route.path === "/" + localStorage.getItem('username')) {
           this.isMyProfile = true;
-        }else{
+        } else {
           this.isMyProfile = false;
         }
       },
 
-      //username ile kontrol ediyoruz aslonda other_user_id daha mantıklı ama profil girince birinin
-      //user_id falan çekiyor muyuz emin değilim en azından tutuyor muyuz ondan emin değilim şimdilik böyle(
       checkIsYourFriend() {
         axios.get(this.$url + "/api/v1/users/is_followed_by_user", {
           headers: {
@@ -152,7 +150,7 @@
         });
       },
 
-      followSomeone (followedId) {
+      followSomeone(followedId) {
         axios.put(this.$url + "/api/v1/users/follow_someone", "",{
           headers: {
             'Authorization': localStorage.getItem('userToken')
@@ -161,18 +159,19 @@
             user_id: localStorage.getItem('userId'),
             followed_id: followedId
           }
-        }).then( () =>{
+        }).then(() =>{
           this.isYourFriend = true;
           this.followers.push(
               {
                 'user_id': localStorage.getItem('userId'),
                 'username': localStorage.getItem('username')
-              });
+              }
+          );
           this.reRenderCount++;
         })
       },
 
-      unfollowSomeone (unfollowedId) {
+      unfollowSomeone(unfollowedId) {
         axios.put(this.$url + "/api/v1/users/unfollow_someone", "",{
           headers: {
             'Authorization': localStorage.getItem('userToken')
@@ -181,7 +180,7 @@
             user_id: localStorage.getItem('userId'),
             unfollowed_id:  unfollowedId
           }
-        }).then( () =>{
+        }).then(() =>{
           this.isYourFriend = false;
           this.reRenderCount++;
         })
@@ -192,7 +191,7 @@
           params: {
             username: this.$route.params.username
           }
-        }).then( (res) => {
+        }).then((res) => {
             this.user = res.data;
             this.getFollowersAndFollowing()
         });
@@ -206,7 +205,7 @@
           params: {
             user_id: this.user.id
           }
-        }).then( (res) => {
+        }).then((res) => {
           this.followers = res.data;
         });
 
@@ -217,32 +216,32 @@
           params: {
             user_id: this.user.id
           }
-        }).then( (res) => {
+        }).then((res) => {
           this.followings = res.data;
         });
       },
 
-      createdGettingData(){
+      createdGettingData() {
         this.checkIsYourFriend();
         this.checkMyProfile();
         axios.get(this.$url + "/api/v1/users/check_username_exist",{
           params: {
             username: this.$route.params.username
           }
-        }).then( (res) => {
-              this.isUsernameAvailable = res.data;
-              if(this.isUsernameAvailable){
-                this.getUserProfile();
-              }
-            });
+        }).then((res) => {
+          this.isUsernameAvailable = res.data;
+          if (this.isUsernameAvailable) {
+            this.getUserProfile();
+          }
+        });
 
         this.profilePhoto = this.getProfilePhoto();
-        if(!this.isLoggedIn){
+        if (!this.isLoggedIn) {
           this.$router.push("/login");
         }
       }
     },
-    created () {
+    created() {
       this.createdGettingData();
     }
   }

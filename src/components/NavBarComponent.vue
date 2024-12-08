@@ -47,26 +47,25 @@ export default {
     }
   },
   methods: {
-
-    goProfile(){
+    goProfile() {
       this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
       this.isNavOpen = !this.isNavOpen;
     },
 
-    goSettings(){
+    goSettings() {
       this.$router.push("/" + localStorage.getItem('username') + "/edit-profile").catch( () => {});
       this.isNavOpen = !this.isNavOpen;
     },
 
-    goHelp(){
+    goHelp() {
       this.isNavOpen = !this.isNavOpen;
     },
 
-    search(){
+    search() {
       console.log("search edildi.")
     },
 
-    logOut(){
+    logOut() {
       localStorage.clear();
       this.$router.push("/login");
     },

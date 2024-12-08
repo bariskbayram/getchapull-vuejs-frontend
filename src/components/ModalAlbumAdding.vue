@@ -38,7 +38,7 @@ const axios = require('axios');
 
 export default {
   name: "AlbumAddingModal",
-  data () {
+  data() {
     return {
       picked: null,
       allAlbums: [],
@@ -46,7 +46,7 @@ export default {
     }
   },
   methods: {
-    getAllAlbums () {
+    getAllAlbums() {
       axios.get("https://api.spotify.com/v1/artists/" + this.$attrs.bandId + "/albums", {
         headers: {
           'Authorization': 'Bearer ' + this.$attrs.token,
@@ -58,36 +58,32 @@ export default {
           market: 'TR'
         },
         json: true
-      }).then( (res) => {
+      }).then((res) => {
         this.allAlbums = res.data.items;
         this.trimAlbums();
       })
     },
-    pushSelectedAlbumToParent () {
+    pushSelectedAlbumToParent() {
       this.$emit('toReviewPart', this.picked);
     },
-    trimAlbums(){
+    trimAlbums() {
       let result = [];
       this.allAlbums.forEach( (album, index) => {
-        if(!this.countMoreThanOne(album.name)){
+        if (!this.countMoreThanOne(album.name)) {
           result.push(album);
-        }else{
+        } else {
           this.allAlbums.splice(index,1)
         }
       })
     },
-    countMoreThanOne(name){
+    countMoreThanOne(name) {
       let count = 0;
       this.allAlbums.forEach( (album) => {
-        if (album.name === name){
+        if (album.name === name) {
           count++;
         }
       })
-      if (count > 1) {
-        return true;
-      } else {
-        return false;
-      }
+      return count > 1;
     }
   },
   async created() {

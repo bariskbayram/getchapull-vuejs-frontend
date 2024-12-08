@@ -81,7 +81,7 @@ export default {
   components: {
     'my-upload': myUpload
   },
-  data () {
+  data() {
     return {
       isMyProfile: false,
       user: {},
@@ -99,7 +99,7 @@ export default {
     }
   },
   methods: {
-    cropSuccess(imgDataUrl){
+    cropSuccess(imgDataUrl) {
       this.fileImg = imgDataUrl;
       fetch(this.fileImg)
           .then(res => res.blob())
@@ -120,35 +120,36 @@ export default {
               "Content-Type": "multipart/form-data",
               "Authorization": localStorage.getItem('userToken')
             }
-          }).then( () => {
-            this.$router.push("/" + localStorage.getItem('username'));
-          });
+          }
+      ).then(() => {
+        this.$router.push("/" + localStorage.getItem('username'));
+      });
     },
-    validateUser () {
+    validateUser() {
       this.checkFullname();
     },
     checkFullname() {
-      if(this.user.fullname.length < 4){
+      if (this.user.fullname.length < 4) {
         this.isFullnameError = true;
-      }else{
+      } else {
         this.isFullnameError = false;
         this.checkPassword();
       }
     },
     checkPassword() {
-      if(this.password.length < 5){
+      if (this.password.length < 5) {
         this.isPasswordError = true;
-      }else if(this.password != this.passwordConfirm) {
+      } else if (this.password !== this.passwordConfirm) {
         this.isPasswordConfirmError = true;
-      }else{
+      } else {
         this.isPasswordError = false;
         this.isPasswordConfirmError = false;
         this.updateUser();
       }
     },
-    updateUser () {
+    updateUser() {
       this.isProgressActive = true;
-      var userPush = {
+      let userPush = {
         username: this.user.username,
         bio_info: this.user.bio_info,
         fullname: this.user.fullname,
@@ -162,25 +163,21 @@ export default {
         this.$router.push('/' + localStorage.getItem('username'));
       });
     },
-    checkUsernameIsAvailable(){
+    checkUsernameIsAvailable() {
       axios.get(this.$url + "/api/v1/users/check_username_exist", {
         params: {
           username: this.user.username
         }
-      }).then( (res) => {
-        if(res.data == true){
-          return false;
-        }else{
-          return true;
-        }
+      }).then((res) => {
+        return res.data !== true;
       })
     },
-    checkMyProfile () {
-      if(this.$route.path == "/" + localStorage.getItem('username') + "/edit-profile"){
+    checkMyProfile() {
+      if (this.$route.path === "/" + localStorage.getItem('username') + "/edit-profile") {
         this.isMyProfile = true;
       }
     },
-    getProfilePhoto(){
+    getProfilePhoto() {
       axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
@@ -195,11 +192,8 @@ export default {
       });
       return this.profile_photo;
     },
-    checkUserIsLoggedIn(){
-      if(localStorage.getItem('isLoggedIn')){
-        return true;
-      }
-      return false;
+    checkUserIsLoggedIn() {
+      return !!localStorage.getItem('isLoggedIn');
     }
   },
   created() {

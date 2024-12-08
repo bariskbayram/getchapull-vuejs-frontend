@@ -64,7 +64,7 @@ export default {
       required : true,
     }
   },
-  data () {
+  data() {
     return {
       picked: null,
       inputBandName: '',
@@ -74,8 +74,8 @@ export default {
     }
   },
   methods: {
-    searchBandName () {
-      var query = this.inputBandName;
+    searchBandName() {
+      let query = this.inputBandName;
 
       axios.get('https://api.spotify.com/v1/search', {
         headers: {
@@ -87,11 +87,11 @@ export default {
           limit: 30
         },
         json: true
-      }).then( (res) => {
+      }).then((res) => {
         this.bandList = res.data.artists.items;
       })
     },
-    pushSelectedBandToParent () {
+    pushSelectedBandToParent() {
       this.$emit('toAlbumPart', this.picked);
     }
   }

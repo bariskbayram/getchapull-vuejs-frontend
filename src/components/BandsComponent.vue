@@ -34,16 +34,15 @@
     props: {
       filter: {},
     },
-    data(){
+    data() {
       return {
         bands: [],
         selectedBand: {},
         showModal: false,
       }
     },
-    methods:{
-
-      setBandPhoto (band){
+    methods: {
+      setBandPhoto(band) {
         axios.get(this.$url + "/api/v1/bands/download_band_image", {
           headers: {
             'Authorization': localStorage.getItem('userToken'),
@@ -59,12 +58,12 @@
         });
       },
 
-      getBand (band) {
+      getBand(band) {
         this.selectedBand = band;
         this.showModal = true;
       }
     },
-    mounted () {
+    mounted() {
       axios.get(this.$url + "/api/v1/bands/find_bands_reviewed_by_user", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
@@ -78,7 +77,7 @@
       });
     },
     computed: {
-      filteredBands () {
+      filteredBands() {
         return this.bands.filter(band => {
           return band.name.toLocaleLowerCase().includes(this.filter.toLowerCase())
         })

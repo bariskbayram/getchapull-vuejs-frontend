@@ -70,7 +70,7 @@ const axios = require('axios').default;
 
 export default {
   name: "Login.vue",
-  data () {
+  data() {
     return {
       user: {
         username: '',
@@ -84,8 +84,7 @@ export default {
   },
 
   methods: {
-    //Burası düzenlenecek userId de localstorage tutulcak fakat localstorage tutmak mantıklı mı bilmiyorum
-    // aynı zamanda expirationDate muhabbeti çalışmıyor
+    // TODO: aynı zamanda expirationDate muhabbeti çalışmıyor
     submitLogIn() {
       this.isProgressActive = true;
       axios.post(this.$url + "/login", this.user)
@@ -104,10 +103,10 @@ export default {
     }
   },
   created() {
-    if(localStorage.getItem('isLoggedIn')){
+    if (localStorage.getItem('isLoggedIn')) {
       this.isLoggedIn = localStorage.getItem('isLoggedIn');
       this.$router.push("/");
-    }else {
+    } else {
       document.querySelector('body').classList.remove('white-background');
       document.querySelector('body').classList.add('red-background');
     }

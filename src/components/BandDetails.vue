@@ -35,7 +35,7 @@ export default {
   props: {
     theBand: {}
   },
-  data () {
+  data() {
     return {
       isMyProfile: false,
       showDialog: true,
@@ -45,7 +45,7 @@ export default {
   },
   methods: {
 
-    checkMyProfile () {
+    checkMyProfile() {
       this.isMyProfile = this.$route.path === "/" + localStorage.getItem('username');
     },
 
@@ -63,7 +63,7 @@ export default {
       })
     },
 
-    getBandPhoto (){
+    getBandPhoto(){
       axios.get(this.$url + "/api/v1/bands/download_band_image", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),

@@ -53,7 +53,7 @@
 <script>
 export default {
   name: "ReviewAddingModal",
-  data () {
+  data() {
     return {
       review: {
         title: '',
@@ -65,12 +65,12 @@ export default {
     }
   },
   methods: {
-    pushReview () {
-      if(this.review.point >10){
+    pushReview() {
+      if (this.review.point >10) {
         this.pointError = true;
-      }else if(this.review.point == null) {
+      } else if (this.review.point == null) {
         this.pointError = true;
-      }else{
+      } else {
         this.isProgressActive = true;
         this.$emit('pushAllDatas', this.review);
       }

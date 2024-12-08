@@ -19,15 +19,14 @@ import Modal from "@/components/Modal";
 import qs from 'qs';
 
 const axios = require('axios');
-
-var client_id = '4cdcf550c1c7458485e09e5be020a556';
-var client_secret = '1e906cf6ef71436cb163ca98e619aead';
+const client_id = '4cdcf550c1c7458485e09e5be020a556';
+const client_secret = '1e906cf6ef71436cb163ca98e619aead';
 
 export default {
   name: "AddAlbumContent",
   components: {Modal, ReviewAddingModal, AlbumAddingModal, BandAddingModal, SearchBandModal},
-  data(){
-    return{
+  data() {
+    return {
       token: '',
       isSearchPart: true,
       isBandPart: false,
@@ -42,18 +41,17 @@ export default {
       showDialog: true
     }
   },
-  methods:{
-
-    closeModal () {
+  methods: {
+    closeModal() {
       this.$emit('close');
     },
 
-    getSpotifyToken () {
-      var data = {
+    getSpotifyToken() {
+      let data = {
         grant_type: 'client_credentials',
       };
 
-      var headers = {
+      let headers = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -63,31 +61,33 @@ export default {
         },
       }
 
-      axios.post('https://accounts.spotify.com/api/token', qs.stringify(data), headers)
-          .then( (res) => {
-            this.token = res.data.access_token;
-          });
+      axios.post('https://accounts.spotify.com/api/token',
+          qs.stringify(data),
+          headers
+      ).then((res) => {
+        this.token = res.data.access_token;
+      });
     },
 
-    toBandPart (bandList) {
+    toBandPart(bandList) {
       this.bandList = bandList;
       this.isSearchPart = false;
       this.isBandPart = true;
     },
 
-    toAlbumPart (band) {
+    toAlbumPart(band) {
       this.band = band;
       this.isBandPart = false;
       this.isAlbumPart = true;
     },
 
-    toReviewPart (album) {
+    toReviewPart(album) {
       this.album = album;
       this.isAlbumPart = false;
       this.isReviewPart = true;
     },
 
-    checkBandAndPush (review) {
+    checkBandAndPush(review) {
       this.review = review;
       if (this.review.title === '') {
         this.review.title = 'GetchaPull ! - No Title';
@@ -168,7 +168,7 @@ export default {
       });
     },
 
-    pushReview () {
+    pushReview() {
       const formData = new FormData();
       formData.append('review_dto', new Blob([JSON.stringify({
         "title": this.review.title,
@@ -188,7 +188,7 @@ export default {
               "Authorization": localStorage.getItem('userToken')
             }
           }
-      ).then( () => {
+      ).then(() => {
         this.$router.push("/" + localStorage.getItem('username')).catch( () => {});
         this.$emit('close');
       }).catch(err => {

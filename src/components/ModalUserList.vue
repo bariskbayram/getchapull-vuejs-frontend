@@ -35,15 +35,15 @@ export default {
       required: true
     }
   },
-  data(){
+  data() {
     return{
       info: ''
     }
   },
   created() {
-    if(this.isFollowers){
+    if (this.isFollowers) {
       this.info = "Followers"
-    }else{
+    } else {
       this.info = "Followings"
     }
   }

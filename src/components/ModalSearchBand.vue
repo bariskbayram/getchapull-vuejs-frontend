@@ -51,8 +51,8 @@ export default {
     }
   },
   methods: {
-    searchBandName () {
-      var query = this.inputBandName;
+    searchBandName() {
+      let query = this.inputBandName;
       this.isProgressActive = true;
       axios.get('https://api.spotify.com/v1/search', {
         headers: {
@@ -64,7 +64,7 @@ export default {
           limit: 30
         },
         json: true
-      }).then( (res) => {
+      }).then((res) => {
         this.allBands = res.data.artists.items;
         this.isProgressActive = false;
         this.$emit('toBandPart', this.allBands);

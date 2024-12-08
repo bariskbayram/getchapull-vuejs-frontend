@@ -109,20 +109,20 @@ export default {
   name: "MainPage",
   components: {AlbumDetails, BandDetails, Modal, AddAlbumContent},
   filters: {
-    moment: function (date) {
+    moment: function(date) {
       return moment(date).fromNow();
     }
   },
   computed: {
-    reviewCount: function () {
+    reviewCount: function() {
       return this.aCount;
     },
-    scorePoint: function () {
+    scorePoint: function() {
       return this.aCount*2 + this.bCount*3;
     }
   },
   data() {
-    return{
+    return {
       user: {},
       profilePhoto: '',
       allUsers: [],
@@ -140,11 +140,6 @@ export default {
     }
   },
 
-  /*her arkadaş eklenmesiyle, user.friends değiştikçe tekrar postları getiriyor
-  fakat bu performansı çok etkileyebilir o yüzden şimdilik belirsiz*/
- /* watch: {
-    'user.friends': 'getPosts',
-  },*/
   methods: {
     getAlbumCount() {
       axios.get(this.$url + "/api/v1/albums/get_reviewed_album_count_by_user", {
@@ -154,7 +149,7 @@ export default {
         params: {
           username: localStorage.getItem('username')
         }
-      }).then( res => {
+      }).then(res => {
         this.aCount = res.data;
       })
     },
@@ -167,12 +162,12 @@ export default {
         params: {
           username: localStorage.getItem('username')
         }
-      }).then( res => {
+      }).then(res => {
         this.bCount = res.data;
       });
     },
 
-    getProfilePhoto(){
+    getProfilePhoto() {
       axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
@@ -181,7 +176,7 @@ export default {
         params: {
           username: localStorage.getItem('username')
         }
-      }).then( (res) => {
+      }).then((res) => {
         this.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         this.showAlbumModal = true;
         this.showAlbumModal = false;
@@ -189,14 +184,14 @@ export default {
       return this.profilePhoto;
     },
 
-    getPostForAlbumModal(post){
+    getPostForAlbumModal(post) {
       this.selectedAlbum = post;
       this.selectedAlbum.id = post.album_id;
       this.selectedAlbum.author = post.username;
       this.showAlbumModal = true;
     },
 
-    getPostForBandModal(post){
+    getPostForBandModal(post) {
       this.selectedBand.src = null;
       this.selectedBand.bandName = post.band_name;
       this.selectedBand.id = post.band_id;
@@ -204,9 +199,7 @@ export default {
       this.showBandModal = true;
     },
 
-    //burada tam bilmiyorum bak username veriliyor push ediliyor fakat following_id ile yapılacak db işlemi
-    //following_id gönderilmiyor şu an sonra düzenle
-    followSomeone (followedId, index) {
+    followSomeone(followedId, index) {
       this.spinnerIndex = index
       axios.put(this.$url + "/api/v1/users/follow_someone", "",{
         headers: {
@@ -216,13 +209,13 @@ export default {
           user_id: localStorage.getItem('userId'),
           followed_id:  followedId
         }
-      }).then( () =>{
+      }).then(() =>{
         this.notFriends.splice(index, 1);
         this.spinnerIndex = null;
       })
     },
 
-    getPhoto(post){
+    getPhoto(post) {
       axios.get(this.$url + "/api/v1/albums/download_album_image", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
@@ -244,15 +237,14 @@ export default {
         params: {
           username: post.username
         }
-      }).then( (res) => {
+      }).then((res) => {
         post.userPhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         this.showAlbumModal = true;
         this.showAlbumModal = false;
       });
-
     },
 
-    async getPosts(){
+    async getPosts() {
       await axios.post(this.$url + "/api/v1/reviews/get_all_post_by_user_id", "", {
         headers: {
           'Authorization': localStorage.getItem('userToken')
@@ -267,7 +259,7 @@ export default {
     },
 
     async getOtherUsers() {
-      await axios.get(this.$url + "/api/v1/users/get_five_user_suggestion", {
+      await axios.get(this.$url + "/api/v1/users/get_user_suggestion", {
         headers: {
           'Authorization': localStorage.getItem('userToken')
         },
@@ -276,7 +268,7 @@ export default {
         }
       }).then((res) => {
         this.notFriends = res.data;
-        if(this.notFriends == '')
+        if (this.notFriends === '')
             this.notFriends=[];
         this.notFriends.forEach(this.getNotFriendsPhoto)
       });
@@ -291,7 +283,7 @@ export default {
         params: {
           username: user.username
         }
-      }).then( (res) => {
+      }).then((res) => {
         user.profilePhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
         this.showAlbumModal = true;
         this.showAlbumModal = false;
@@ -304,10 +296,8 @@ export default {
     if (!localStorage.getItem('isLoggedIn')) {
       this.$router.push('/login');
     } else {
-
       await this.getAlbumCount();
       await this.getBandCount();
-
       await this.getProfilePhoto();
 
       axios.get(this.$url + "/api/v1/users/get_user_by_username", {
