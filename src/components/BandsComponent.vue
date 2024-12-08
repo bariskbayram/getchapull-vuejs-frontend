@@ -1,14 +1,14 @@
 <template>
 
   <div class="profile-content">
-    <div class="item" v-for="band in filteredBands" v-bind:key="band.bandId">
+    <div class="item" v-for="band in filteredBands" v-bind:key="band.id">
       <div class="card">
         <div class="card-content" @click="getBand(band)">
           <div class="image-part">
             <img :src="band.src" />
           </div>
           <div class="text-part">
-            <h3>{{ band.bandName }}</h3>
+            <h3>{{ band.name }}</h3>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
             responseType: 'arrayBuffer'
           },
           params: {
-            band_id : band.bandId
+            band_id : band.id
           }
         }).then( res => {
           band.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -65,7 +65,7 @@
       }
     },
     mounted () {
-      axios.get(this.$url + "/api/v1/bands/get_bands_by_username", {
+      axios.get(this.$url + "/api/v1/bands/find_bands_reviewed_by_user", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },
@@ -73,14 +73,14 @@
           username: this.$route.params.username
         }
       }).then( res => {
-        this.bands = res.data.reverse();
+        this.bands = res.data;
         this.bands.forEach(this.setBandPhoto);
       });
     },
     computed: {
       filteredBands () {
         return this.bands.filter(band => {
-          return band.bandName.toLocaleLowerCase().includes(this.filter.toLowerCase())
+          return band.name.toLocaleLowerCase().includes(this.filter.toLowerCase())
         })
       }
     }

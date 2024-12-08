@@ -2,8 +2,8 @@
 
   <div class="modal" id="modal">
     <div class="modal-header">
-      <h1>{{ thePost.bandName }} - {{ thePost.albumName }}</h1>
-      <a href="#" @click.prevent="deleteAlbumAndReview" v-if="isMyProfile" >
+      <h1>{{ thePost.band_name }} - {{ thePost.album_name }}</h1>
+      <a href="#" @click.prevent="deleteReview" v-if="isMyProfile" >
         <i class="fas fa-trash-alt delete-icon"></i>
       </a>
     </div>
@@ -18,9 +18,9 @@
         <img :src="theAlbum.src" />
       </div>
       <div class="modal-info">
-        <h2>{{ thePost.reviewTitle }}</h2>
-        <p>{{ thePost.reviewContent }}</p>
-        <h1 style="text-align: center;">{{ thePost.reviewPoint }} / 10</h1>
+        <h2>{{ thePost.title }}</h2>
+        <p>{{ thePost.content }}</p>
+        <h1 style="text-align: center;">{{ thePost.point }} / 10</h1>
       </div>
     </div>
   </div>
@@ -43,33 +43,15 @@ export default {
     }
   },
   methods: {
-    deleteAlbumAndReview () {
-      this.deleteAlbum(this.theAlbum);
-      this.deleteReview(this.thePost);
-    },
-
-    deleteAlbum (album) {
-      axios.delete(this.$url + "/api/v1/albums/delete_album_by_album_id_for_user", {
-        headers: {
-          'Authorization': localStorage.getItem('userToken'),
-        },
-        params: {
-          album_id: album.albumId,
-          user_id: localStorage.getItem('userId')
-        }
-      })
-    },
-
-    deleteReview (thePost) {
+    deleteReview () {
       axios.delete( this.$url + "/api/v1/reviews/delete_review_by_review_id", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },
         params: {
-          review_id : thePost.reviewId
+          review_id : this.thePost.id
         }
-      }).then( (res) => {
-        console.log(res);
+      }).then( () => {
         this.$emit('close');
         this.$router.push("/");
       })
@@ -77,30 +59,26 @@ export default {
 
     getPost () {
       axios.get(this.$url + "/api/v1/reviews/get_post_by_album_id_and_username", {
-            headers: {
-              "Authorization": localStorage.getItem('userToken'),
-            },
-            params: {
-              album_id: this.theAlbum.albumId,
-              username: this.$route.params.username,
-            }
-          }).then(res => {
-            this.thePost = res.data;
+        headers: {
+          "Authorization": localStorage.getItem('userToken'),
+        },
+        params: {
+          album_id: this.theAlbum.id,
+          username: this.$route.params.username,
+        }
+      }).then(res => {
+        this.thePost = res.data;
       })
     },
 
     checkMyProfile () {
-      if(this.$route.path == "/" + localStorage.getItem('username')){
-        this.isMyProfile = true;
-      }else{
-        this.isMyProfile = false;
-      }
+      this.isMyProfile = this.$route.path === "/" + localStorage.getItem('username');
    }
   },
   mounted() {
     this.thePost = this.propsPost;
     this.checkMyProfile();
-    if(this.thePost.bandName == ''){
+    if (this.thePost.band_name === '') {
       this.getPost();
     }
   }

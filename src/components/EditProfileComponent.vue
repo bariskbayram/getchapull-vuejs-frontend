@@ -14,7 +14,7 @@
             <span v-if="isFullnameError" class="error">Fullname's length must be more than 5.</span>
             <div class="input-section">
               <label class="with-input-border">Bio Information</label>
-              <input type="text" v-model="user.bioInfo"/>
+              <input type="text" v-model="user.bio_info"/>
             </div>
             <span v-if="isFullnameError" class="error">Fullname's length must be more than 5.</span>
             <div class="input-section">
@@ -120,8 +120,7 @@ export default {
               "Content-Type": "multipart/form-data",
               "Authorization": localStorage.getItem('userToken')
             }
-          }).then( (res) => {
-            console.log(res + " profile-photo is uploaded.");
+          }).then( () => {
             this.$router.push("/" + localStorage.getItem('username'));
           });
     },
@@ -151,7 +150,7 @@ export default {
       this.isProgressActive = true;
       var userPush = {
         username: this.user.username,
-        bio_info: this.user.bioInfo,
+        bio_info: this.user.bio_info,
         fullname: this.user.fullname,
         password: this.password
       }
@@ -205,9 +204,9 @@ export default {
   },
   created() {
     this.checkMyProfile();
-    if(!this.checkUserIsLoggedIn()){
+    if (!this.checkUserIsLoggedIn()) {
       this.$router.push('/login');
-    }else{
+    } else {
       axios.get(this.$url + "/api/v1/users/get_user_by_username", {
         params: {
           username : this.$route.params.username

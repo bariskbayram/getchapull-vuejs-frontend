@@ -79,13 +79,13 @@ export default {
     countMoreThanOne(name){
       let count = 0;
       this.allAlbums.forEach( (album) => {
-        if(album.name == name){
+        if (album.name === name){
           count++;
         }
       })
-      if(count > 1){
+      if (count > 1) {
         return true;
-      }else{
+      } else {
         return false;
       }
     }

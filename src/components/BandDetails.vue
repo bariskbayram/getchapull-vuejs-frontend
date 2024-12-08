@@ -2,7 +2,7 @@
 
   <div class="modal" id="modal">
     <div class="modal-header">
-      <h1>{{ theBand.bandName }}</h1>
+      <h1>{{ theBand.name }}</h1>
     </div>
     <div class="modal-close" @click="$emit('close')">
       <div class="close-rotation">
@@ -18,7 +18,7 @@
         <h4>Albums that you listen from this band.</h4>
         <ul v-for="(album,index) in albums" v-bind:key="index">
           <li>
-            <a>{{album.albumName}}</a>
+            <a>{{album.name}}</a>
           </li>
         </ul>
       </div>
@@ -46,21 +46,17 @@ export default {
   methods: {
 
     checkMyProfile () {
-      if(this.$route.path == "/" + localStorage.getItem('username')){
-        this.isMyProfile = true;
-      }else{
-        this.isMyProfile = false;
-      }
+      this.isMyProfile = this.$route.path === "/" + localStorage.getItem('username');
     },
 
     getAlbumsForTheBand() {
-      axios.get(this.$url + "/api/v1/albums/get_albums_by_band_id_and_username", {
+      axios.get(this.$url + "/api/v1/albums/find_band_albums_reviewed_by_user", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },
         params: {
           username: localStorage.getItem('username'),
-          band_id: this.theBand.bandId
+          band_id: this.theBand.id
         }
       }).then( (res) => {
         this.albums = res.data;
@@ -69,14 +65,14 @@ export default {
 
     getBandPhoto (){
       axios.get(this.$url + "/api/v1/bands/download_band_image", {
-            headers: {
-              'Authorization': localStorage.getItem('userToken'),
-              responseType: 'arrayBuffer'
-            },
-            params: {
-              band_id: this.theBand.bandId
-            }
-          }).then( res => {
+        headers: {
+          'Authorization': localStorage.getItem('userToken'),
+          responseType: 'arrayBuffer'
+        },
+        params: {
+          band_id: this.theBand.id
+        }
+      }).then( res => {
         this.theBand.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
         this.reRenderCount++;
       });
@@ -84,7 +80,7 @@ export default {
   },
 
   mounted() {
-    if(this.theBand.src == null){
+    if (this.theBand.src == null) {
       this.getBandPhoto();
     }
     this.checkMyProfile();

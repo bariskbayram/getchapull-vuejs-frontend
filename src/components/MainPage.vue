@@ -29,8 +29,8 @@
       <div class="posts-section">
         <div class="post" v-for="(post, index) in posts" v-bind:key="index">
           <div class="post-action">
-            <a v-bind:href="'/' + post.postUsername"><img v-bind:src="post.userPhoto" /></a>
-            <p><a v-bind:href="'/' + post.postUsername"><span class="user">{{ post.postUsername }}</span></a> added a new review. <span class="time">{{ post.postingDate | moment }}</span></p>
+            <a v-bind:href="'/' + post.username"><img v-bind:src="post.userPhoto" /></a>
+            <p><a v-bind:href="'/' + post.username"><span class="user">{{ post.username }}</span></a> added a new review. <span class="time">{{ post.created_at | moment }}</span></p>
           </div>
           <div class="post-content">
             <div class="album-cover">
@@ -38,11 +38,11 @@
             </div>
             <div class="album-review">
               <h3>
-                <a href="#" @click.prevent="getPostForBandModal(post)">{{ post.bandName }}</a>
+                <a href="#" @click.prevent="getPostForBandModal(post)">{{ post.band_name }}</a>
                 -
-                <a href="#" @click.prevent="getPostForAlbumModal(post)">{{ post.albumName}}</a></h3>
-              <p>{{ post.reviewTitle }}</p>
-              <h2>{{ post.reviewPoint }} / 10</h2>
+                <a href="#" @click.prevent="getPostForAlbumModal(post)">{{ post.album_name}}</a></h3>
+              <p>{{ post.title }}</p>
+              <h2>{{ post.point }} / 10</h2>
               <button class="btn-read-more" @click.prevent="getPostForAlbumModal(post)">Read More</button>
             </div>
           </div>
@@ -56,7 +56,7 @@
           <a class="img-a" v-bind:href="'/' + perUser.username"><img v-bind:src="perUser.profilePhoto" /></a>
           <div class="friend-info">
             <h5><a v-bind:href="'/' + perUser.username">{{ perUser.username }}</a></h5>
-            <button :disabled="perUser.isProgressActive" @click="followSomeone(perUser.userId, index)">
+            <button :disabled="perUser.isProgressActive" @click="followSomeone(perUser.id, index)">
               <div v-if="spinnerIndex != index">
                     Follow
                   </div>
@@ -147,29 +147,29 @@ export default {
   },*/
   methods: {
     getAlbumCount() {
-      axios.get(this.$url + "/api/v1/albums/get_album_count_by_username", {
-            headers: {
-              "Authorization": localStorage.getItem('userToken'),
-            },
-            params: {
-              username: localStorage.getItem('username')
-            }
-          }).then( res => {
-            this.aCount = res.data;
-        })
+      axios.get(this.$url + "/api/v1/albums/get_reviewed_album_count_by_user", {
+        headers: {
+          "Authorization": localStorage.getItem('userToken'),
+        },
+        params: {
+          username: localStorage.getItem('username')
+        }
+      }).then( res => {
+        this.aCount = res.data;
+      })
     },
 
     getBandCount() {
-      axios.get(this.$url + "/api/v1/bands/get_band_count_by_username", {
-            headers: {
-              'Authorization': localStorage.getItem('userToken'),
-            },
-            params: {
-              username: localStorage.getItem('username')
-            }
-          }).then( res => {
-            this.bCount = res.data;
-        });
+      axios.get(this.$url + "/api/v1/bands/get_reviewed_band_count_by_user", {
+        headers: {
+          'Authorization': localStorage.getItem('userToken'),
+        },
+        params: {
+          username: localStorage.getItem('username')
+        }
+      }).then( res => {
+        this.bCount = res.data;
+      });
     },
 
     getProfilePhoto(){
@@ -191,22 +191,22 @@ export default {
 
     getPostForAlbumModal(post){
       this.selectedAlbum = post;
-      this.selectedAlbum.albumId = post.albumId;
+      this.selectedAlbum.id = post.album_id;
       this.selectedAlbum.author = post.username;
       this.showAlbumModal = true;
     },
 
     getPostForBandModal(post){
       this.selectedBand.src = null;
-      this.selectedBand.bandName = post.bandName;
-      this.selectedBand.bandId = post.bandId;
+      this.selectedBand.bandName = post.band_name;
+      this.selectedBand.id = post.band_id;
       this.selectedBand.postOwner = post.username;
       this.showBandModal = true;
     },
 
     //burada tam bilmiyorum bak username veriliyor push ediliyor fakat following_id ile yapılacak db işlemi
     //following_id gönderilmiyor şu an sonra düzenle
-    followSomeone (followingId, index) {
+    followSomeone (followedId, index) {
       this.spinnerIndex = index
       axios.put(this.$url + "/api/v1/users/follow_someone", "",{
         headers: {
@@ -214,12 +214,12 @@ export default {
         },
         params: {
           user_id: localStorage.getItem('userId'),
-          following_id:  followingId
+          followed_id:  followedId
         }
       }).then( () =>{
         this.notFriends.splice(index, 1);
         this.spinnerIndex = null;
-    })
+      })
     },
 
     getPhoto(post){
@@ -229,7 +229,7 @@ export default {
           responseType: 'arrayBuffer'
         },
         params: {
-          album_id: post.albumId
+          album_id: post.album_id
         }
       }).then( (res) => {
         post.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -242,7 +242,7 @@ export default {
           responseType: 'arrayBuffer'
         },
         params: {
-          username: post.postUsername
+          username: post.username
         }
       }).then( (res) => {
         post.userPhoto = "data:image/jpg;base64," + Buffer.from(res.data, 'binary')
@@ -272,7 +272,7 @@ export default {
           'Authorization': localStorage.getItem('userToken')
         },
         params: {
-          user_id: this.user.userId
+          user_id: this.user.id
         }
       }).then((res) => {
         this.notFriends = res.data;
@@ -315,11 +315,11 @@ export default {
           username: localStorage.getItem('username')
         }
       }).then((res) => {
-            this.user = res.data;
-            localStorage.setItem('userId', this.user.userId);
-            this.getOtherUsers();
-            this.getPosts();
-          });
+        this.user = res.data;
+        localStorage.setItem('userId', this.user.id);
+        this.getOtherUsers();
+        this.getPosts();
+      });
     }
   }
 }

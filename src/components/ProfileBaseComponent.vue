@@ -8,8 +8,8 @@
             <p>{{ user.bioInfo }}</p>
           </div>
           <button class="btn-follow btn-new-review" v-if="isLoggedIn && isMyProfile" v-on:click="showModal = true">New Review</button>
-          <button class="btn-follow" v-else-if="!isYourFriend" @click="followSomeone(user.userId)">Follow</button>
-          <button class="btn-follow" v-else @click="unfollowSomeone(user.userId)">Unfollow</button>
+          <button class="btn-follow" v-else-if="!isYourFriend" @click="followSomeone(user.id)">Follow</button>
+          <button class="btn-follow" v-else @click="unfollowSomeone(user.id)">Unfollow</button>
           <div class="follow-statistics">
             <p @click="userListShowModal = true; isFollowersModal = false">{{ followingsCount }} Followings</p>
             <p @click="userListShowModal = true; isFollowersModal = true">{{ followersCount }} Followers</p>
@@ -152,42 +152,37 @@
         });
       },
 
-      followSomeone (followingId) {
+      followSomeone (followedId) {
         axios.put(this.$url + "/api/v1/users/follow_someone", "",{
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
           params: {
             user_id: localStorage.getItem('userId'),
-            following_id: followingId
+            followed_id: followedId
           }
         }).then( () =>{
           this.isYourFriend = true;
           this.followers.push(
               {
-                'userId': localStorage.getItem('userId'),
+                'user_id': localStorage.getItem('userId'),
                 'username': localStorage.getItem('username')
               });
           this.reRenderCount++;
         })
       },
 
-      unfollowSomeone (unfollowingId) {
+      unfollowSomeone (unfollowedId) {
         axios.put(this.$url + "/api/v1/users/unfollow_someone", "",{
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
           params: {
             user_id: localStorage.getItem('userId'),
-            unfollowing_id:  unfollowingId
+            unfollowed_id:  unfollowedId
           }
         }).then( () =>{
           this.isYourFriend = false;
-          this.followers.forEach((user,index) => {
-            if(user.userId == localStorage.getItem('userId')){
-              this.followers.splice(index, 1);
-            }
-          });
           this.reRenderCount++;
         })
       },
@@ -204,23 +199,23 @@
       },
 
       getFollowersAndFollowing() {
-        axios.get(this.$url + "/api/v1/users/get_followers", {
+        axios.get(this.$url + "/api/v1/users/find_followers_by_user_id", {
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
           params: {
-            user_id: this.user.userId
+            user_id: this.user.id
           }
         }).then( (res) => {
           this.followers = res.data;
         });
 
-        axios.get(this.$url + "/api/v1/users/get_followings", {
+        axios.get(this.$url + "/api/v1/users/find_followings_by_user_id", {
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
           params: {
-            user_id: this.user.userId
+            user_id: this.user.id
           }
         }).then( (res) => {
           this.followings = res.data;

@@ -8,7 +8,7 @@
             <img :src="album.src" />
           </div>
           <div class="text-part">
-            <h3>{{ album.albumName }}</h3>
+            <h3>{{ album.name }}</h3>
           </div>
         </div>
       </div>
@@ -44,11 +44,11 @@
         selectedAlbum: {},
         showModal: false,
         fakeReview: {
-          'bandName': '',
-          'albumName': '',
-          'reviewTitle': '',
-          'reviewContent': '',
-          'reviewPoint': ''
+          'band_name': '',
+          'album_name': '',
+          'title': '',
+          'content': '',
+          'point': ''
         }
       }
     },
@@ -60,7 +60,7 @@
             responseType: 'arrayBuffer'
           },
           params: {
-            album_id : album.albumId
+            album_id : album.id
           }
         }).then( res => {
           album.src = "data:image/jpeg;base64," + Buffer.from(res.data, 'binary');
@@ -75,15 +75,15 @@
       },
 
       getAllAlbums(){
-        axios.get(this.$url + "/api/v1/albums/get_albums_by_username", {
-              headers: {
-                "Authorization": localStorage.getItem('userToken'),
-              },
-              params: {
-                username: this.$route.params.username
-              }
-            }).then( res => {
-          this.albums = res.data.reverse();
+        axios.get(this.$url + "/api/v1/albums/find_albums_reviewed_by_user", {
+          headers: {
+            "Authorization": localStorage.getItem('userToken'),
+          },
+          params: {
+            username: this.$route.params.username
+          }
+        }).then( res => {
+          this.albums = res.data;
           this.albums.forEach(this.setAlbumCover);
         })
       }
@@ -94,7 +94,7 @@
     computed: {
       filteredAlbums () {
         return this.albums.filter(album => {
-          return album.albumName.toLocaleLowerCase().includes(this.filter.toLowerCase())
+          return album.name.toLocaleLowerCase().includes(this.filter.toLowerCase())
         })
       }
     }

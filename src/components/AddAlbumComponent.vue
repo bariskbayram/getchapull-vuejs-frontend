@@ -89,11 +89,11 @@ export default {
 
     checkBandAndPush (review) {
       this.review = review;
-      if(this.review.reviewTitle == ''){
-        this.review.reviewTitle = 'GetchaPull ! - No Title';
+      if (this.review.title === '') {
+        this.review.title = 'GetchaPull ! - No Title';
       }
-      if(this.review.reviewContent == ''){
-        this.review.reviewContent = 'GetchaPull ! - No Content';
+      if (this.review.content === '') {
+        this.review.content = 'GetchaPull ! - No Content';
       }
       this.pushBand();
     },
@@ -101,9 +101,8 @@ export default {
     async pushBand() {
       const images = this.band.images;
 
-      if (images.length != 0) {
-        let blob = await fetch(images[0].url).then(r => r.blob());
-        this.selectedBandImage = blob;
+      if (images.length !== 0) {
+        this.selectedBandImage = await fetch(images[0].url).then(r => r.blob());
       } else {
         return;
       }
@@ -111,8 +110,8 @@ export default {
       const formData = new FormData();
       formData.append("multipart_file", this.selectedBandImage);
       formData.append('band_dto', new Blob([JSON.stringify({
-        "band_name": this.band.name,
-        "band_spotify_id": this.band.id
+        "name": this.band.name,
+        "spotify_id": this.band.id
       })], {
         type: "application/json"
       }));
@@ -125,7 +124,7 @@ export default {
             }
           }
       ).then((res) => {
-        this.band.bandId = res.data;
+        this.band.id = res.data;
         this.pushAlbum();
       }).catch(err => {
         console.log(err);
@@ -135,9 +134,8 @@ export default {
     async pushAlbum() {
       const images = this.album.images;
 
-      if (images.length != 0) {
-        let blob = await fetch(images[0].url).then(r => r.blob());
-        this.selectedAlbumImage = blob;
+      if (images.length !== 0) {
+        this.selectedAlbumImage = await fetch(images[0].url).then(r => r.blob());
       } else {
         return;
       }
@@ -145,10 +143,10 @@ export default {
       const formData = new FormData();
       formData.append("multipart_file", this.selectedAlbumImage);
       formData.append('album_dto', new Blob([JSON.stringify({
-        "album_name": this.album.name,
-        "album_spotify_id": this.album.id,
-        "album_year": this.album.release_date.substring(0,4),
-        "band_id": this.band.bandId,
+        "name": this.album.name,
+        "spotify_id": this.album.id,
+        "year": this.album.release_date.substring(0,4),
+        "band_id": this.band.id,
         "user_id": localStorage.getItem('userId')
       })], {
         type: "application/json"
@@ -163,7 +161,7 @@ export default {
             }
           }
       ).then((res) => {
-        this.album.albumId = res.data;
+        this.album.id = res.data;
         this.pushReview();
       }).catch(err => {
         console.log(err);
@@ -173,10 +171,10 @@ export default {
     pushReview () {
       const formData = new FormData();
       formData.append('review_dto', new Blob([JSON.stringify({
-        "review_title": this.review.reviewTitle,
-        "review_content": this.review.reviewContent,
-        "review_point": parseInt(this.review.reviewPoint),
-        "album_id": this.album.albumId,
+        "title": this.review.title,
+        "content": this.review.content,
+        "point": parseInt(this.review.point),
+        "album_id": this.album.id,
         "user_id": localStorage.getItem('userId')
       })], {
         type: "application/json"

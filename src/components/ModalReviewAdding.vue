@@ -4,7 +4,7 @@
     <div class="modal-header">
       <h1>Adding review!</h1>
       <div class="modal-confirm">
-        <button class="btn-green" v-if="review.reviewPoint != null"
+        <button class="btn-green" v-if="review.point != null"
                 @click="pushReview"
                 :disabled="isProgressActive">
           <div v-if="!isProgressActive">Create</div>
@@ -30,17 +30,17 @@
     <div class="modal-guts">
       <div class="input-section">
         <label class="with-input-border">Title</label>
-        <input type="text" v-model="review.reviewTitle" required autofocus="" maxlength="30"/>
+        <input type="text" v-model="review.title" required autofocus="" maxlength="30"/>
       </div>
       <div class="input-section">
         <label class="with-input-border">Content</label>
-        <textarea v-model="review.reviewContent" required maxlength="350" rows="5" cols="50" />
+        <textarea v-model="review.content" required maxlength="350" rows="5" cols="50" />
       </div>
       <div class="input-section">
         <label class="with-input-border">Point</label>
         <div class="radios">
           <div class="radio" v-for="(value) in 10" v-bind:key="value">
-            <input type="radio" id="one" :value="value" v-model="review.reviewPoint">
+            <input type="radio" id="one" :value="value" v-model="review.point">
             <label for="one">{{ value }}</label>
           </div>
         </div>
@@ -56,9 +56,9 @@ export default {
   data () {
     return {
       review: {
-        reviewTitle: '',
-        reviewContent: '',
-        reviewPoint: null
+        title: '',
+        content: '',
+        point: null
       },
       pointError: false,
       isProgressActive: false,
@@ -66,9 +66,9 @@ export default {
   },
   methods: {
     pushReview () {
-      if(this.review.reviewPoint >10){
+      if(this.review.point >10){
         this.pointError = true;
-      }else if(this.review.reviewPoint == null) {
+      }else if(this.review.point == null) {
         this.pointError = true;
       }else{
         this.isProgressActive = true;
