@@ -8,6 +8,8 @@ import BaseContent from './components/ProfileBaseComponent.vue';
 import EditProfile from './components/EditProfileComponent.vue';
 import MainPage from './components/MainPage.vue';
 import { Buffer } from 'buffer';
+import '../public/global.css';
+import './assets/styles.css';
 
 window.Buffer = Buffer;
 const BASE_URL = "http://localhost:8080";
