@@ -30,7 +30,7 @@
         <div class="post" v-for="(post, index) in posts" v-bind:key="index">
           <div class="post-action">
             <a v-bind:href="'/' + post.username"><img v-bind:src="post.userPhoto" /></a>
-            <p><a v-bind:href="'/' + post.username"><span class="user">{{ post.username }}</span></a> added a new review. <span class="time">{{ post.created_at | moment }}</span></p>
+            <p><a v-bind:href="'/' + post.username"><span class="user">{{ post.username }}</span></a> added a new review. <span class="time">{{ formatMoment(post.created_at) }}</span></p>
           </div>
           <div class="post-content">
             <div class="album-cover">
@@ -104,15 +104,9 @@ import moment from "moment";
 
 const axios = require('axios').default;
 
-
 export default {
   name: "MainPage",
   components: {AlbumDetails, BandDetails, Modal, AddAlbumContent},
-  filters: {
-    moment: function(date) {
-      return moment(date).fromNow();
-    }
-  },
   computed: {
     reviewCount: function() {
       return this.aCount;
@@ -141,6 +135,9 @@ export default {
   },
 
   methods: {
+    formatMoment(date) {
+      return moment(date).fromNow();
+    },
     getAlbumCount() {
       axios.get(this.$url + "/api/v1/albums/get_reviewed_album_count_by_user", {
         headers: {
