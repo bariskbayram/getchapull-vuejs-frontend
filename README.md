@@ -1,49 +1,62 @@
-# GetchaPull - Frontend - Vue.js
+# GetchaPull
 
 [![Apache-2.0 License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-GetchaPull website -> https://getchapull.wtf
+[Visit the Website](https://getchapull.wtf)
 
-* PostgreSQL -> Google Cloud SQL
-* spring-backend -> Google Cloud Run
-* vuejs-frontend -> Google Cloud Run
+GetchaPull is a simple social platform for music lovers to share their thoughts on albums and discover new music. You can think of it like a mix between a review site and a social feed where you follow people for music-related updates.
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+## What You Can Do
 
-GetchaPull is a Twitter-like web page for sharing music reviews with others. In the beginning, I was trying to make a web page just for myself with the same aim. Then it became a bigger project than I thought. GetchaPull has 2 repo in Github, one of them is [Spring-Backend](https://github.com/bariskbayram/getchapull-spring-backend) and another one is [VueJS-Frontend](https://github.com/bariskbayram/getchapull-vuejs-frontend). 
+* **Create a Profile:** Sign up, log in, and set up your music review space.
+* **Review Albums:** Write reviews, rate albums, and fetch album details from Spotify automatically.
+* **Follow Users:** See what others are reviewing and follow profiles you like.
+* **Personalized Feed:** Reviews from the people you follow show up on your main page.
+* **Save Media:** Album covers, band photos, and profile pictures are stored using AWS S3.
 
-The VueJs-Frontend side of the Getchapull is implemented for sending requests to the Spring-Backend side. It has grown even more while adding new features to it. I did almost all the HTML structure and CSS design myself from scratch. I implemented it through Vue.js by using components. It has still several performance issues, I'm gonna keep adding new features and fixing the issues.
+## How It Works
 
-* You can add new reviews to your profile.
-* You can follow or unfollow other users.
-* You can see other reviews belong to one user through its profile page.
-* You can see the posts belonging to other users that are followed by you on the main page.
+### Backend - [Spring-Backend Repository](https://github.com/bariskbayram/getchapull-spring-backend)
 
-### Build and Run on your localhost
+Handles everything behind the scenes:
+* Connects to a PostgreSQL database to store users, reviews, bands and albums.
+* Authenticates users with JWT.
+* Saves images and other files to AWS S3.
 
-  * It requires Spotify API credentials, so firstly you need to get these. 
-  Then you can go to ```src/components/AddAlbumComponent.vue``` file to change ```client_id``` and ```client_secret``` fields. 
+### Frontend - [VueJS-Frontend Repository](https://github.com/bariskbayram/getchapull-vuejs-frontend)
 
-1. Download and unzip the source repo, or clone it using Git:
+This is what users see and interact with:
+* Built with Vue.js.
+* Fetches and displays data from the backend.
+* Responsive and easy-to-use design.
+
+## How to Run It Locally
+### Requirements
+
+* **Docker:** To run the app easily.
+* **Spotify API credentials:** Needed for Spotify API integration.
+
+#### It requires Spotify API credentials, so firstly you need to get these. Then you can go to `src/components/AddAlbumComponent.vue` file to change `client_id` and `client_secret` fields.
+
+
+1. Clone the Frontend Repo:
   ```sh
     git clone https://github.com/bariskbayram/getchapull-vuejs-frontend.git
-   ```
-2. cd into 
-  ```sh 
     cd getchapull-vuejs-frontend
-  ```
-3. Build image and run with Docker
+   ```
+2. Build images and run with Docker
   ```sh
     docker build -t getchapull-vue .
-    docker run --name getchapull-vue -d -p 8080:8080 getchapull-vue
+      docker run --name getchapull-vue -d -p 8080:8080 getchapull-vue
   ```
-  
-* On this side of GetchaPull, it requires authentication so, if you wanna use the whole GetchaPull implementation, run the backend side too.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+* Backend Setup: Follow instructions in [Spring-Backend Repository](https://github.com/bariskbayram/getchapull-spring-backend).
+
+### Build with and Third-party
+
+* VueJS
+* Spotify API
 
 [linkedin-shield]: https://img.shields.io/static/v1?label=LINKEDIN&message=BKB&color=<COLOR>
 [linkedin-url]: https://www.linkedin.com/in/bar%C4%B1%C5%9F-kaan-bayram-121850101
