@@ -19,8 +19,8 @@ import Modal from "@/components/Modal";
 import qs from 'qs';
 
 const axios = require('axios');
-const client_id = '4cdcf550c1c7458485e09e5be020a556';
-const client_secret = '1e906cf6ef71436cb163ca98e619aead';
+const client_id = process.env.VUE_APP_SPOTIFY_CLIENT_ID;
+const client_secret = process.env.VUE_APP_SPOTIFY_CLIENT_SECRET;
 
 export default {
   name: "AddAlbumContent",

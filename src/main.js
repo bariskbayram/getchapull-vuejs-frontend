@@ -12,7 +12,7 @@ import '../public/global.css';
 import './assets/styles.css';
 
 window.Buffer = Buffer;
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = process.env.VUE_APP_API_URL;
 
 const routes = [
   { path: '/login', component: Login },

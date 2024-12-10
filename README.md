@@ -34,29 +34,62 @@ This is what users see and interact with:
 ## How to Run It Locally
 ### Requirements
 
+* **Java 17+:** Tested with OpenJDK 17.
 * **Docker:** To run the app easily.
+* **AWS Keys:** Needed for S3 integration.
 * **Spotify API credentials:** Needed for Spotify API integration.
 
-#### It requires Spotify API credentials, so firstly you need to get these. Then you can go to `src/components/AddAlbumComponent.vue` file to change `client_id` and `client_secret` fields.
-
-
-1. Clone the Frontend Repo:
+1. Clone the Backend Repo:
+  ```sh
+    git clone https://github.com/bariskbayram/getchapull-spring-backend.git
+    cd getchapull-spring-backend
+   ```
+2. Update the Dockerfile for Spring-Backend Repository: Replace *** and <IP_ADDRESS> values with your own:
+  ```sh
+    ENV AWS_ACCESSKEY_ID="***"
+    ENV AWS_SECRET_ACCESSKEY="***"
+    ENV BUCKET_NAME="***"
+    ENV CORS_HOSTS="http://<IP_ADDRESS>:8082"
+    ENV DATABASE_HOST="jdbc:postgresql://<IP_ADDRESS>:5433/getchapull"
+    ENV DATABASE_USER="postgres"
+    ENV DATABASE_PASSWORD="postgres"
+   ```
+4. Build jar:
+  ```sh 
+    ./mvnw package && java -jar target/getchapull-0.0.1-SNAPSHOT.jar 
+  ```
+5. Clone the Frontend Repo:
   ```sh
     git clone https://github.com/bariskbayram/getchapull-vuejs-frontend.git
     cd getchapull-vuejs-frontend
    ```
-2. Build images and run with Docker
+2. Update the Dockerfile for VueJS-Frontend Repository: Replace *** and <IP_ADDRESS> values with your own:
   ```sh
-    docker build -t getchapull-vue .
-      docker run --name getchapull-vue -d -p 8080:8080 getchapull-vue
+    ENV VUE_APP_API_URL="http://<IP_ADDRESS>:8081"
+    ENV VUE_APP_SPOTIFY_CLIENT_ID="***"
+    ENV VUE_APP_SPOTIFY_CLIENT_SECRET="***"
+   ```
+5. Build images and run with Docker - Backend, frontend and database will be up:
+  ```sh
+    docker-compose up --build
   ```
-
-* Backend Setup: Follow instructions in [Spring-Backend Repository](https://github.com/bariskbayram/getchapull-spring-backend).
+6. You can access the application from `http://<IP_ADDRESS>:8082`
 
 ### Build with and Third-party
 
+* SpringBoot(SpringBootWeb, SpringBootJPA, SpringBootSecurity)
+* JWT
+* PostgreSQL
 * VueJS
 * Spotify API
+* AWS SDK
+* Lombok
+* Guava
+* Flyway
+
+## UML Diagram (GetchaPull-UML)
+
+![UML](GetchaPull-UML.svg)
 
 [linkedin-shield]: https://img.shields.io/static/v1?label=LINKEDIN&message=BKB&color=<COLOR>
 [linkedin-url]: https://www.linkedin.com/in/bar%C4%B1%C5%9F-kaan-bayram-121850101
