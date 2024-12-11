@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: "ModalUserList",
+  name: "UserList",
   props: {
     userList: {
       required : true

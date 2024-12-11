@@ -89,22 +89,22 @@
       </template>
     </Modal>
 
-    <AddAlbumContent v-if="showNewReviewModal" @close="showNewReviewModal = false" />
+    <AddReviewModalComponent v-if="showNewReviewModal" @close="showNewReviewModal = false" />
 
   </div>
 </template>
 
 <script>
 
-import AlbumDetails from "@/components/AlbumDetails";
-import BandDetails from "@/components/BandDetails";
-import Modal from "@/components/Modal";
-import AddAlbumContent from "@/components/AddAlbumComponent";
+import AlbumDetails from "@/components/Album/AlbumDetails.vue";
+import BandDetails from "@/components/Band/BandDetails.vue";
+import Modal from "@/components/Modal.vue";
+import AddReviewModalComponent from "@/components/Review/AddReviewModalComponent.vue";
 import moment from "moment";
 
 export default {
-  name: "MainPage",
-  components: {AlbumDetails, BandDetails, Modal, AddAlbumContent},
+  name: "MainComponent",
+  components: {AlbumDetails, BandDetails, Modal, AddReviewModalComponent},
   computed: {
     reviewCount: function() {
       return this.aCount;

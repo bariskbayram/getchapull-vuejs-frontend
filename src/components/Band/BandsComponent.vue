@@ -24,11 +24,11 @@
 </template>
 
 <script>
-  import BandDetails from "@/components/BandDetails";
-  import Modal from "@/components/Modal";
+  import BandDetails from "@/components/Band/BandDetails.vue";
+  import Modal from "@/components/Modal.vue";
 
   export default {
-    name: "BandContent",
+    name: "BandsComponent",
     components: {BandDetails, Modal},
     props: {
       filter: {},

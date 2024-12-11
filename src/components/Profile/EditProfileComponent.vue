@@ -76,7 +76,7 @@
 import myUpload from 'vue-image-crop-upload';
 
 export default {
-  name: "EditProfile",
+  name: "EditProfileComponent",
   components: {
     'my-upload': myUpload
   },

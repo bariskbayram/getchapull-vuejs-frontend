@@ -52,7 +52,7 @@
 
 <script>
 export default {
-  name: "ReviewAddingModal",
+  name: "ReviewSection",
   data() {
     return {
       review: {

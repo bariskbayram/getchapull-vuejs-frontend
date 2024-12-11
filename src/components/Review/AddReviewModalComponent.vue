@@ -1,20 +1,20 @@
 <template class="add-album-content">
   <Modal>
     <template v-slot:modal>
-      <SearchBandModal :token="token" v-if="isSearchPart" @closeModal="closeModal" @toBandPart="toBandPart"></SearchBandModal>
-      <BandAddingModal :token="token" :bandList="bandList" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandAddingModal>
-      <AlbumAddingModal :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumAddingModal>
-      <ReviewAddingModal v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewAddingModal>
+      <SearchSection :token="token" v-if="isSearchPart" @closeModal="closeModal" @toBandPart="toBandPart"></SearchSection>
+      <BandSection :token="token" :bandList="bandList" v-if="isBandPart" @closeModal="closeModal" @toAlbumPart="toAlbumPart"></BandSection>
+      <AlbumSection :token="token" :bandId="band.id" v-if="isAlbumPart" @closeModal="closeModal" @toReviewPart="toReviewPart"></AlbumSection>
+      <ReviewSection v-if="isReviewPart" @closeModal="closeModal" @pushAllDatas="checkBandAndPush"></ReviewSection>
     </template>
   </Modal>
 </template>
 
 <script>
-import SearchBandModal from "@/components/ModalSearchBand";
-import BandAddingModal from "@/components/ModalBandAdding";
-import AlbumAddingModal from "@/components/ModalAlbumAdding";
-import ReviewAddingModal from "@/components/ModalReviewAdding";
-import Modal from "@/components/Modal";
+import SearchSection from "@/components/Review/SearchSection.vue";
+import BandSection from "@/components/Review/BandSection.vue";
+import AlbumSection from "@/components/Review/AlbumSection.vue";
+import ReviewSection from "@/components/Review/ReviewSection.vue";
+import Modal from "@/components/Modal.vue";
 
 import qs from 'qs';
 
@@ -23,8 +23,8 @@ const client_id = process.env.VUE_APP_SPOTIFY_CLIENT_ID;
 const client_secret = process.env.VUE_APP_SPOTIFY_CLIENT_SECRET;
 
 export default {
-  name: "AddAlbumContent",
-  components: {Modal, ReviewAddingModal, AlbumAddingModal, BandAddingModal, SearchBandModal},
+  name: "AddReviewModalComponent",
+  components: {Modal, ReviewSection, AlbumSection, BandSection, SearchSection},
   data() {
     return {
       token: '',

@@ -25,11 +25,11 @@
 </template>
 
 <script>
-  import AlbumDetails from "@/components/AlbumDetails";
-  import Modal from "@/components/Modal";
+  import AlbumDetails from "@/components/Album/AlbumDetails.vue";
+  import Modal from "@/components/Modal.vue";
 
   export default {
-    name: "AlbumContent",
+    name: "AlbumsComponent",
     components: {AlbumDetails, Modal},
     props: {
       filter: {}

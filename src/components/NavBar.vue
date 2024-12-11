@@ -40,7 +40,7 @@
 <script>
 
 export default {
-  name: "NavComponent",
+  name: "NavBar",
   data() {
     return{
       isNavOpen: false,

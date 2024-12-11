@@ -3,10 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import Login from './components/Login.vue';
 import SignUp from './components/Signup.vue';
-import NavComponent from './components/NavBarComponent.vue';
-import BaseContent from './components/ProfileBaseComponent.vue';
-import EditProfile from './components/EditProfileComponent.vue';
-import MainPage from './components/MainPage.vue';
+import NavBar from './components/NavBar.vue';
+import ProfileComponent from './components/Profile/ProfileComponent.vue';
+import EditProfileComponent from './components/Profile/EditProfileComponent.vue';
+import MainComponent from './components/MainComponent.vue';
 import { BASE_URL, apiClient } from './api/axiosClient.js';
 import { isTokenExpired } from './api/tokenVerification.js';
 import { Buffer } from 'buffer';
@@ -19,19 +19,19 @@ window.Buffer = Buffer;
 const routes = [
   { path: '/login', component: Login },
   { path: '/signup', component: SignUp },
-  { path: '/', component: NavComponent,
+  { path: '/', component: NavBar,
     children: [
       {
         path: '',
-        component: MainPage
+        component: MainComponent
       },
       {
         path: ':username',
-        component: BaseContent
+        component: ProfileComponent
       },
       {
         path: ':username/edit-profile',
-        component: EditProfile
+        component: EditProfileComponent
       }
     ]
   }

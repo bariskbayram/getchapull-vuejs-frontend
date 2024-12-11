@@ -58,7 +58,7 @@
 const axios = require('axios');
 
 export default {
-  name: "BandAddingModal",
+  name: "BandSection",
   props: {
     bandList: {
       required : true,

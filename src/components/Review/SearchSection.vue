@@ -42,7 +42,7 @@
 const axios = require('axios');
 
 export default {
-  name: "SearchBandModal",
+  name: "SearchSection",
   data() {
     return {
       inputBandName: '',

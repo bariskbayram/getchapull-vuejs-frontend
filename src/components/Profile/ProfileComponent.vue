@@ -42,37 +42,37 @@
     </div>
 
     <div id="content"  class="container"  role="main">
-      <AlbumContent v-if="isAlbumSection" :filter="filter"/>
-      <BandContent v-else :filter="filter"/>
+      <AlbumsComponent v-if="isAlbumSection" :filter="filter"/>
+      <BandsComponent v-else :filter="filter"/>
     </div>
 
     <Modal v-if="userListShowModal" @closeModal="closeModal">
       <template v-slot:modal>
-        <ModalUserList v-if="userListShowModal && isFollowersModal" :is-followers=isFollowersModal :user-list="followers" @closeModal="closeModal" />
-        <ModalUserList v-if="userListShowModal && !isFollowersModal" :is-followers=isFollowersModal :user-list="followings" @closeModal="closeModal" />
+        <UserList v-if="userListShowModal && isFollowersModal" :is-followers=isFollowersModal :user-list="followers" @closeModal="closeModal" />
+        <UserList v-if="userListShowModal && !isFollowersModal" :is-followers=isFollowersModal :user-list="followings" @closeModal="closeModal" />
       </template>
     </Modal>
 
-    <AddAlbumContent v-if="showModal" @close="showModal = false" />
+    <AddReviewModalComponent v-if="showModal" @close="showModal = false" />
 
   </div>
 </template>
 
 <script>
-  import AlbumContent from './AlbumsComponent.vue';
-  import BandContent from "@/components/BandsComponent";
-  import AddAlbumContent from "@/components/AddAlbumComponent";
-  import ModalUserList from "@/components/ModalUserList";
-  import Modal from "@/components/Modal";
+  import AlbumsComponent from '../Album/AlbumsComponent.vue';
+  import BandsComponent from "@/components/Band/BandsComponent.vue";
+  import AddReviewModalComponent from "@/components/Review/AddReviewModalComponent.vue";
+  import UserList from "@/components/Profile/UserList.vue";
+  import Modal from "@/components/Modal.vue";
 
   export default {
-    name: 'BaseContent',
+    name: 'ProfileComponent',
     components:{
       Modal,
-      ModalUserList,
-      AlbumContent,
-      BandContent,
-      AddAlbumContent
+      UserList,
+      AlbumsComponent,
+      BandsComponent,
+      AddReviewModalComponent
     },
     computed: {
       followersCount: function() {

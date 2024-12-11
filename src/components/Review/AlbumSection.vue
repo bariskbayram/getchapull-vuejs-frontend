@@ -37,7 +37,7 @@
 const axios = require('axios');
 
 export default {
-  name: "AlbumAddingModal",
+  name: "AlbumSection",
   data() {
     return {
       picked: null,
