@@ -102,8 +102,6 @@ import Modal from "@/components/Modal";
 import AddAlbumContent from "@/components/AddAlbumComponent";
 import moment from "moment";
 
-const axios = require('axios').default;
-
 export default {
   name: "MainPage",
   components: {AlbumDetails, BandDetails, Modal, AddAlbumContent},
@@ -138,6 +136,7 @@ export default {
     formatMoment(date) {
       return moment(date).fromNow();
     },
+
     getAlbumCount() {
       this.$apiClient.get("/api/v1/albums/get_reviewed_album_count_by_user", {
         headers: {
@@ -272,7 +271,7 @@ export default {
     },
 
     getNotFriendsPhoto(user) {
-      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
+      this.$apiClient.get("/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
@@ -293,9 +292,9 @@ export default {
     if (!localStorage.getItem('isLoggedIn')) {
       this.$router.push('/login');
     } else {
-      await this.getAlbumCount();
-      await this.getBandCount();
-      await this.getProfilePhoto();
+      this.getAlbumCount();
+      this.getBandCount();
+      this.getProfilePhoto();
 
       this.$apiClient.get("/api/v1/users/get_user_by_username", {
         params: {

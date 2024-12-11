@@ -80,8 +80,6 @@
 
 <script>
 
-const axios = require('axios').default;
-
 export default {
   name: "Signup",
   data() {

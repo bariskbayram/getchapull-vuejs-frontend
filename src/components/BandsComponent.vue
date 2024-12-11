@@ -26,7 +26,6 @@
 <script>
   import BandDetails from "@/components/BandDetails";
   import Modal from "@/components/Modal";
-  const axios = require('axios');
 
   export default {
     name: "BandContent",

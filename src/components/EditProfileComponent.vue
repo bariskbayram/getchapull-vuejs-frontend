@@ -73,7 +73,6 @@
 
 <script>
 
-const axios = require('axios').default;
 import myUpload from 'vue-image-crop-upload';
 
 export default {
@@ -102,13 +101,13 @@ export default {
     cropSuccess(imgDataUrl) {
       this.fileImg = imgDataUrl;
       fetch(this.fileImg)
-          .then(res => res.blob())
-          .then(blob => {
-            const file = new File([blob], 'dot.png', blob)
-            this.fileImg = file;
-            this.uploadProfilePhoto();
-          });
+        .then(res => res.blob())
+        .then(blob => {
+          this.fileImg = new File([blob], 'dot.png', blob);
+          this.uploadProfilePhoto();
+        });
     },
+
     uploadProfilePhoto() {
       const formData = new FormData();
       formData.append("profile_photo", this.fileImg);
@@ -125,21 +124,30 @@ export default {
         this.$router.push("/" + localStorage.getItem('username'));
       });
     },
+
     validateUser() {
       this.checkFullname();
     },
+
     checkFullname() {
       if (this.user.fullname.length < 4) {
         this.isFullnameError = true;
       } else {
         this.isFullnameError = false;
-        this.checkPassword();
+
+        if (this.password === '' && this.passwordConfirm === '') {
+          this.updateUser();
+        } else {
+          this.checkPassword();
+        }
       }
     },
+
     checkPassword() {
       if (this.password.length < 5) {
         this.isPasswordError = true;
       } else if (this.password !== this.passwordConfirm) {
+        this.isPasswordError = false;
         this.isPasswordConfirmError = true;
       } else {
         this.isPasswordError = false;
@@ -147,6 +155,7 @@ export default {
         this.updateUser();
       }
     },
+
     updateUser() {
       this.isProgressActive = true;
       let userPush = {
@@ -155,6 +164,9 @@ export default {
         fullname: this.user.fullname,
         password: this.password
       }
+
+      if (this.password === '') delete userPush.password;
+
       this.$apiClient.put("/api/v1/users/update_user_by_username", userPush, {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
@@ -163,20 +175,13 @@ export default {
         this.$router.push('/' + localStorage.getItem('username'));
       });
     },
-    checkUsernameIsAvailable() {
-      this.$apiClient.get("/api/v1/users/check_username_exist", {
-        params: {
-          username: this.user.username
-        }
-      }).then((res) => {
-        return res.data !== true;
-      })
-    },
+
     checkMyProfile() {
       if (this.$route.path === "/" + localStorage.getItem('username') + "/edit-profile") {
         this.isMyProfile = true;
       }
     },
+
     getProfilePhoto() {
       this.$apiClient.get("/api/v1/users/download_profile_photo",{
         headers: {
@@ -192,6 +197,7 @@ export default {
       });
       return this.profile_photo;
     },
+
     checkUserIsLoggedIn() {
       return !!localStorage.getItem('isLoggedIn');
     }

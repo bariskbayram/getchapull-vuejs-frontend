@@ -27,7 +27,6 @@
 <script>
   import AlbumDetails from "@/components/AlbumDetails";
   import Modal from "@/components/Modal";
-  const axios = require('axios');
 
   export default {
     name: "AlbumContent",

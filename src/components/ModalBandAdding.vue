@@ -37,7 +37,7 @@
         <button class="search-button" @click="searchBandName">Search</button>
       </div>
       <div class="select-section">
-        <div class="card" v-for="(artist ,index) in bandList" v-bind:key="index">
+        <div class="card" v-for="(artist ,index) in localBandList" v-bind:key="index">
           <div class="card-content" :tabindex="index" @click="picked = artist">
             <div class="text-part">
               <h3>{{ artist.name }}</h3>
@@ -69,26 +69,29 @@ export default {
       picked: null,
       inputBandName: '',
       allBands: [],
-      showDialog : true,
+      localBandList: [...this.bandList],
       isProgressActive: false,
     }
   },
   methods: {
     searchBandName() {
-      let query = this.inputBandName;
+      if (this.inputBandName === '') return;
+
+      this.isProgressActive = true;
 
       axios.get('https://api.spotify.com/v1/search', {
         headers: {
           'Authorization': 'Bearer ' + this.$attrs.token,
         },
         params: {
-          q: query,
+          q: this.inputBandName,
           type: "artist",
           limit: 30
         },
         json: true
       }).then((res) => {
-        this.bandList = res.data.artists.items;
+        this.localBandList = res.data.artists.items;
+        this.isProgressActive = false;
       })
     },
     pushSelectedBandToParent() {

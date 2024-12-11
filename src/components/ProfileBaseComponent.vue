@@ -65,8 +65,6 @@
   import ModalUserList from "@/components/ModalUserList";
   import Modal from "@/components/Modal";
 
-  const axios = require('axios').default;
-
   export default {
     name: 'BaseContent',
     components:{
@@ -128,11 +126,7 @@
       },
 
       checkMyProfile() {
-        if (this.$route.path === "/" + localStorage.getItem('username')) {
-          this.isMyProfile = true;
-        } else {
-          this.isMyProfile = false;
-        }
+        this.isMyProfile = this.$route.path === "/" + localStorage.getItem('username');
       },
 
       checkIsYourFriend() {

@@ -52,14 +52,16 @@ export default {
   },
   methods: {
     searchBandName() {
-      let query = this.inputBandName;
+      if (this.inputBandName === '') return;
+
       this.isProgressActive = true;
+
       axios.get('https://api.spotify.com/v1/search', {
         headers: {
           'Authorization': 'Bearer ' + this.$attrs.token,
         },
         params: {
-          q: query,
+          q: this.inputBandName,
           type: "artist",
           limit: 30
         },
