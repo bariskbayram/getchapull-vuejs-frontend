@@ -84,19 +84,16 @@ export default {
   },
 
   methods: {
-    // TODO: aynı zamanda expirationDate muhabbeti çalışmıyor
     submitLogIn() {
       this.isProgressActive = true;
-      axios.post(this.$url + "/login", this.user)
-      .then( (res) => {
+      this.$apiClient.post("/login", this.user)
+      .then((res) => {
         this.data = res.headers;
         localStorage.setItem('isLoggedIn', true);
         localStorage.setItem('userToken', this.data.authorization);
         localStorage.setItem('username', this.user.username);
-        localStorage.setItem('expirationDate', new Date().addDays(14));
         this.$router.push("/");
-      }).catch( (error) => {
-        console.log(error.response.status);
+      }).catch(() => {
         this.isProgressActive = false;
         this.infoError = true;
       })

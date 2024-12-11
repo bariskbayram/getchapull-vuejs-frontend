@@ -113,7 +113,7 @@
       },
 
       getProfilePhoto() {
-        axios.get(this.$url + "/api/v1/users/download_profile_photo",{
+        this.$apiClient.get("/api/v1/users/download_profile_photo",{
           headers: {
             'Authorization': localStorage.getItem('userToken'),
             responseType: 'arrayBuffer'
@@ -136,7 +136,7 @@
       },
 
       checkIsYourFriend() {
-        axios.get(this.$url + "/api/v1/users/is_followed_by_user", {
+        this.$apiClient.get("/api/v1/users/is_followed_by_user", {
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
@@ -151,7 +151,7 @@
       },
 
       followSomeone(followedId) {
-        axios.put(this.$url + "/api/v1/users/follow_someone", "",{
+        this.$apiClient.put("/api/v1/users/follow_someone", "",{
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
@@ -172,7 +172,7 @@
       },
 
       unfollowSomeone(unfollowedId) {
-        axios.put(this.$url + "/api/v1/users/unfollow_someone", "",{
+        this.$apiClient.put("/api/v1/users/unfollow_someone", "",{
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
@@ -187,7 +187,7 @@
       },
 
       getUserProfile() {
-        axios.get(this.$url + "/api/v1/users/get_user_by_username", {
+        this.$apiClient.get("/api/v1/users/get_user_by_username", {
           params: {
             username: this.$route.params.username
           }
@@ -198,7 +198,7 @@
       },
 
       getFollowersAndFollowing() {
-        axios.get(this.$url + "/api/v1/users/find_followers_by_user_id", {
+        this.$apiClient.get("/api/v1/users/find_followers_by_user_id", {
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
@@ -209,7 +209,7 @@
           this.followers = res.data;
         });
 
-        axios.get(this.$url + "/api/v1/users/find_followings_by_user_id", {
+        this.$apiClient.get("/api/v1/users/find_followings_by_user_id", {
           headers: {
             'Authorization': localStorage.getItem('userToken')
           },
@@ -224,7 +224,7 @@
       createdGettingData() {
         this.checkIsYourFriend();
         this.checkMyProfile();
-        axios.get(this.$url + "/api/v1/users/check_username_exist",{
+        this.$apiClient.get("/api/v1/users/check_username_exist",{
           params: {
             username: this.$route.params.username
           }

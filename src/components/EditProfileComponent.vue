@@ -113,7 +113,7 @@ export default {
       const formData = new FormData();
       formData.append("profile_photo", this.fileImg);
       formData.append("username", localStorage.getItem('username'));
-      axios.post(this.$url + "/api/v1/users/upload_profile_photo",
+      this.$apiClient.post("/api/v1/users/upload_profile_photo",
           formData,
           {
             headers: {
@@ -155,7 +155,7 @@ export default {
         fullname: this.user.fullname,
         password: this.password
       }
-      axios.put(this.$url + "/api/v1/users/update_user_by_username", userPush, {
+      this.$apiClient.put("/api/v1/users/update_user_by_username", userPush, {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         }
@@ -164,7 +164,7 @@ export default {
       });
     },
     checkUsernameIsAvailable() {
-      axios.get(this.$url + "/api/v1/users/check_username_exist", {
+      this.$apiClient.get("/api/v1/users/check_username_exist", {
         params: {
           username: this.user.username
         }
@@ -178,7 +178,7 @@ export default {
       }
     },
     getProfilePhoto() {
-      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
+      this.$apiClient.get("/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
@@ -201,7 +201,7 @@ export default {
     if (!this.checkUserIsLoggedIn()) {
       this.$router.push('/login');
     } else {
-      axios.get(this.$url + "/api/v1/users/get_user_by_username", {
+      this.$apiClient.get("/api/v1/users/get_user_by_username", {
         params: {
           username : this.$route.params.username
         }

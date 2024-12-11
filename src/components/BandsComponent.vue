@@ -43,7 +43,7 @@
     },
     methods: {
       setBandPhoto(band) {
-        axios.get(this.$url + "/api/v1/bands/download_band_image", {
+        this.$apiClient.get("/api/v1/bands/download_band_image", {
           headers: {
             'Authorization': localStorage.getItem('userToken'),
             responseType: 'arrayBuffer'
@@ -64,7 +64,7 @@
       }
     },
     mounted() {
-      axios.get(this.$url + "/api/v1/bands/find_bands_reviewed_by_user", {
+      this.$apiClient.get("/api/v1/bands/find_bands_reviewed_by_user", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },

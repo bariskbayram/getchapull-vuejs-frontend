@@ -115,7 +115,7 @@ export default {
       })], {
         type: "application/json"
       }));
-      axios.post(this.$url + "/api/v1/bands/upload_band_with_image",
+      this.$apiClient.post("/api/v1/bands/upload_band_with_image",
           formData,
           {
             headers: {
@@ -152,7 +152,7 @@ export default {
         type: "application/json"
       }));
 
-      axios.post(this.$url + "/api/v1/albums/upload_album_with_image",
+      this.$apiClient.post("/api/v1/albums/upload_album_with_image",
           formData,
           {
             headers: {
@@ -180,7 +180,7 @@ export default {
         type: "application/json"
       }));
 
-      axios.post(this.$url + "/api/v1/reviews/upload_review",
+      this.$apiClient.post("/api/v1/reviews/upload_review",
           formData,
           {
             headers:{

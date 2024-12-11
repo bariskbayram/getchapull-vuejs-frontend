@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     deleteReview() {
-      axios.delete( this.$url + "/api/v1/reviews/delete_review_by_review_id", {
+      this.$apiClient.delete("/api/v1/reviews/delete_review_by_review_id", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },
@@ -58,7 +58,7 @@ export default {
     },
 
     getPost() {
-      axios.get(this.$url + "/api/v1/reviews/get_post_by_album_id_and_username", {
+      this.$apiClient.get("/api/v1/reviews/get_post_by_album_id_and_username", {
         headers: {
           "Authorization": localStorage.getItem('userToken'),
         },

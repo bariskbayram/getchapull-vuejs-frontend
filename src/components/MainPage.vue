@@ -139,7 +139,7 @@ export default {
       return moment(date).fromNow();
     },
     getAlbumCount() {
-      axios.get(this.$url + "/api/v1/albums/get_reviewed_album_count_by_user", {
+      this.$apiClient.get("/api/v1/albums/get_reviewed_album_count_by_user", {
         headers: {
           "Authorization": localStorage.getItem('userToken'),
         },
@@ -152,7 +152,7 @@ export default {
     },
 
     getBandCount() {
-      axios.get(this.$url + "/api/v1/bands/get_reviewed_band_count_by_user", {
+      this.$apiClient.get("/api/v1/bands/get_reviewed_band_count_by_user", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },
@@ -165,7 +165,7 @@ export default {
     },
 
     getProfilePhoto() {
-      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
+      this.$apiClient.get("/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
@@ -198,7 +198,7 @@ export default {
 
     followSomeone(followedId, index) {
       this.spinnerIndex = index
-      axios.put(this.$url + "/api/v1/users/follow_someone", "",{
+      this.$apiClient.put("/api/v1/users/follow_someone", "",{
         headers: {
           'Authorization': localStorage.getItem('userToken')
         },
@@ -213,7 +213,7 @@ export default {
     },
 
     getPhoto(post) {
-      axios.get(this.$url + "/api/v1/albums/download_album_image", {
+      this.$apiClient.get("/api/v1/albums/download_album_image", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
@@ -226,7 +226,7 @@ export default {
         this.reRenderCount++;
       })
 
-      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
+      this.$apiClient.get("/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
@@ -241,22 +241,22 @@ export default {
       });
     },
 
-    async getPosts() {
-      await axios.post(this.$url + "/api/v1/reviews/get_all_post_by_user_id", "", {
+    getPosts() {
+      this.$apiClient.post("/api/v1/reviews/get_all_post_by_user_id", "", {
         headers: {
           'Authorization': localStorage.getItem('userToken')
         },
         params: {
           user_id : localStorage.getItem('userId')
         }
-      }).then( (res) => {
+      }).then((res) => {
         this.posts = res.data;
         this.posts.forEach(this.getPhoto);
       });
     },
 
-    async getOtherUsers() {
-      await axios.get(this.$url + "/api/v1/users/get_user_suggestion", {
+    getOtherUsers() {
+      this.$apiClient.get("/api/v1/users/get_user_suggestion", {
         headers: {
           'Authorization': localStorage.getItem('userToken')
         },
@@ -266,13 +266,13 @@ export default {
       }).then((res) => {
         this.notFriends = res.data;
         if (this.notFriends === '')
-            this.notFriends=[];
+            this.notFriends = [];
         this.notFriends.forEach(this.getNotFriendsPhoto)
       });
     },
 
-    async getNotFriendsPhoto(user) {
-      await axios.get(this.$url + "/api/v1/users/download_profile_photo",{
+    getNotFriendsPhoto(user) {
+      axios.get(this.$url + "/api/v1/users/download_profile_photo",{
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'
@@ -297,7 +297,7 @@ export default {
       await this.getBandCount();
       await this.getProfilePhoto();
 
-      axios.get(this.$url + "/api/v1/users/get_user_by_username", {
+      this.$apiClient.get("/api/v1/users/get_user_by_username", {
         params: {
           username: localStorage.getItem('username')
         }

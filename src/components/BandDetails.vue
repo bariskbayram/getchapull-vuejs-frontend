@@ -50,7 +50,7 @@ export default {
     },
 
     getAlbumsForTheBand() {
-      axios.get(this.$url + "/api/v1/albums/find_band_albums_reviewed_by_user", {
+      this.$apiClient.get("/api/v1/albums/find_band_albums_reviewed_by_user", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
         },
@@ -64,7 +64,7 @@ export default {
     },
 
     getBandPhoto(){
-      axios.get(this.$url + "/api/v1/bands/download_band_image", {
+      this.$apiClient.get("/api/v1/bands/download_band_image", {
         headers: {
           'Authorization': localStorage.getItem('userToken'),
           responseType: 'arrayBuffer'

@@ -125,7 +125,7 @@ export default {
     },
 
     checkUsernameIsExist() {
-      axios.get(this.$url + "/api/v1/users/check_username_exist", {
+      this.$apiClient.get("/api/v1/users/check_username_exist", {
         params: {
           username: this.user.username
         }
@@ -148,7 +148,7 @@ export default {
     },
 
     checkEmailIsExist() {
-      axios.get(this.$url + "/api/v1/users/check_email_exist", {
+      this.$apiClient.get("/api/v1/users/check_email_exist", {
         params: {
           email: this.user.email
         }
@@ -175,7 +175,7 @@ export default {
 
     submitSignUp() {
       this.isProgressActive = true;
-      axios.post(this.$url + "/api/v1/users/signup", this.user)
+      this.$apiClient.post("/api/v1/users/signup", this.user)
       .then(() => {
         this.$router.push("/login");
       })

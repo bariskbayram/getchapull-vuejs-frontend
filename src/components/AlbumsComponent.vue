@@ -54,7 +54,7 @@
     },
     methods: {
       setAlbumCover(album) {
-        axios.get(this.$url + "/api/v1/albums/download_album_image", {
+        this.$apiClient.get("/api/v1/albums/download_album_image", {
           headers: {
             'Authorization': localStorage.getItem('userToken'),
             responseType: 'arrayBuffer'
@@ -75,7 +75,7 @@
       },
 
       getAllAlbums() {
-        axios.get(this.$url + "/api/v1/albums/find_albums_reviewed_by_user", {
+        this.$apiClient.get("/api/v1/albums/find_albums_reviewed_by_user", {
           headers: {
             "Authorization": localStorage.getItem('userToken'),
           },
